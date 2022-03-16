@@ -71,13 +71,16 @@ The way a word or acronym is spoken determines whether "a" or "an" precedes it. 
 ### Ornamental words
 
 An expletive is an added word or phrase that does not contribute meaning to the sentence. The most common expletives are "there are" and "there is".
+
 - Not recommended: There are 10 users in the workspace.
 - Recommended: The workspace has 10 users.
 
 ### Direct address or imperative mood
+
 Use the imperative mood for task steps or a command line, a shell command for example.
 Use third person singular for a description of an API method.
 The imperative mood keeps the content concise. The direct address is more personal.
+
 - Not recommended: Developers can download the SDK from here.
 - Better: You can download the SDK from here.
 - Recommended: Download the SDK from here.
@@ -99,6 +102,7 @@ The imperative mood keeps the content concise. The direct address is more person
 - In glossary terms, avoid using person where possible. Use "developer" to refer to the reader if necessary.
 
 ### Clause order
+
 - Put the most important information at the beginning of a sentence, followed by what the user can do with that information.
 - Provide the context before you provide the instruction; that way, the reader can skip the additional information if it does not apply to their circumstance.
 
@@ -127,7 +131,7 @@ The imperative mood keeps the content concise. The direct address is more person
 - Use only one space after full stops. Example: Add a space. One after the full stop.
 - Use one space between numbers and units. Example: 256 Kbps.
 - Use spaces around mathematical symbols. Example: V = off, width x height, x < y. Use spaces around dimensions. Example: 3.2 x 3.6 x 0.6 mm.
-Note that million is not a unit, so there is no need to add a space between a number and M. For example, 10M is the right Taichi style.
+  Note that million is not a unit, so there is no need to add a space between a number and M. For example, 10M is the right Taichi style.
 
 ## Plagiarism
 
@@ -139,6 +143,7 @@ Plagiarism puts the firm in a questionable position. Ensure that you do not copy
 
 Headings assist the reader in scanning content, helping them discover exactly what they are seeking. They provide structure and are visual points of reference for the reader.
 Use headers to help outline your draft content. Some other points for consideration:
+
 - Capitalize all words in a document title, except for articles and prepositions.
 - Use sentence case for section titles.
 - Be descriptive and concise.
@@ -153,6 +158,7 @@ When referencing something specific (such as a unit of measure) in a table heade
 ### Information
 
 #### Note
+
 Provides supplemental information that may not apply to all readers, but is important for those specific readers to know.
 Wrap the notes in:
 :::note
@@ -160,6 +166,7 @@ This is a note.
 :::
 
 #### Warning
+
 Suggests proceeding with caution.
 Wrap the notes in
 :::caution WARNING
@@ -167,6 +174,7 @@ This is a warning.
 :::
 
 #### DANGER
+
 Designed to guide the reader away from a circumstance that poses some form of problem or hazard.
 Stronger than a Caution; it means "Don't do this."
 Wrap the notes in:
@@ -228,7 +236,7 @@ Use simple verbs. A noun phrase, for example "make use of", is usually wordier t
 ### Example 6
 
 - Not recommended: Use ti video -f40for creating a video with 40 FPS.
-- Recommended:  Use ti video -f40to create a video with a frame rate of 40 FPS.
+- Recommended: Use ti video -f40to create a video with a frame rate of 40 FPS.
 
 ### Example 7
 
@@ -268,7 +276,6 @@ Address your audience directly by using "you".
 - In technical writing, one word is always better than two.
 - Which is used in a non-restrictive attributive clause; that is used in a restrictive attributive clause. Always precede a which-clause with a comma.
 
-
 ### Example 11
 
 - Not recommended: When you use a client to update the following parameters, the updates take effect immediately.
@@ -303,10 +310,10 @@ Address your audience directly by using "you".
 ### Example 14
 
 - Not recommended: Start the Prometheus server, with the --config.file flag pointing to the configuration file:
-$ ./prometheus --config.file=prometheus.yml
+  $ ./prometheus --config.file=prometheus.yml
 
 - Recommended: Start the Prometheus server and specify the configuration file:
-$ ./prometheus --config.file=prometheus.yml
+  $ ./prometheus --config.file=prometheus.yml
 
 **Comments:**
 
@@ -330,7 +337,6 @@ $ ./prometheus --config.file=prometheus.yml
 - Recommended:
   - True: Enable debug mode.
   - False: Disable debug mode.
-
 
 **Comments:**
 
@@ -364,7 +370,7 @@ $ ./prometheus --config.file=prometheus.yml
 
 **Comments:**
 
-- You cannot say  faster speed. You can say higher speed or greater speed . You can also say an operation is faster.
+- You cannot say faster speed. You can say higher speed or greater speed . You can also say an operation is faster.
 - The original is wordy.
 
 ## English style guide references

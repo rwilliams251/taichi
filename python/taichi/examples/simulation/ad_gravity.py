@@ -45,7 +45,7 @@ def init():
 
 def main():
     init()
-    gui = ti.GUI('Autodiff gravity')
+    gui = ti.GUI("Autodiff gravity")
     while gui.running:
         for i in range(50):
             substep()

@@ -35,6 +35,7 @@ _new_dye_buffer = ti.Vector.field(3, float, shape=(res, res))
 
 
 class TexPair:
+
     def __init__(self, cur, nxt):
         self.cur = cur
         self.nxt = nxt
@@ -211,10 +212,11 @@ def step(mouse_data):
     if debug:
         divergence(velocities_pair.cur)
         div_s = np.sum(velocity_divs.to_numpy())
-        print(f'divergence={div_s}')
+        print(f"divergence={div_s}")
 
 
 class MouseDataGen(object):
+
     def __init__(self):
         self.prev_mouse = None
         self.prev_color = None
@@ -249,7 +251,7 @@ def reset():
     dyes_pair.cur.fill(0)
 
 
-window = ti.ui.Window('Stable Fluid', (res, res), vsync=True)
+window = ti.ui.Window("Stable Fluid", (res, res), vsync=True)
 canvas = window.get_canvas()
 md_gen = MouseDataGen()
 
@@ -258,17 +260,17 @@ while window.running:
         e = window.event
         if e.key == ti.ui.ESCAPE:
             break
-        elif e.key == 'r':
+        elif e.key == "r":
             paused = False
             reset()
-        elif e.key == 's':
+        elif e.key == "s":
             if curl_strength:
                 curl_strength = 0
             else:
                 curl_strength = 7
-        elif e.key == 'p':
+        elif e.key == "p":
             paused = not paused
-        elif e.key == 'd':
+        elif e.key == "d":
             debug = not debug
 
     # Debug divergence:

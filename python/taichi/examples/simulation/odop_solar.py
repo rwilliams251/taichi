@@ -7,6 +7,7 @@ ti.init()
 
 @ti.data_oriented
 class SolarSystem:
+
     def __init__(self, n, dt):  # Initializer of the solar system simulator
         self.n = n
         self.dt = dt
@@ -43,15 +44,15 @@ class SolarSystem:
             self.x[i] += self.dt * self.v[i]
 
     def render(self, gui):  # Render the scene on GUI
-        gui.circle([0.5, 0.5], radius=10, color=0xffaa88)
-        gui.circles(solar.x.to_numpy(), radius=3, color=0xffffff)
+        gui.circle([0.5, 0.5], radius=10, color=0xFFAA88)
+        gui.circles(solar.x.to_numpy(), radius=3, color=0xFFFFFF)
 
 
 solar = SolarSystem(8, 0.0001)
 solar.center[None] = [0.5, 0.5]
 solar.initialize_particles()
 
-gui = ti.GUI("Solar System", background_color=0x0071a)
+gui = ti.GUI("Solar System", background_color=0x0071A)
 while gui.running:
     if gui.get_event() and gui.is_pressed(gui.SPACE):
         solar.initialize_particles()  # reinitialize when space bar pressed.

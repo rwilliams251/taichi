@@ -6,8 +6,14 @@ import taichi as ti
 
 
 def test_minimization():
-    from taichi.examples.autodiff.minimization import (L, gradient_descent, n,
-                                                       reduce, x, y)
+    from taichi.examples.autodiff.minimization import (
+        L,
+        gradient_descent,
+        n,
+        reduce,
+        x,
+        y,
+    )
 
     for i in range(n):
         x[i] = random.random()

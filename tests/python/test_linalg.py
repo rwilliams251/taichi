@@ -305,7 +305,7 @@ def test_init_matrix_from_vectors():
 
 
 # TODO: Remove this once the APIs are obsolete.
-@pytest.mark.filterwarnings('ignore')
+@pytest.mark.filterwarnings("ignore")
 @test_utils.test(arch=get_host_arch_list())
 def test_init_matrix_from_vectors_deprecated():
     m1 = ti.Matrix.field(3, 3, dtype=ti.f32, shape=(3))

@@ -13,17 +13,24 @@ The symmetric positive definite matrix is created in matlab using the following 
     b = [1,2,3,4]';
     res = inv(A) * b;
 """
-Aarray = np.array([[
-    2.73999501130921, 0.518002544441220, 0.745119303009342, 0.0508907745638859
-], [0.518002544441220, 1.45111665837647, 0.757997555750432, 0.290885785873098],
-                   [
-                       0.745119303009342, 0.757997555750432, 2.96711176987733,
-                       -0.518002544441220
-                   ],
-                   [
-                       0.0508907745638859, 0.290885785873098,
-                       -0.518002544441220, 2.84177656043698
-                   ]])
+Aarray = np.array([
+    [
+        2.73999501130921, 0.518002544441220, 0.745119303009342,
+        0.0508907745638859
+    ],
+    [
+        0.518002544441220, 1.45111665837647, 0.757997555750432,
+        0.290885785873098
+    ],
+    [
+        0.745119303009342, 0.757997555750432, 2.96711176987733,
+        -0.518002544441220
+    ],
+    [
+        0.0508907745638859, 0.290885785873098, -0.518002544441220,
+        2.84177656043698
+    ],
+])
 
 res = np.array([
     -0.0754984396447588, 0.469972700892492, 1.18527357933586, 1.57686870529319
@@ -40,8 +47,11 @@ def test_sparse_LLT_solver(dtype, solver_type, ordering):
     b = ti.field(ti.f32, shape=n)
 
     @ti.kernel
-    def fill(Abuilder: ti.types.sparse_matrix_builder(),
-             InputArray: ti.ext_arr(), b: ti.template()):
+    def fill(
+            Abuilder: ti.types.sparse_matrix_builder(),
+            InputArray: ti.ext_arr(),
+            b: ti.template(),
+    ):
         for i, j in ti.ndrange(n, n):
             Abuilder[i, j] += InputArray[i, j]
         for i in range(n):

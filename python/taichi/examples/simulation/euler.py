@@ -11,14 +11,14 @@ real = ti.f32
 ti.init(arch=ti.gpu, default_fp=real)
 
 N = 1024  # grid resolution
-CFL = .9  # keep below 1
+CFL = 0.9  # keep below 1
 method = 1  # 0:muscl, 1:thinc
 IC_type = 0  # 0:sod
 BC_type = 0  # 0:walls
 
 img_field = 0  # 0:density, 1: schlieren, 2:vorticity, 3: velocity mag
 res = 1024  # gui resolution
-cmap_name = 'magma_r'  # python colormap
+cmap_name = "magma_r"  # python colormap
 use_fixed_caxis = 0  # 1: use fixed caxis limits, 0: automatic caxis limits
 fixed_caxis = [0.0, 5.0]  # fixed caxis limits
 
@@ -91,12 +91,12 @@ def set_ic():
         if IC_type == 0:
             # primitive variable initial conditions
             w_in = ti.Vector([10.0, 0.0, 0.0, 10.0])
-            w_out = ti.Vector([.125, 0.0, 0.0, .1])
+            w_out = ti.Vector([0.125, 0.0, 0.0, 0.1])
 
             pos = get_cell_pos(i, j)
-            center = ti.Vector([.5, .5])
+            center = ti.Vector([0.5, 0.5])
 
-            if (pos - center).norm() < .25:
+            if (pos - center).norm() < 0.25:
                 Q[i, j] = w_to_q(w_in)
             else:
                 Q[i, j] = w_to_q(w_out)
@@ -131,7 +131,7 @@ def set_bc():
 @ti.func
 def mc_lim(r):
     # MC flux limiter
-    return max(0.0, min(2.0 * r, min(.5 * (r + 1.0), 2.0)))
+    return max(0.0, min(2.0 * r, min(0.5 * (r + 1.0), 2.0)))
 
 
 @ti.func
@@ -170,7 +170,7 @@ def HLLC_flux(qL, qR, n):
     uL = qL[1] / qL[0]  # u
     vL = qL[2] / qL[0]  # v
     pL = (gamma - 1.0) * (qL[3] - 0.5 * (qL[1]**2 + qL[2]**2) / qL[0])
-    #p
+    # p
     vnL = uL * nx + vL * ny
     vtL = -uL * ny + vL * nx
     aL = ti.sqrt(gamma * pL / rL)
@@ -181,7 +181,7 @@ def HLLC_flux(qL, qR, n):
     uR = qR[1] / qR[0]  # u
     vR = qR[2] / qR[0]  # v
     pR = (gamma - 1.0) * (qR[3] - 0.5 * (qR[1]**2 + qR[2]**2) / qR[0])
-    #p
+    # p
     vnR = uR * nx + vR * ny
     vtR = -uR * ny + vR * nx
     aR = ti.sqrt(gamma * pR / rR)
@@ -213,19 +213,25 @@ def HLLC_flux(qL, qR, n):
 
     # HLLC flux.
     HLLC = ti.Vector([0.0, 0.0, 0.0, 0.0])
-    if (0 <= sL):
+    if 0 <= sL:
         HLLC = fL
-    elif (0 <= sM):
-        qsL = rL * (sL-vnL)/(sL-sM) \
-                  * ti.Vector([1.0, sM*nx-vtL*ny,sM*ny+vtL*nx, \
-                               qL[3]/rL + (sM-vnL)*(sM+pL/(rL*(sL-vnL)))])
+    elif 0 <= sM:
+        qsL = (rL * (sL - vnL) / (sL - sM) * ti.Vector([
+            1.0,
+            sM * nx - vtL * ny,
+            sM * ny + vtL * nx,
+            qL[3] / rL + (sM - vnL) * (sM + pL / (rL * (sL - vnL))),
+        ]))
         HLLC = fL + sL * (qsL - qL)
-    elif (0 <= sR):
-        qsR = rR * (sR-vnR)/(sR-sM) \
-                   * ti.Vector([1.0, sM*nx-vtR*ny,sM*ny+vtR*nx, \
-                                qR[3]/rR + (sM-vnR)*(sM+pR/(rR*(sR-vnR)))])
+    elif 0 <= sR:
+        qsR = (rR * (sR - vnR) / (sR - sM) * ti.Vector([
+            1.0,
+            sM * nx - vtR * ny,
+            sM * ny + vtR * nx,
+            qR[3] / rR + (sM - vnR) * (sM + pR / (rR * (sR - vnR))),
+        ]))
         HLLC = fR + sR * (qsR - qR)
-    elif (0 >= sR):
+    elif 0 >= sR:
         HLLC = fR
 
     return HLLC
@@ -349,10 +355,12 @@ def compute_F_thinc():
         if is_interior_cell(i, j):
             for f in ti.static(range(4)):
                 # x-dir
-                TBV_smooth = abs(W_xl[i,j,0][f] - W_xr[i,j,0][f]) \
-                           + abs(W_xl[i+1,j,0][f] - W_xr[i+1,j,0][f])
-                TBV_sharp = abs(W_xl[i,j,1][f] - W_xr[i,j,1][f]) \
-                           + abs(W_xl[i+1,j,1][f] - W_xr[i+1,j,1][f])
+                TBV_smooth = abs(W_xl[i, j, 0][f] -
+                                 W_xr[i, j, 0][f]) + abs(W_xl[i + 1, j, 0][f] -
+                                                         W_xr[i + 1, j, 0][f])
+                TBV_sharp = abs(W_xl[i, j, 1][f] -
+                                W_xr[i, j, 1][f]) + abs(W_xl[i + 1, j, 1][f] -
+                                                        W_xr[i + 1, j, 1][f])
 
                 if TBV_smooth < TBV_sharp:
                     W_xr[i, j, 2][f] = W_xr[i, j, 0][f]
@@ -362,10 +370,12 @@ def compute_F_thinc():
                     W_xl[i + 1, j, 2][f] = W_xl[i + 1, j, 1][f]
 
                 # y-dir
-                TBV_smooth = abs(W_yl[i,j,0][f] - W_yr[i,j,0][f]) \
-                           + abs(W_yl[i,j+1,0][f] - W_yr[i,j+1,0][f])
-                TBV_sharp = abs(W_yl[i,j,1][f] - W_yr[i,j,1][f]) \
-                           + abs(W_yl[i,j+1,1][f] - W_yr[i,j+1,1][f])
+                TBV_smooth = abs(W_yl[i, j, 0][f] -
+                                 W_yr[i, j, 0][f]) + abs(W_yl[i, j + 1, 0][f] -
+                                                         W_yr[i, j + 1, 0][f])
+                TBV_sharp = abs(W_yl[i, j, 1][f] -
+                                W_yr[i, j, 1][f]) + abs(W_yl[i, j + 1, 1][f] -
+                                                        W_yr[i, j + 1, 1][f])
 
                 if TBV_smooth < TBV_sharp:
                     W_yr[i, j, 2][f] = W_yr[i, j, 0][f]
@@ -406,8 +416,10 @@ def update_Q(rk_step: ti.template()):
     for i, j in Q:
         if is_interior_cell(i, j):
             if ti.static(rk_step == 0):
-                Q[i, j] = Q[i, j] + dt[None] * (F_x[i, j] - F_x[i + 1, j] +
-                                                F_y[i, j] - F_y[i, j + 1]) / h
+                Q[i, j] = (
+                    Q[i, j] + dt[None] *
+                    (F_x[i, j] - F_x[i + 1, j] + F_y[i, j] - F_y[i, j + 1]) /
+                    h)
             if ti.static(rk_step == 1):
                 Q[i, j] = (Q[i, j] + Q_old[i, j]) / 2.0 + dt[None] * (
                     F_x[i, j] - F_x[i + 1, j] + F_y[i, j] - F_y[i, j + 1]) / h
@@ -443,7 +455,7 @@ def paint():
         img[i, j] = (img[i, j] - min) / (max - min)
 
 
-gui = ti.GUI('Euler Equations', (res, res))
+gui = ti.GUI("Euler Equations", (res, res))
 cmap = cm.get_cmap(cmap_name)
 set_ic()
 set_bc()

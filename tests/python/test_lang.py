@@ -86,6 +86,7 @@ def test_simple2():
 
 @test_utils.test()
 def test_recreate():
+
     @ti.kernel
     def test():
         a = 0
@@ -116,6 +117,7 @@ def test_local_atomics():
 
 @test_utils.test(arch=get_host_arch_list())
 def test_loop_var_life():
+
     @ti.kernel
     def test():
         for i in ti.static(range(8)):
@@ -128,6 +130,7 @@ def test_loop_var_life():
 
 @test_utils.test(arch=get_host_arch_list())
 def test_loop_var_life_double_iters():
+
     @ti.kernel
     def test():
         for i, v in ti.static(enumerate(range(8))):
@@ -138,9 +141,9 @@ def test_loop_var_life_double_iters():
         test()
 
 
-@pytest.mark.parametrize('dtype', [ti.i32, ti.f32, ti.i64, ti.f64])
-@pytest.mark.parametrize('ti_zero,zero', [(ti.zero, 0), (ti.one, 1)])
-@pytest.mark.parametrize('is_mat', [False, True])
+@pytest.mark.parametrize("dtype", [ti.i32, ti.f32, ti.i64, ti.f64])
+@pytest.mark.parametrize("ti_zero,zero", [(ti.zero, 0), (ti.one, 1)])
+@pytest.mark.parametrize("is_mat", [False, True])
 @test_utils.test(arch=ti.cpu)
 def test_meta_zero_one(dtype, ti_zero, zero, is_mat):
     if is_mat:

@@ -8,6 +8,7 @@ import taichi as ti
 
 @ti.data_oriented
 class Cloth:
+
     def __init__(self, N):
         self.N = N
         self.NF = 2 * N**2  # number of faces
@@ -67,20 +68,29 @@ class Cloth:
             rest_len[idx] = (pos[idx1] - pos[idx1 + 1]).norm()
         start = N * (N + 1)
         for i, j in ti.ndrange(N, N + 1):
-            idx, idx1, idx2 = start + i + j * N, i * (N + 1) + j, i * (
-                N + 1) + j + N + 1
+            idx, idx1, idx2 = (
+                start + i + j * N,
+                i * (N + 1) + j,
+                i * (N + 1) + j + N + 1,
+            )
             spring[idx] = ti.Vector([idx1, idx2])
             rest_len[idx] = (pos[idx1] - pos[idx2]).norm()
         start = 2 * N * (N + 1)
         for i, j in ti.ndrange(N, N):
-            idx, idx1, idx2 = start + i * N + j, i * (N + 1) + j, (i + 1) * (
-                N + 1) + j + 1
+            idx, idx1, idx2 = (
+                start + i * N + j,
+                i * (N + 1) + j,
+                (i + 1) * (N + 1) + j + 1,
+            )
             spring[idx] = ti.Vector([idx1, idx2])
             rest_len[idx] = (pos[idx1] - pos[idx2]).norm()
         start = 2 * N * (N + 1) + N * N
         for i, j in ti.ndrange(N, N):
-            idx, idx1, idx2 = start + i * N + j, i * (N + 1) + j + 1, (
-                i + 1) * (N + 1) + j
+            idx, idx1, idx2 = (
+                start + i * N + j,
+                i * (N + 1) + j + 1,
+                (i + 1) * (N + 1) + j,
+            )
             spring[idx] = ti.Vector([idx1, idx2])
             rest_len[idx] = (pos[idx1] - pos[idx2]).norm()
 
@@ -190,7 +200,7 @@ class Cloth:
         dv = solver.solve(b)
         self.updatePosVel(h, dv)
 
-    def display(self, gui, radius=5, color=0xffffff):
+    def display(self, gui, radius=5, color=0xFFFFFF):
         lines = self.spring.to_numpy()
         pos = self.pos.to_numpy()
         edgeBegin = np.zeros(shape=(lines.shape[0], 2))
@@ -199,7 +209,7 @@ class Cloth:
             idx1, idx2 = lines[i][0], lines[i][1]
             edgeBegin[i] = pos[idx1]
             edgeEnd[i] = pos[idx2]
-        gui.lines(edgeBegin, edgeEnd, radius=2, color=0x0000ff)
+        gui.lines(edgeBegin, edgeEnd, radius=2, color=0x0000FF)
         gui.circles(self.pos.to_numpy(), radius, color)
 
     @ti.kernel
@@ -224,16 +234,16 @@ if __name__ == "__main__":
 
     pause = False
     parser = argparse.ArgumentParser()
-    parser.add_argument('-g',
-                        '--use-ggui',
-                        action='store_true',
-                        help='Display with GGUI')
+    parser.add_argument("-g",
+                        "--use-ggui",
+                        action="store_true",
+                        help="Display with GGUI")
     args, unknowns = parser.parse_known_args()
     use_ggui = False
     use_ggui = args.use_ggui
 
     if not use_ggui:
-        gui = ti.GUI('Implicit Mass Spring System', res=(500, 500))
+        gui = ti.GUI("Implicit Mass Spring System", res=(500, 500))
         while gui.running:
             for e in gui.get_events():
                 if e.key == gui.ESCAPE:
@@ -247,7 +257,7 @@ if __name__ == "__main__":
             cloth.display(gui)
             gui.show()
     else:
-        window = ti.ui.Window('Implicit Mass Spring System', res=(500, 500))
+        window = ti.ui.Window("Implicit Mass Spring System", res=(500, 500))
         while window.running:
             if window.get_event(ti.ui.PRESS):
                 if window.event.key == ti.ui.ESCAPE:

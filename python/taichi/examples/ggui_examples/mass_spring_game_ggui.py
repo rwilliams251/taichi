@@ -120,7 +120,7 @@ def render():
 
 
 def main():
-    window = ti.ui.Window('Explicit Mass Spring System', (1024, 1024),
+    window = ti.ui.Window("Explicit Mass Spring System", (1024, 1024),
                           vsync=True)
     canvas = window.get_canvas()
 
@@ -142,7 +142,7 @@ def main():
                 pos = window.get_cursor_pos()
                 new_particle(pos[0], pos[1],
                              int(window.is_pressed(ti.ui.SHIFT)))
-            elif e.key == 'c':
+            elif e.key == "c":
                 num_particles[None] = 0
                 rest_length.fill(0)
 
@@ -176,5 +176,5 @@ def main():
         window.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

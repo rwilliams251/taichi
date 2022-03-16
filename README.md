@@ -1,4 +1,3 @@
-
 <div align="center">
   <img width="500px" src="https://github.com/taichi-dev/taichi/raw/master/misc/logo.png"/>
 </div>
@@ -30,10 +29,10 @@ import taichi as ti
 Advantages of Taichi:
 
 - Built around Python: Taichi shares almost the same syntax with Python, allowing you to write algorithms with minimal language barrier. It is also well integrated into the Python ecosystem, such as NumPy and PyTorch.
-- Flexibility: Taichi provides a set of generic data containers known as *SNode* (/ˈsnoʊd/), an effective mechanism for composing hierarchical, multi-dimensional fields. This can cover many use patterns in numerical simulation (e.g. [spatially sparse computing](https://docs.taichi.graphics/lang/articles/advanced/sparse)).
+- Flexibility: Taichi provides a set of generic data containers known as _SNode_ (/ˈsnoʊd/), an effective mechanism for composing hierarchical, multi-dimensional fields. This can cover many use patterns in numerical simulation (e.g. [spatially sparse computing](https://docs.taichi.graphics/lang/articles/advanced/sparse)).
 - Performance: Through the `@ti.kernel` decorator, Taichi's JIT compiler automatically compiles your Python functions into efficient GPU or CPU machine code for parallel execution.
 - Portability: Write your code once and run it everywhere. Currently, Taichi supports most mainstream GPU APIs, such as CUDA and Vulkan.
-- ... and many more features! A cross-platform, Vulkan-based 3D visualizer, [differentiable programming](https://docs.taichi.graphics/lang/articles/advanced/differentiable_programming),  [quantized computation](https://github.com/taichi-dev/quantaichi) (experimental), etc.
+- ... and many more features! A cross-platform, Vulkan-based 3D visualizer, [differentiable programming](https://docs.taichi.graphics/lang/articles/advanced/differentiable_programming), [quantized computation](https://github.com/taichi-dev/quantaichi) (experimental), etc.
 
 # Getting Started
 
@@ -51,11 +50,12 @@ If you want to try out the latest features, we also provide a nightly package:
 pip install -i https://test.pypi.org/simple/ taichi-nightly
 ```
 
-*The nightly package can and will break from time to time!*
+_The nightly package can and will break from time to time!_
 
 **Supported environments**
 
 <!--TODO: Precise OS versions-->
+
 - Operating systems
   - Windows<sup>[1](#win-note)</sup>
   - Linux
@@ -115,7 +115,6 @@ If Taichi is properly installed, you should get the animation below 🎉:
 
 <a href="https://github.com/taichi-dev/taichi/blob/master/python/taichi/examples/simulation/fractal.py#L1-L31"> </a><img src="https://raw.githubusercontent.com/taichi-dev/public_files/master/taichi/fractal_small.gif" height="270px">
 
-
 # Documentation
 
 Taichi's documentation is available at https://docs.taichi.graphics.
@@ -140,7 +139,7 @@ A huge thanks to all of our amazing contributors!
 
 <a href="https://github.com/taichi-dev/taichi/graphs/contributors"><img src="https://raw.githubusercontent.com/taichi-dev/public_files/master/taichi/contributors_taichi-dev_taichi_12.png" width="800px"></a>
 
-*Contributor avatars are randomly shuffled.*
+_Contributor avatars are randomly shuffled._
 
 # Resources
 
@@ -162,9 +161,10 @@ A huge thanks to all of our amazing contributors!
 <a href="https://github.com/taichi-dev/quantaichi"><img src="https://raw.githubusercontent.com/taichi-dev/public_files/master/taichi/fluid_with_bunnies.gif" height="213px"></a>
 
 ## Lectures & talks
+
 - **SIGGRAPH 2020 course on Taichi basics**: [YouTube](https://youtu.be/Y0-76n3aZFA), [Bilibili](https://www.bilibili.com/video/BV1kA411n7jk/), [slides (pdf)](https://yuanming.taichi.graphics/publication/2020-taichi-tutorial/taichi-tutorial.pdf).
 - Chinagraph 2020 用太极编写物理引擎: [哔哩哔哩](https://www.bilibili.com/video/BV1gA411j7H5)
-- GAMES 201 高级物理引擎实战指南2020: [课件](https://github.com/taichi-dev/games201)
+- GAMES 201 高级物理引擎实战指南 2020: [课件](https://github.com/taichi-dev/games201)
 - 太极图形课第一季：[课件](https://github.com/taichiCourse01)
 - [TaichiCon](https://github.com/taichi-dev/taichicon): Taichi developer conferences
 - More to come...

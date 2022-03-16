@@ -83,7 +83,7 @@ def copy(x: ti.template(), y: ti.template()):
 
 ## Field metadata
 
-The two attributes **data type** and **shape** of fields can be accessed by `field.dtype` and  `field.shape`, in both Taichi-scope and Python-scope:
+The two attributes **data type** and **shape** of fields can be accessed by `field.dtype` and `field.shape`, in both Taichi-scope and Python-scope:
 
 ```python {3,7}
 x = ti.field(dtype=ti.f32, shape=(3, 3))
@@ -127,6 +127,7 @@ Using compile-time evaluation allows for some computation to be executed when ke
 computational overhead at runtime:
 
 ### Static Scope
+
 `ti.static` is a function which receives one argument. It is a hint for the compiler to evaluate the argument at compile time.
 The scope of the argument of `ti.static` is called static-scope.
 

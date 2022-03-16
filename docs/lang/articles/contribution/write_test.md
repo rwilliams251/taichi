@@ -273,16 +273,16 @@ def test_struct_for_pointer_block():
 
 Now, Taichi supports the following extensions:
 
-| Name          | Extension details                                             |
-| ------------- | ------------------------------------------------------------- |
-| sparse        | Sparse data structures                                        |
-| async_mode    | Asynchronous execution mode                                   |
-| quant_basic   | Basic operations in quantization                              |
-| quant         | Full quantization functionalities                             |
-| data64        | 64-bit data and arithmetics                                   |
-| adstack       | For keeping the history of mutable local variables in autodiff|
-| bls           | Block-local storage                                           |
-| assertion     | Run-time asserts in Taichi kernels                            |
-| extfunc       | Support inserting external function calls or backend source   |
-| packed        | Packed mode: shapes will not be padded to powers of two       |
-| dynamic_index | Dynamic index support for tensors                             |
+| Name          | Extension details                                              |
+| ------------- | -------------------------------------------------------------- |
+| sparse        | Sparse data structures                                         |
+| async_mode    | Asynchronous execution mode                                    |
+| quant_basic   | Basic operations in quantization                               |
+| quant         | Full quantization functionalities                              |
+| data64        | 64-bit data and arithmetics                                    |
+| adstack       | For keeping the history of mutable local variables in autodiff |
+| bls           | Block-local storage                                            |
+| assertion     | Run-time asserts in Taichi kernels                             |
+| extfunc       | Support inserting external function calls or backend source    |
+| packed        | Packed mode: shapes will not be padded to powers of two        |
+| dynamic_index | Dynamic index support for tensors                              |

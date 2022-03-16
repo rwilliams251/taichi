@@ -15,8 +15,7 @@ def test_mpm99():
 
 
 def video_mpm99(result_dir):
-    from taichi.examples.simulation.mpm99 import (dt, initialize, material,
-                                                  substep, x)
+    from taichi.examples.simulation.mpm99 import dt, initialize, material, substep, x
 
     video_manager = ti.VideoManager(output_dir=result_dir,
                                     framerate=24,
@@ -29,17 +28,19 @@ def video_mpm99(result_dir):
     for i in range(FRAMES):
         for s in range(int(2e-3 // dt)):
             substep()
-        gui.circles(x.to_numpy(),
-                    radius=1.5,
-                    palette=[0x068587, 0xED553B, 0xEEEEF0],
-                    palette_indices=material)
+        gui.circles(
+            x.to_numpy(),
+            radius=1.5,
+            palette=[0x068587, 0xED553B, 0xEEEEF0],
+            palette_indices=material,
+        )
         video_manager.write_frame(gui.get_image())
         gui.clear()
     video_manager.make_video(mp4=True, gif=False)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate mpm99 video')
-    parser.add_argument('output_directory',
-                        help='output directory of generated video')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate mpm99 video")
+    parser.add_argument("output_directory",
+                        help="output directory of generated video")
     video_mpm99(parser.parse_args().output_directory)

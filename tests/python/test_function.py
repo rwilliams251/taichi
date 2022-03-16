@@ -65,6 +65,7 @@ def test_call_expressions():
 
 @test_utils.test(arch=[ti.cpu, ti.cuda], debug=True)
 def test_default_templates():
+
     @ti.func
     def func1(x: ti.template()):
         x = 1
@@ -178,7 +179,7 @@ def test_experimental_templates():
 
 @test_utils.test(arch=[ti.cpu, ti.gpu])
 def test_missing_arg_annotation():
-    with pytest.raises(ti.TaichiSyntaxError, match='must be type annotated'):
+    with pytest.raises(ti.TaichiSyntaxError, match="must be type annotated"):
 
         @ti.experimental.real_func
         def add(a, b: ti.i32) -> ti.i32:
@@ -188,7 +189,7 @@ def test_missing_arg_annotation():
 @test_utils.test(arch=[ti.cpu, ti.gpu])
 def test_missing_return_annotation():
     with pytest.raises(ti.TaichiCompilationError,
-                       match='return value must be annotated'):
+                       match="return value must be annotated"):
 
         @ti.experimental.real_func
         def add(a: ti.i32, b: ti.i32):
@@ -203,6 +204,7 @@ def test_missing_return_annotation():
 
 @test_utils.test(arch=[ti.cpu, ti.gpu])
 def test_different_argument_type():
+
     @ti.experimental.real_func
     def add(a: ti.f32, b: ti.f32) -> ti.f32:
         return a + b
@@ -216,6 +218,7 @@ def test_different_argument_type():
 
 @test_utils.test(arch=[ti.cpu, ti.gpu], cfg_optimization=False)
 def test_recursion():
+
     @ti.experimental.real_func
     def sum(f: ti.template(), l: ti.i32, r: ti.i32) -> ti.i32:
         ret = 0

@@ -33,6 +33,7 @@ def grad_replaced(func):
         >>> @ti.grad_for(foo)
         >>> def foo_grad(a):
         >>>     multiply_grad(a)"""
+
     def decorated(*args, **kwargs):
         # TODO [#3025]: get rid of circular imports and move this to the top.
         impl.get_runtime().grad_replaced = True
@@ -56,17 +57,19 @@ def grad_for(primal):
 
     Returns:
         Callable: The decorator used to decorate customized gradient function."""
+
     def decorator(func):
+
         def decorated(*args, **kwargs):
             func(*args, **kwargs)
 
-        if not hasattr(primal, 'grad'):
+        if not hasattr(primal, "grad"):
             raise RuntimeError(
-                f'Primal function `{primal.__name__}` must be decorated by ti.ad.grad_replaced'
+                f"Primal function `{primal.__name__}` must be decorated by ti.ad.grad_replaced"
             )
         if primal.grad is not None:
             raise RuntimeError(
-                'Primal function must be a **python** function instead of a taichi kernel. Please wrap the taichi kernel in a @ti.ad.grad_replaced decorated python function instead.'
+                "Primal function must be a **python** function instead of a taichi kernel. Please wrap the taichi kernel in a @ti.ad.grad_replaced decorated python function instead."
             )
         primal.grad = decorated
         return decorated

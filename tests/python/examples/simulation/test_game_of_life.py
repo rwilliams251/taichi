@@ -15,14 +15,13 @@ def test_game_of_life():
 
 def video_game_of_life(result_dir):
     import numpy as np
-    from taichi.examples.simulation.game_of_life import (alive, img_size, init,
-                                                         run)
+    from taichi.examples.simulation.game_of_life import alive, img_size, init, run
 
     video_manager = ti.tools.VideoManager(output_dir=result_dir,
                                           framerate=24,
                                           automatic_build=False)
 
-    gui = ti.GUI('Game of Life', (img_size, img_size), show_gui=False)
+    gui = ti.GUI("Game of Life", (img_size, img_size), show_gui=False)
     gui.fps_limit = 15
 
     init()
@@ -36,8 +35,8 @@ def video_game_of_life(result_dir):
     video_manager.make_video(mp4=True, gif=False)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate game_of_life video')
-    parser.add_argument('output_directory',
-                        help='output directory of generated video')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate game_of_life video")
+    parser.add_argument("output_directory",
+                        help="output directory of generated video")
     video_game_of_life(parser.parse_args().output_directory)

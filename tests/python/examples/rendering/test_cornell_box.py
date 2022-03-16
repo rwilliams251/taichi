@@ -7,6 +7,7 @@ FRAMES = 200
 
 def test_cornell_box():
     from taichi.examples.rendering.cornell_box import render, tonemap
+
     for i in range(FRAMES):
         render()
         interval = 10
@@ -15,8 +16,8 @@ def test_cornell_box():
 
 
 def video_cornell_box(result_dir):
-    from taichi.examples.rendering.cornell_box import (render, tonemap,
-                                                       tonemapped_buffer)
+    from taichi.examples.rendering.cornell_box import render, tonemap, tonemapped_buffer
+
     video_manager = ti.VideoManager(output_dir=result_dir,
                                     framerate=24,
                                     automatic_build=False)
@@ -36,8 +37,8 @@ def video_cornell_box(result_dir):
     video_manager.make_video(mp4=True, gif=False)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate cornell_box video')
-    parser.add_argument('output_directory',
-                        help='output directory of generated video')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate cornell_box video")
+    parser.add_argument("output_directory",
+                        help="output directory of generated video")
     video_cornell_box(parser.parse_args().output_directory)

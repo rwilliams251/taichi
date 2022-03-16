@@ -24,8 +24,9 @@ vertices = ti.Vector.field(3, float, N * N)
 def init_scene():
     for i, j in ti.ndrange(N, N):
         x[i, j] = ti.Vector([
-            i * cell_size, j * cell_size / ti.sqrt(2),
-            (N - j) * cell_size / ti.sqrt(2)
+            i * cell_size,
+            j * cell_size / ti.sqrt(2),
+            (N - j) * cell_size / ti.sqrt(2),
         ])
     ball_center[0] = ti.Vector([0.5, -0.5, -0.0])
 
@@ -61,8 +62,8 @@ def step():
             current_length = relative_pos.norm()
             original_length = cell_size * float(i - j).norm()
             if original_length != 0:
-                force += stiffness * relative_pos.normalized() * (
-                    current_length - original_length) / original_length
+                force += (stiffness * relative_pos.normalized() *
+                          (current_length - original_length) / original_length)
         v[i] += force * dt
     for i in ti.grouped(x):
         v[i] *= ti.exp(-damping * dt)

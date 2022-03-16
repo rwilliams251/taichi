@@ -1,8 +1,8 @@
-'''
+"""
 This file tests if Taichi's testing utilities are functional.
 
 TODO: Skips these tests after all tests are using @ti.test
-'''
+"""
 import os
 
 import pytest
@@ -10,7 +10,7 @@ import pytest
 import taichi as ti
 from tests import test_utils
 
-### `ti.test`
+# `ti.test`
 
 
 @test_utils.test()
@@ -70,12 +70,12 @@ def test_require_extensions_2():
     assert ti.lang.impl.current_cfg().arch in [ti.cuda]
 
 
-### `test_utils.approx` and `test_utils.allclose`
+# `test_utils.approx` and `test_utils.allclose`
 
 
-@pytest.mark.parametrize('x', [0.1, 3])
+@pytest.mark.parametrize("x", [0.1, 3])
 @pytest.mark.parametrize(
-    'allclose', [test_utils.allclose, lambda x, y: x == test_utils.approx(y)])
+    "allclose", [test_utils.allclose, lambda x, y: x == test_utils.approx(y)])
 @test_utils.test()
 def test_allclose_rel(x, allclose):
     rel = test_utils.get_rel_eps()
@@ -90,9 +90,9 @@ def test_allclose_rel(x, allclose):
     assert not allclose(x - x * rel * 3.0, x)
 
 
-@pytest.mark.parametrize('x', [0.1, 3])
+@pytest.mark.parametrize("x", [0.1, 3])
 @pytest.mark.parametrize(
-    'allclose', [test_utils.allclose, lambda x, y: x == test_utils.approx(y)])
+    "allclose", [test_utils.allclose, lambda x, y: x == test_utils.approx(y)])
 @test_utils.test()
 def test_allclose_rel_reordered1(x, allclose):
     rel = test_utils.get_rel_eps()
@@ -107,9 +107,9 @@ def test_allclose_rel_reordered1(x, allclose):
     assert not allclose(x - x * rel * 3.0, x)
 
 
-@pytest.mark.parametrize('x', [0.1, 3])
+@pytest.mark.parametrize("x", [0.1, 3])
 @pytest.mark.parametrize(
-    'allclose', [test_utils.allclose, lambda x, y: x == test_utils.approx(y)])
+    "allclose", [test_utils.allclose, lambda x, y: x == test_utils.approx(y)])
 @test_utils.test()
 def test_allclose_rel_reordered2(x, allclose):
     rel = test_utils.get_rel_eps()

@@ -6,6 +6,7 @@ from tests import test_utils
 
 @test_utils.test()
 def test_nested_kernel_error():
+
     @ti.kernel
     def B():
         pass

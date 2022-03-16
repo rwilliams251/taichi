@@ -5,11 +5,11 @@ import taichi as ti
 arch = ti.vulkan if ti._lib.core.with_vulkan() else ti.cuda
 ti.init(arch=arch)
 
-#dim, n_grid, steps, dt = 2, 128, 20, 2e-4
-#dim, n_grid, steps, dt = 2, 256, 32, 1e-4
-#dim, n_grid, steps, dt = 3, 32, 25, 4e-4
+# dim, n_grid, steps, dt = 2, 128, 20, 2e-4
+# dim, n_grid, steps, dt = 2, 256, 32, 1e-4
+# dim, n_grid, steps, dt = 3, 32, 25, 4e-4
 dim, n_grid, steps, dt = 3, 64, 25, 2e-4
-#dim, n_grid, steps, dt = 3, 128, 5, 1e-4
+# dim, n_grid, steps, dt = 3, 128, 5, 1e-4
 
 n_particles = n_grid**dim // 2**(dim - 1)
 
@@ -25,7 +25,7 @@ g_y = -9.8
 g_z = 0
 bound = 3
 E = 1000  # Young's modulus
-nu = 0.2  #  Poisson's ratio
+nu = 0.2  # Poisson's ratio
 mu_0, lambda_0 = E / (2 * (1 + nu)), E * nu / (
     (1 + nu) * (1 - 2 * nu))  # Lame parameters
 
@@ -87,13 +87,14 @@ def substep(g_x: float, g_y: float, g_z: float):
             Jp[p] *= sig[d, d] / new_sig
             sig[d, d] = new_sig
             J *= new_sig
-        if materials[
-                p] == WATER:  # Reset deformation gradient to avoid numerical instability
+        if (materials[p] == WATER
+            ):  # Reset deformation gradient to avoid numerical instability
             new_F = ti.Matrix.identity(float, 3)
             new_F[0, 0] = J
             F[p] = new_F
         elif materials[p] == SNOW:
-            F[p] = U @ sig @ V.transpose(
+            F[p] = (
+                U @ sig @ V.transpose()
             )  # Reconstruct elastic deformation gradient after plasticity
         stress = 2 * mu * (F[p] - U @ V.transpose()) @ F[p].transpose(
         ) + ti.Matrix.identity(float, 3) * la * J * (J - 1)
@@ -111,8 +112,8 @@ def substep(g_x: float, g_y: float, g_z: float):
         if grid_m[I] > 0:
             grid_v[I] /= grid_m[I]
         grid_v[I] += dt * ti.Vector([g_x, g_y, g_z])
-        cond = (I < bound) & (grid_v[I] < 0) | \
-               (I > n_grid - bound) & (grid_v[I] > 0)
+        cond = (I < bound) & (grid_v[I] <
+                              0) | (I > n_grid - bound) & (grid_v[I] > 0)
         grid_v[I] = 0 if cond else grid_v[I]
     ti.block_dim(n_grid)
     for p in x:
@@ -138,6 +139,7 @@ def substep(g_x: float, g_y: float, g_z: float):
 
 
 class CubeVolume:
+
     def __init__(self, minimum, size, material):
         self.minimum = minimum
         self.size = size
@@ -146,9 +148,17 @@ class CubeVolume:
 
 
 @ti.kernel
-def init_cube_vol(first_par: int, last_par: int, x_begin: float,
-                  y_begin: float, z_begin: float, x_size: float, y_size: float,
-                  z_size: float, material: int):
+def init_cube_vol(
+    first_par: int,
+    last_par: int,
+    x_begin: float,
+    y_begin: float,
+    z_begin: float,
+    x_size: float,
+    y_size: float,
+    z_size: float,
+    material: int,
+):
     for i in range(first_par, last_par):
         x[i] = ti.Vector([ti.random() for i in range(dim)]) * ti.Vector(
             [x_size, y_size, z_size]) + ti.Vector([x_begin, y_begin, z_begin])
@@ -185,9 +195,8 @@ def init_vols(vols):
         v = vols[i]
         if isinstance(v, CubeVolume):
             par_count = int(v.volume / total_vol * n_particles)
-            if i == len(
-                    vols
-            ) - 1:  # this is the last volume, so use all remaining particles
+            if (i == len(vols) - 1
+                ):  # this is the last volume, so use all remaining particles
                 par_count = n_particles - next_p
             init_cube_vol(next_p, next_p + par_count, *v.minimum, *v.size,
                           v.material)
@@ -201,31 +210,35 @@ def set_color_by_material(material_colors: ti.ext_arr()):
     for i in range(n_particles):
         mat = materials[i]
         colors[i] = ti.Vector([
-            material_colors[mat, 0], material_colors[mat, 1],
-            material_colors[mat, 2], 1.0
+            material_colors[mat, 0],
+            material_colors[mat, 1],
+            material_colors[mat, 2],
+            1.0,
         ])
 
 
 print("Loading presets...this might take a minute")
 
-presets = [[
-    CubeVolume(ti.Vector([0.55, 0.05, 0.55]), ti.Vector([0.4, 0.4, 0.4]),
-               WATER),
-],
-           [
-               CubeVolume(ti.Vector([0.05, 0.05, 0.05]),
-                          ti.Vector([0.3, 0.4, 0.3]), WATER),
-               CubeVolume(ti.Vector([0.65, 0.05, 0.65]),
-                          ti.Vector([0.3, 0.4, 0.3]), WATER),
-           ],
-           [
-               CubeVolume(ti.Vector([0.6, 0.05, 0.6]),
-                          ti.Vector([0.25, 0.25, 0.25]), WATER),
-               CubeVolume(ti.Vector([0.35, 0.35, 0.35]),
-                          ti.Vector([0.25, 0.25, 0.25]), SNOW),
-               CubeVolume(ti.Vector([0.05, 0.6, 0.05]),
-                          ti.Vector([0.25, 0.25, 0.25]), JELLY),
-           ]]
+presets = [
+    [
+        CubeVolume(ti.Vector([0.55, 0.05, 0.55]), ti.Vector([0.4, 0.4, 0.4]),
+                   WATER),
+    ],
+    [
+        CubeVolume(ti.Vector([0.05, 0.05, 0.05]), ti.Vector([0.3, 0.4, 0.3]),
+                   WATER),
+        CubeVolume(ti.Vector([0.65, 0.05, 0.65]), ti.Vector([0.3, 0.4, 0.3]),
+                   WATER),
+    ],
+    [
+        CubeVolume(ti.Vector([0.6, 0.05, 0.6]), ti.Vector([0.25, 0.25, 0.25]),
+                   WATER),
+        CubeVolume(ti.Vector([0.35, 0.35, 0.35]), ti.Vector([0.25, 0.25,
+                                                             0.25]), SNOW),
+        CubeVolume(ti.Vector([0.05, 0.6, 0.05]), ti.Vector([0.25, 0.25, 0.25]),
+                   JELLY),
+    ],
+]
 preset_names = [
     "Single Dam Break",
     "Double Dam Break",
@@ -325,7 +338,7 @@ def render():
 
 
 while window.running:
-    #print("heyyy ",frame_id)
+    # print("heyyy ",frame_id)
     frame_id += 1
     frame_id = frame_id % 256
 

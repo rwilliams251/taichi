@@ -18,7 +18,6 @@ sidebar_position: 0
   sudo apt-get install libstdc++6
   ```
 
-
 ### Windows issues
 
 - If Taichi crashes and reports `ImportError` on Windows. Please
@@ -68,7 +67,6 @@ sidebar_position: 0
     your `~/.bashrc`. This disables unified memory usage in the CUDA
     backend.
 
-
 - If Taichi exits with message "Out of CUDA pre-allocated memory", e.g.,
 
   ```python
@@ -102,9 +100,9 @@ sidebar_position: 0
   Taichi only pre-allocates 1 GB of GPU memory for dynamically allocated data structures.
   To fix this, simply pre-allocate more GPU memory:
 
-    1. Set `ti.init(..., device_memory_fraction=0.9)` to allocate 90% of GPU memory. Replace "90%" with any other fraction depending on your hardware.
-    2. Set `ti.init(..., device_memory_GB=4)` to allocate 4 GB GPU memory. Feel free to use any number bigger than 1.
-    3. Setting environment variables `TI_DEVICE_MEMORY_FRACTION=0.9` and `TI_DEVICE_MEMORY_GB=4` would also work.
+  1. Set `ti.init(..., device_memory_fraction=0.9)` to allocate 90% of GPU memory. Replace "90%" with any other fraction depending on your hardware.
+  2. Set `ti.init(..., device_memory_GB=4)` to allocate 4 GB GPU memory. Feel free to use any number bigger than 1.
+  3. Setting environment variables `TI_DEVICE_MEMORY_FRACTION=0.9` and `TI_DEVICE_MEMORY_GB=4` would also work.
 
   Note that on Linux, Taichi automatically grows the memory pool using CUDA unified memory mechanisms.
 
@@ -145,6 +143,7 @@ sidebar_position: 0
     incompatibilities.
 
 ### Installation interrupted
+
 During the installation, the downloading process is interrupted because of `HTTPSConnection` error. You can try installing Taichi from a mirror source.
 
 ```

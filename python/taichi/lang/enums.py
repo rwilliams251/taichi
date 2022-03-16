@@ -7,8 +7,9 @@ class Layout(Enum):
 
     Currently, AOS (array of structures) and SOA (structure of arrays) are supported.
     """
+
     AOS = 1
     SOA = 2
 
 
-__all__ = ['Layout']
+__all__ = ["Layout"]

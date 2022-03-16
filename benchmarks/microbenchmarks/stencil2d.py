@@ -1,8 +1,12 @@
 from microbenchmarks._items import BenchmarkItem, Container, DataType
 from microbenchmarks._metric import MetricType
 from microbenchmarks._plan import BenchmarkPlan
-from microbenchmarks._utils import (dtype_size, fill_random,
-                                    scaled_repeat_times, size2tag)
+from microbenchmarks._utils import (
+    dtype_size,
+    fill_random,
+    scaled_repeat_times,
+    size2tag,
+)
 
 import taichi as ti
 
@@ -52,7 +56,8 @@ def stencil_2d_sparse_bls(arch, repeat, scatter, bls, container, dtype,
                           dsize_2d, get_metric):
 
     dsize = dsize_2d[0] * dsize_2d[1]
-    if dsize <= 4096 or dsize > 67108864:  # 16KB <= dsize <= 64 MB: Sparse-specific parameters
+    if (dsize <= 4096 or dsize >
+            67108864):  # 16KB <= dsize <= 64 MB: Sparse-specific parameters
         return None
     repeat = scaled_repeat_times(
         arch, dsize, 1)  # basic_repeat_time = 1: Sparse-specific parameters
@@ -74,7 +79,7 @@ def stencil_2d_sparse_bls(arch, repeat, scatter, bls, container, dtype,
 
     @ti.kernel
     def stencil_2d(y: ti.template(), x: ti.template()):
-        #reference: tests/python/bls_test_template.py
+        # reference: tests/python/bls_test_template.py
         if ti.static(bls and not scatter):
             ti.block_local(x)
         if ti.static(bls and scatter):
@@ -96,21 +101,21 @@ def stencil_2d_sparse_bls(arch, repeat, scatter, bls, container, dtype,
 
 
 class Scatter(BenchmarkItem):
-    name = 'scatter'
+    name = "scatter"
 
     def __init__(self):
-        self._items = {'scatter': True, 'gether': False}
+        self._items = {"scatter": True, "gether": False}
 
 
 class BloclLocalStorage(BenchmarkItem):
-    name = 'bls'
+    name = "bls"
 
     def __init__(self):
-        self._items = {'bls_on': True, 'bls_off': False}
+        self._items = {"bls_on": True, "bls_off": False}
 
 
 class DataSize2D(BenchmarkItem):
-    name = 'dsize_2d'
+    name = "dsize_2d"
 
     def __init__(self):
         self._items = {}
@@ -121,15 +126,22 @@ class DataSize2D(BenchmarkItem):
 
 
 class Stencil2DPlan(BenchmarkPlan):
+
     def __init__(self, arch: str):
-        super().__init__('stencil_2d', arch, basic_repeat_times=10)
+        super().__init__("stencil_2d", arch, basic_repeat_times=10)
         container = Container()
-        container.update({'sparse': None})  # None: implement by feature
-        self.create_plan(Scatter(), BloclLocalStorage(), container, DataType(),
-                         DataSize2D(), MetricType())
+        container.update({"sparse": None})  # None: implement by feature
+        self.create_plan(
+            Scatter(),
+            BloclLocalStorage(),
+            container,
+            DataType(),
+            DataSize2D(),
+            MetricType(),
+        )
         # no use for field & ndarray
-        self.remove_cases_with_tags(['field', 'bls1'])
-        self.remove_cases_with_tags(['ndarray', 'bls1'])
-        self.add_func(['field'], stencil_2d_default)
-        self.add_func(['ndarray'], stencil_2d_default)
-        self.add_func(['sparse'], stencil_2d_sparse_bls)
+        self.remove_cases_with_tags(["field", "bls1"])
+        self.remove_cases_with_tags(["ndarray", "bls1"])
+        self.add_func(["field"], stencil_2d_default)
+        self.add_func(["ndarray"], stencil_2d_default)
+        self.add_func(["sparse"], stencil_2d_sparse_bls)

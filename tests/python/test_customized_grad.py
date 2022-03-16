@@ -100,8 +100,10 @@ def test_customized_kernels_indirect():
 
 @test_utils.test()
 def test_customized_kernels_oop():
+
     @ti.data_oriented
     class A:
+
         def __init__(self):
             self.x = ti.field(ti.f32)
             self.total = ti.field(ti.f32)
@@ -135,8 +137,10 @@ def test_customized_kernels_oop():
 
 @test_utils.test()
 def test_customized_kernels_oop2():
+
     @ti.data_oriented
     class A:
+
         def __init__(self):
             self.x = ti.field(ti.f32)
             self.total = ti.field(ti.f32)

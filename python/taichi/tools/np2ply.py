@@ -5,22 +5,38 @@ import numpy as np
 
 
 class PLYWriter:
-    def __init__(self,
-                 num_vertices: int,
-                 num_faces=0,
-                 face_type="tri",
-                 comment="created by PLYWriter"):
+
+    def __init__(
+        self,
+        num_vertices: int,
+        num_faces=0,
+        face_type="tri",
+        comment="created by PLYWriter",
+    ):
         assert num_vertices > 0, "num_vertices should be greater than 0"
         assert num_faces >= 0, "num_faces shouldn't be less than 0"
-        assert face_type == "tri" or face_type == "quad", "Only tri and quad faces are supported for now"
+        assert (face_type == "tri" or face_type
+                == "quad"), "Only tri and quad faces are supported for now"
 
         self.ply_supported_types = [
-            'char', 'uchar', 'short', 'ushort', 'int', 'uint', 'float',
-            'double'
+            "char",
+            "uchar",
+            "short",
+            "ushort",
+            "int",
+            "uint",
+            "float",
+            "double",
         ]
         self.corresponding_numpy_types = [
-            np.int8, np.uint8, np.int16, np.uint16, np.int32, np.uint32,
-            np.float32, np.float64
+            np.int8,
+            np.uint8,
+            np.int16,
+            np.uint16,
+            np.int32,
+            np.uint32,
+            np.float32,
+            np.float64,
         ]
         self.type_map = {}
         for i, ply_type in enumerate(self.ply_supported_types):
@@ -49,7 +65,8 @@ class PLYWriter:
                   " detected, skipping this channel")
             return
         if data.ndim == 1:
-            assert data.size == self.num_vertices, "The dimension of the vertex channel is not correct"
+            assert (data.size == self.num_vertices
+                    ), "The dimension of the vertex channel is not correct"
             self.num_vertex_channels += 1
             if key in self.vertex_channels:
                 print("WARNING: duplicate key " + key + " detected")
@@ -58,8 +75,8 @@ class PLYWriter:
             self.vertex_data.append(self.type_map[data_type](data))
         else:
             num_col = data.size // self.num_vertices
-            assert data.ndim == 2 and data.size == num_col * \
-                self.num_vertices, "The dimension of the vertex channel is not correct"
+            assert (data.ndim == 2 and data.size == num_col * self.num_vertices
+                    ), "The dimension of the vertex channel is not correct"
             data.shape = (self.num_vertices, num_col)
             self.num_vertex_channels += num_col
             for i in range(num_col):
@@ -156,8 +173,8 @@ class PLYWriter:
             vert_per_face = 3
         else:
             vert_per_face = 4
-        assert vert_per_face * \
-            self.num_faces == indices.size, "The dimension of the face vertices is not correct"
+        assert (vert_per_face * self.num_faces == indices.size
+                ), "The dimension of the face vertices is not correct"
         self.face_indices = np.reshape(indices,
                                        (self.num_faces, vert_per_face))
         self.face_indices = self.face_indices.astype(np.int32)
@@ -168,7 +185,8 @@ class PLYWriter:
                   " detected, skipping this channel")
             return
         if data.ndim == 1:
-            assert data.size == self.num_faces, "The dimension of the face channel is not correct"
+            assert (data.size == self.num_faces
+                    ), "The dimension of the face channel is not correct"
             self.num_face_channels += 1
             if key in self.face_channels:
                 print("WARNING: duplicate key " + key + " detected")
@@ -177,8 +195,8 @@ class PLYWriter:
             self.face_data.append(self.type_map[data_type](data))
         else:
             num_col = data.size // self.num_faces
-            assert data.ndim == 2 and data.size == num_col * \
-                self.num_faces, "The dimension of the face channel is not correct"
+            assert (data.ndim == 2 and data.size == num_col * self.num_faces
+                    ), "The dimension of the face channel is not correct"
             data.shape = (self.num_faces, num_col)
             self.num_face_channels += num_col
             for i in range(num_col):
@@ -201,13 +219,15 @@ class PLYWriter:
         assert "z" in self.vertex_channels, "The vertex pos channel is missing"
         if self.num_faces > 0:
             for idx in self.face_indices.flatten():
-                assert idx >= 0 and idx < self.num_vertices, "The face indices are invalid"
+                assert (idx >= 0 and idx < self.num_vertices
+                        ), "The face indices are invalid"
 
     def print_header(self, path: str, _format: str):
         with open(path, "w") as f:
             f.writelines([
-                "ply\n", "format " + _format + " 1.0\n",
-                "comment " + self.comment + "\n"
+                "ply\n",
+                "format " + _format + " 1.0\n",
+                "comment " + self.comment + "\n",
             ])
             f.write("element vertex " + str(self.num_vertices) + "\n")
             for i in range(self.num_vertex_channels):
@@ -254,7 +274,8 @@ class PLYWriter:
             for i in range(self.num_faces):
                 f.writelines([
                     str(vert_per_face) + " ",
-                    " ".join(map(str, self.face_indices[i, :])), " "
+                    " ".join(map(str, self.face_indices[i, :])),
+                    " ",
                 ])
                 for j in range(self.num_face_channels):
                     f.write(str(self.face_data[j][i]) + " ")
@@ -279,4 +300,4 @@ class PLYWriter:
         self.export(real_path)
 
 
-__all__ = ['PLYWriter']
+__all__ = ["PLYWriter"]

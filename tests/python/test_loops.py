@@ -45,6 +45,7 @@ def test_numpy_loops():
         y[i] = i - 300
 
     import numpy as np
+
     begin = (np.ones(1) * (N // 2 + 3)).astype(np.int32).reshape(())
     end = (np.ones(1) * N).astype(np.int32).reshape(())
 
@@ -176,6 +177,7 @@ def test_assignment_in_nested_loops():
 
 @test_utils.test()
 def test_break_in_outermost_for_not_in_outermost_scope():
+
     @ti.kernel
     def foo() -> ti.i32:
         a = 0

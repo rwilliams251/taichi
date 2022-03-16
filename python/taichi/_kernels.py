@@ -67,7 +67,7 @@ def vector_to_fast_image(img: template(), out: ext_arr()):
             r, g, b = color
         idx = j * img.shape[0] + i
         # We use i32 for |out| since OpenGL and Metal doesn't support u8 types
-        if static(get_os_name() != 'osx'):
+        if static(get_os_name() != "osx"):
             out[idx] = (r << 16) + (g << 8) + b
         else:
             # What's -16777216?
@@ -196,8 +196,15 @@ def snode_deactivate_dynamic(b: template()):
 # https://developer.nvidia.com/gpugems/gpugems2/part-vi-simulation-and-numerical-algorithms/chapter-46-improved-gpu-sorting
 # https://en.wikipedia.org/wiki/Batcher_odd%E2%80%93even_mergesort
 @kernel
-def sort_stage(keys: template(), use_values: int, values: template(), N: int,
-               p: int, k: int, invocations: int):
+def sort_stage(
+        keys: template(),
+        use_values: int,
+        values: template(),
+        N: int,
+        p: int,
+        k: int,
+        invocations: int,
+):
     for inv in range(invocations):
         j = k % p + inv * 2 * k
         for i in range(0, min(k, N - j - k)):

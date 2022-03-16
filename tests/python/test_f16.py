@@ -16,7 +16,7 @@ def test_snode_read_write():
     x = ti.field(dtype, shape=())
     x[None] = 0.3
     print(x[None])
-    assert (x[None] == test_utils.approx(0.3, rel=1e-3))
+    assert x[None] == test_utils.approx(0.3, rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -25,7 +25,7 @@ def test_float16():
     x = ti.field(dtype, shape=())
     x[None] = 0.3
     print(x[None])
-    assert (x[None] == test_utils.approx(0.3, rel=1e-3))
+    assert x[None] == test_utils.approx(0.3, rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -41,7 +41,7 @@ def test_to_numpy():
     init()
     y = x.to_numpy()
     for i in range(n):
-        assert (y[i] == 2 * i)
+        assert y[i] == 2 * i
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -59,10 +59,10 @@ def test_from_numpy():
     init()
     z = y.to_numpy()
     for i in range(n):
-        assert (z[i] == i * 3)
+        assert z[i] == i * 3
 
 
-@pytest.mark.skipif(not has_pytorch(), reason='Pytorch not installed.')
+@pytest.mark.skipif(not has_pytorch(), reason="Pytorch not installed.")
 @test_utils.test(arch=archs_support_f16)
 def test_to_torch():
     n = 16
@@ -77,13 +77,14 @@ def test_to_torch():
     y = x.to_torch()
     print(y)
     for i in range(n):
-        assert (y[i] == 2 * i)
+        assert y[i] == 2 * i
 
 
-@pytest.mark.skipif(not has_pytorch(), reason='Pytorch not installed.')
+@pytest.mark.skipif(not has_pytorch(), reason="Pytorch not installed.")
 @test_utils.test(arch=archs_support_f16)
 def test_from_torch():
     import torch
+
     n = 16
     y = ti.field(dtype=ti.f16, shape=n)
     # torch doesn't have rand implementation for float16 so we need to create float first and then convert
@@ -98,7 +99,7 @@ def test_from_torch():
     init()
     z = y.to_torch()
     for i in range(n):
-        assert (z[i] == i * 3)
+        assert z[i] == i * 3
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -117,7 +118,7 @@ def test_binary_op():
     z[None] = 0.72
     add()
     u = x.to_numpy()
-    assert (u[None] == test_utils.approx(0.6624, rel=1e-3))
+    assert u[None] == test_utils.approx(0.6624, rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -148,8 +149,8 @@ def test_unary_op():
 
     y[None] = -1.4
     foo()
-    assert (x[None] == test_utils.approx(1, rel=1e-3))
-    assert (y[None] == test_utils.approx(-1, rel=1e-3))
+    assert x[None] == test_utils.approx(1, rel=1e-3)
+    assert y[None] == test_utils.approx(-1, rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -164,7 +165,7 @@ def test_extra_unary_promote():
 
     y[None] = -0.3
     foo()
-    assert (x[None] == test_utils.approx(0.3, rel=1e-3))
+    assert x[None] == test_utils.approx(0.3, rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16, exclude=ti.vulkan)
@@ -180,7 +181,7 @@ def test_binary_extra_promote():
 
     x[None] = 0.1
     foo()
-    assert (z[None] == test_utils.approx(math.atan2(0.1**2, 0.3), rel=1e-3))
+    assert z[None] == test_utils.approx(math.atan2(0.1**2, 0.3), rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -195,7 +196,7 @@ def test_arg_f16():
 
     y[None] = -0.3
     foo(1.2)
-    assert (x[None] == test_utils.approx(0.9, rel=1e-3))
+    assert x[None] == test_utils.approx(0.9, rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16)
@@ -238,7 +239,7 @@ def test_atomic_add_f16():
                 f[1] = f[1] + 1.12
 
     foo()
-    assert (f[0] == test_utils.approx(f[1], rel=1e-3))
+    assert f[0] == test_utils.approx(f[1], rel=1e-3)
 
 
 # TODO(): Vulkan support
@@ -258,7 +259,7 @@ def test_atomic_max_f16():
                 f[1] = ti.max(1.12 * i, f[1])
 
     foo()
-    assert (f[0] == test_utils.approx(f[1], rel=1e-3))
+    assert f[0] == test_utils.approx(f[1], rel=1e-3)
 
 
 # TODO(): Vulkan support
@@ -278,11 +279,12 @@ def test_atomic_min_f16():
                 f[1] = ti.min(-3.13 * i, f[1])
 
     foo()
-    assert (f[0] == test_utils.approx(f[1], rel=1e-3))
+    assert f[0] == test_utils.approx(f[1], rel=1e-3)
 
 
 @test_utils.test(arch=archs_support_f16)
 def test_cast_f32_to_f16():
+
     @ti.kernel
     def func() -> ti.f16:
         a = ti.cast(23.0, ti.f32)
@@ -294,6 +296,7 @@ def test_cast_f32_to_f16():
 
 @test_utils.test(arch=archs_support_f16, require=ti.extension.data64)
 def test_cast_f64_to_f16():
+
     @ti.kernel
     def func() -> ti.f16:
         a = ti.cast(23.0, ti.f64)

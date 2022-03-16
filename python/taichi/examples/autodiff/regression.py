@@ -47,7 +47,7 @@ def initialize():
 
     regress()
 
-    print('y')
+    print("y")
     for i in range(N):
         y.grad[i] = 1
         ys.append(y[i])
@@ -67,10 +67,10 @@ def regress_raw():
             loss.grad[None] = 1
             regress()
             regress.grad()
-        print('Loss =', loss[None])
+        print("Loss =", loss[None])
         update()
         for i in range(number_coeffs):
-            print(coeffs[i], end=', ')
+            print(coeffs[i], end=", ")
         print()
 
 
@@ -81,16 +81,16 @@ def draw():
         curve_ys += coeffs[i] * np.power(curve_xs, i)
 
     plt.title(
-        'Nonlinear Regression with Gradient Descent (3rd order polynomial)')
+        "Nonlinear Regression with Gradient Descent (3rd order polynomial)")
     ax = plt.gca()
-    ax.scatter(xs, ys, label='data', color='r')
-    ax.plot(curve_xs, curve_ys, label='fitted')
+    ax.scatter(xs, ys, label="data", color="r")
+    ax.plot(curve_xs, curve_ys, label="fitted")
     ax.legend()
     ax.grid(True)
-    ax.spines['left'].set_position('zero')
-    ax.spines['right'].set_color('none')
-    ax.spines['bottom'].set_position('zero')
-    ax.spines['top'].set_color('none')
+    ax.spines["left"].set_position("zero")
+    ax.spines["right"].set_color("none")
+    ax.spines["bottom"].set_position("zero")
+    ax.spines["top"].set_color("none")
     plt.show()
 
 
@@ -100,5 +100,5 @@ def main():
     draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

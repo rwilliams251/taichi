@@ -33,15 +33,15 @@ def set_vals(x: ti.f32, y: ti.f32):
 
 
 def serialize_i32(x):
-    s = ''
+    s = ""
     for i in reversed(range(32)):
-        s += f'{(x>>i) & 1}'
+        s += f"{(x>>i) & 1}"
     return s
 
 
 def serialize_f32(x):
-    b = pack('f', x)
-    n = unpack('i', b)[0]
+    b = pack("f", x)
+    n = unpack("i", b)[0]
     return serialize_i32(n)
 
 
@@ -102,7 +102,7 @@ def draw_coord(t, f):
 frames = 300
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--curve', type=int, help='Curve type', default=0)
+parser.add_argument("-c", "--curve", type=int, help="Curve type", default=0)
 
 args = parser.parse_args()
 
@@ -110,11 +110,13 @@ if args.curve == 0:
 
     def f(t):
         return math.cos(t * 2 * math.pi), math.sin(t * 2 * math.pi)
+
 elif args.curve == 1:
 
     def f(t):
         t = math.cos(t * 2 * math.pi) * 0.5 + 0.5
         return 1 - t, t
+
 elif args.curve == 2:
 
     def f(t):
@@ -124,14 +126,14 @@ elif args.curve == 2:
         return math.exp(t) * s, math.exp(-t) * s
 
 
-folder = f'curve{args.curve}'
+folder = f"curve{args.curve}"
 os.makedirs(folder, exist_ok=True)
 
 for i in range(frames * 2 + 1):
     t = i / frames
 
     draw_coord(t, f)
-    coord.show(f'{folder}/coord_{i:04d}.png')
+    coord.show(f"{folder}/coord_{i:04d}.png")
 
     x, y = f(t)
     set_vals(x, y)
@@ -140,19 +142,19 @@ for i in range(frames * 2 + 1):
     color = 0x111111
 
     def reorder(b, seg):
-        r = ''
+        r = ""
         seg = [0] + seg + [32]
         for i in range(len(seg) - 1):
             r = r + b[32 - seg[i + 1]:32 - seg[i]]
         return r
 
     def real_to_str(x):
-        s = ''
+        s = ""
         if x < 0:
-            s = ''
+            s = ""
         else:
-            s = ' '
-        return s + f'{x:.4f}'
+            s = " "
+        return s + f"{x:.4f}"
 
     numbers.text(real_to_str(x), (0.05, 0.9), font_size=fs, color=color)
     numbers.text(real_to_str(y), (0.55, 0.9), font_size=fs, color=color)
@@ -169,8 +171,8 @@ for i in range(frames * 2 + 1):
         b = reorder(bits[j], seg[j])
         numbers.text(b, (0.05, 0.7 - j * 0.15), font_size=fs, color=color)
 
-    numbers.show(f'{folder}/numbers_{i:04d}.png')
+    numbers.show(f"{folder}/numbers_{i:04d}.png")
 
 os.system(
-    f'ti video {folder}/numbers*.png -f 60 -c 2 -o numbers{args.curve}.mp4')
-os.system(f'ti video {folder}/coord*.png -f 60 -c 2 -o coord{args.curve}.mp4')
+    f"ti video {folder}/numbers*.png -f 60 -c 2 -o numbers{args.curve}.mp4")
+os.system(f"ti video {folder}/coord*.png -f 60 -c 2 -o coord{args.curve}.mp4")

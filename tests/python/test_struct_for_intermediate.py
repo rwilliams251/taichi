@@ -33,9 +33,11 @@ def test_nested_demote():
     _test_nested()
 
 
-@test_utils.test(require=[ti.extension.sparse, ti.extension.packed],
-                 demote_dense_struct_fors=False,
-                 packed=True)
+@test_utils.test(
+    require=[ti.extension.sparse, ti.extension.packed],
+    demote_dense_struct_fors=False,
+    packed=True,
+)
 def test_nested_packed():
     _test_nested()
 

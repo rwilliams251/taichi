@@ -15,6 +15,7 @@ class SparseMatrix:
         m (int): the second dimension of a sparse matrix.
         sm (SparseMatrix): another sparse matrix that will be built from.
     """
+
     def __init__(self, n=None, m=None, sm=None, dtype=f32):
         if sm is None:
             self.n = n
@@ -31,7 +32,9 @@ class SparseMatrix:
         Returns:
             The result sparse matrix of the addition.
         """
-        assert self.n == other.n and self.m == other.m, f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
+        assert (
+            self.n == other.n and self.m == other.m
+        ), f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
         sm = self.matrix + other.matrix
         return SparseMatrix(sm=sm)
 
@@ -41,7 +44,9 @@ class SparseMatrix:
         Returns:
              The result sparse matrix of the subtraction.
         """
-        assert self.n == other.n and self.m == other.m, f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
+        assert (
+            self.n == other.n and self.m == other.m
+        ), f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
         sm = self.matrix - other.matrix
         return SparseMatrix(sm=sm)
 
@@ -57,7 +62,9 @@ class SparseMatrix:
             sm = self.matrix * other
             return SparseMatrix(sm=sm)
         if isinstance(other, SparseMatrix):
-            assert self.n == other.n and self.m == other.m, f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
+            assert (
+                self.n == other.n and self.m == other.m
+            ), f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
             sm = self.matrix * other.matrix
             return SparseMatrix(sm=sm)
 
@@ -95,18 +102,24 @@ class SparseMatrix:
             The result of matrix multiplication.
         """
         if isinstance(other, SparseMatrix):
-            assert self.m == other.n, f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
+            assert (
+                self.m == other.n
+            ), f"Dimension mismatch between sparse matrices ({self.n}, {self.m}) and ({other.n}, {other.m})"
             sm = self.matrix.matmul(other.matrix)
             return SparseMatrix(sm=sm)
         if isinstance(other, Field):
-            assert self.m == other.shape[
-                0], f"Dimension mismatch between sparse matrix ({self.n}, {self.m}) and vector ({other.shape})"
+            assert (
+                self.m == other.shape[0]
+            ), f"Dimension mismatch between sparse matrix ({self.n}, {self.m}) and vector ({other.shape})"
             return self.matrix.mat_vec_mul(other.to_numpy())
         if isinstance(other, np.ndarray):
-            assert self.m == other.shape[
-                0], f"Dimension mismatch between sparse matrix ({self.n}, {self.m}) and vector ({other.shape})"
+            assert (
+                self.m == other.shape[0]
+            ), f"Dimension mismatch between sparse matrix ({self.n}, {self.m}) and vector ({other.shape})"
             return self.matrix.mat_vec_mul(other)
-        assert False, f"Sparse matrix-matrix/vector multiplication does not support {type(other)} for now. Supported types are SparseMatrix, ti.field, and numpy.ndarray."
+        assert (
+            False
+        ), f"Sparse matrix-matrix/vector multiplication does not support {type(other)} for now. Supported types are SparseMatrix, ti.field, and numpy.ndarray."
 
     def __getitem__(self, indices):
         return self.matrix.get_element(indices[0], indices[1])
@@ -136,6 +149,7 @@ class SparseMatrixBuilder:
         num_cols (int): the second dimension of a sparse matrix.
         max_num_triplets (int): the maximum number of triplets.
     """
+
     def __init__(self,
                  num_rows=None,
                  num_cols=None,
@@ -156,7 +170,7 @@ class SparseMatrixBuilder:
         """Print the triplets stored in the builder"""
         self.ptr.print_triplets()
 
-    def build(self, dtype=f32, _format='CSR'):
+    def build(self, dtype=f32, _format="CSR"):
         """Create a sparse matrix using the triplets"""
         sm = self.ptr.build()
         return SparseMatrix(sm=sm)
@@ -164,10 +178,12 @@ class SparseMatrixBuilder:
 
 # TODO: remove this in 1.0 release
 class sparse_matrix_builder(annotations.sparse_matrix_builder):
+
     def __init__(self):
         warning(
-            'ti.linalg.sparse_matrix_builder is deprecated. Please use ti.types.sparse_matrix_builder instead.',
-            DeprecationWarning)
+            "ti.linalg.sparse_matrix_builder is deprecated. Please use ti.types.sparse_matrix_builder instead.",
+            DeprecationWarning,
+        )
 
 
-__all__ = ['SparseMatrix', 'SparseMatrixBuilder', 'sparse_matrix_builder']
+__all__ = ["SparseMatrix", "SparseMatrixBuilder", "sparse_matrix_builder"]

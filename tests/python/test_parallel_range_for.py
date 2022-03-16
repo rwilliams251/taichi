@@ -24,6 +24,7 @@ def test_parallel_range_for():
 
 @test_utils.test()
 def test_serial_for():
+
     @ti.kernel
     def foo() -> ti.i32:
         a = 0
@@ -58,6 +59,7 @@ def test_loop_config_parallel_range_for():
 
 @test_utils.test()
 def test_loop_config_serial_for():
+
     @ti.kernel
     def foo() -> ti.i32:
         a = 0

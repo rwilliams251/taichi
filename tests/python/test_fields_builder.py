@@ -140,10 +140,11 @@ def test_fields_builder_pointer():
 
 # We currently only consider data types that all platforms support.
 # See https://docs.taichi.graphics/lang/articles/basic/type#supported-primitive-types for more details.
-@pytest.mark.parametrize('test_1d_size', [1, 10, 100])
-@pytest.mark.parametrize('field_type', [ti.f32, ti.i32])
+@pytest.mark.parametrize("test_1d_size", [1, 10, 100])
+@pytest.mark.parametrize("field_type", [ti.f32, ti.i32])
 @test_utils.test(arch=[ti.cpu, ti.cuda, ti.vulkan, ti.metal])
 def test_fields_builder_destroy(test_1d_size, field_type):
+
     def test_for_single_destroy_multi_fields():
         fb = ti.FieldsBuilder()
         for create_field_idx in range(10):

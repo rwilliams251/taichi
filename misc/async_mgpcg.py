@@ -5,14 +5,16 @@ import numpy as np
 import taichi as ti
 
 real = ti.f32
-ti.init(default_fp=real,
-        arch=ti.cuda,
-        async_mode=True,
-        async_opt_listgen=True,
-        async_opt_dse=True,
-        async_opt_activation_demotion=True,
-        async_opt_fusion=True,
-        kernel_profiler=True)
+ti.init(
+    default_fp=real,
+    arch=ti.cuda,
+    async_mode=True,
+    async_opt_listgen=True,
+    async_opt_dse=True,
+    async_opt_activation_demotion=True,
+    async_opt_fusion=True,
+    kernel_profiler=True,
+)
 
 # grid parameters
 N = 256
@@ -23,7 +25,9 @@ bottom_smoothing = 150
 
 use_multigrid = True
 
-N_ext = N // 2  # number of ext cells set so that that total grid size is still power of 2
+N_ext = (
+    N // 2
+)  # number of ext cells set so that that total grid size is still power of 2
 N_tot = 2 * N
 
 # setup sparse simulation data arrays
@@ -42,13 +46,13 @@ pAp = ti.field(dtype=real, shape=())
 
 leaf_size = 8
 
-grid = ti.root.pointer(ti.ijk,
-                       [N_tot // leaf_size]).dense(ti.ijk,
-                                                   leaf_size).place(x, p, Ap)
+grid = (ti.root.pointer(ti.ijk,
+                        [N_tot // leaf_size]).dense(ti.ijk,
+                                                    leaf_size).place(x, p, Ap))
 
 for l in range(n_mg_levels):
-    grid = ti.root.pointer(ti.ijk, [N_tot // (leaf_size * 2**l)]).dense(
-        ti.ijk, leaf_size).place(r[l], z[l])
+    grid = (ti.root.pointer(ti.ijk, [N_tot // (leaf_size * 2**l)]).dense(
+        ti.ijk, leaf_size).place(r[l], z[l]))
 
 ti.root.place(alpha, beta, sum)
 
@@ -60,8 +64,8 @@ def init():
         xl = (i - N_ext) * 2.0 / N_tot
         yl = (j - N_ext) * 2.0 / N_tot
         zl = (k - N_ext) * 2.0 / N_tot
-        r[0][i, j, k] = ti.sin(2.0 * np.pi * xl) * ti.sin(
-            2.0 * np.pi * yl) * ti.sin(2.0 * np.pi * zl)
+        r[0][i, j, k] = (ti.sin(2.0 * np.pi * xl) * ti.sin(2.0 * np.pi * yl) *
+                         ti.sin(2.0 * np.pi * zl))
         z[0][i, j, k] = 0.0
         Ap[i, j, k] = 0.0
         p[i, j, k] = 0.0
@@ -71,9 +75,9 @@ def init():
 @ti.kernel
 def compute_Ap():
     for i, j, k in Ap:
-        Ap[i,j,k] = 6.0 * p[i,j,k] - p[i+1,j,k] - p[i-1,j,k] \
-                                   - p[i,j+1,k] - p[i,j-1,k] \
-                                   - p[i,j,k+1] - p[i,j,k-1]
+        Ap[i, j, k] = (6.0 * p[i, j, k] - p[i + 1, j, k] - p[i - 1, j, k] -
+                       p[i, j + 1, k] - p[i, j - 1, k] - p[i, j, k + 1] -
+                       p[i, j, k - 1])
 
 
 @ti.kernel
@@ -122,9 +126,10 @@ def smooth(l: ti.template(), phase: ti.template()):
     # phase = red/black Gauss-Seidel phase
     for i, j, k in r[l]:
         if (i + j + k) & 1 == phase:
-            z[l][i,j,k] = (r[l][i,j,k] + z[l][i+1,j,k] + z[l][i-1,j,k] \
-                                       + z[l][i,j+1,k] + z[l][i,j-1,k] \
-                                       + z[l][i,j,k+1] + z[l][i,j,k-1])/6.0
+            z[l][i, j,
+                 k] = (r[l][i, j, k] + z[l][i + 1, j, k] + z[l][i - 1, j, k] +
+                       z[l][i, j + 1, k] + z[l][i, j - 1, k] +
+                       z[l][i, j, k + 1] + z[l][i, j, k - 1]) / 6.0
 
 
 def apply_preconditioner():
@@ -165,12 +170,12 @@ update_p()
 
 sum[None] = 0.0
 reduce(z[0], r[0], old_zTr)
-print('old_zTr', old_zTr)
+print("old_zTr", old_zTr)
 
 
 @ti.kernel
 def print_rTr():
-    print('rTr', rTr[None])
+    print("rTr", rTr[None])
 
 
 @ti.kernel
@@ -218,7 +223,7 @@ def iterate():
 def loud_sync():
     t = time.time()
     ti.sync()
-    print(f'{time.time() - t:.3f} s (compilation + execution)')
+    print(f"{time.time() - t:.3f} s (compilation + execution)")
 
 
 ti.sync()

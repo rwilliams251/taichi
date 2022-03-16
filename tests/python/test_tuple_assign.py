@@ -7,6 +7,7 @@ from tests import test_utils
 
 @test_utils.test()
 def test_fibonacci():
+
     @ti.kernel
     def ti_fibonacci(n: ti.i32) -> ti.i32:
         a, b = 0, 1

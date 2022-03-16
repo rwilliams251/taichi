@@ -17,6 +17,7 @@ class SNode:
     Arg:
         ptr (pointer): The C++ side SNode pointer.
     """
+
     def __init__(self, ptr):
         self.ptr = ptr
 
@@ -56,7 +57,7 @@ class SNode:
     def _hash(axes, dimensions):
         # original code is #def hash(self,axes, dimensions) without #@staticmethod   before fix pylint R0201
         """Not supported."""
-        raise RuntimeError('hash not yet supported')
+        raise RuntimeError("hash not yet supported")
         # if isinstance(dimensions, int):
         #     dimensions = [dimensions] * len(axes)
         # return SNode(self.ptr.hash(axes, dimensions,
@@ -150,7 +151,7 @@ class SNode:
                 for x in arg:
                     self.place(x, offset=offset)
             else:
-                raise ValueError(f'{arg} cannot be placed')
+                raise ValueError(f"{arg} cannot be placed")
         if shared_exponent:
             self.ptr.end_shared_exp_placement()
         return self
@@ -289,28 +290,30 @@ class SNode:
             c.deactivate_all()
         SNodeType = _ti_core.SNodeType
         if self.ptr.type == SNodeType.pointer or self.ptr.type == SNodeType.bitmasked:
-            from taichi._kernels import \
-                snode_deactivate  # pylint: disable=C0415
+            from taichi._kernels import snode_deactivate  # pylint: disable=C0415
+
             snode_deactivate(self)
         if self.ptr.type == SNodeType.dynamic:
             # Note that dynamic nodes are different from other sparse nodes:
             # instead of deactivating each element, we only need to deactivate
             # its parent, whose linked list of chunks of elements will be deleted.
-            from taichi._kernels import \
-                snode_deactivate_dynamic  # pylint: disable=C0415
+            from taichi._kernels import (
+                snode_deactivate_dynamic,  # pylint: disable=C0415
+            )
+
             snode_deactivate_dynamic(self)
 
     def __repr__(self):
-        type_ = str(self.ptr.type)[len('SNodeType.'):]
-        return f'<ti.SNode of type {type_}>'
+        type_ = str(self.ptr.type)[len("SNodeType."):]
+        return f"<ti.SNode of type {type_}>"
 
     def __str__(self):
         # ti.root.dense(ti.i, 3).dense(ti.jk, (4, 5)).place(x)
         # ti.root => dense [3] => dense [3, 4, 5] => place [3, 4, 5]
-        type_ = str(self.ptr.type)[len('SNodeType.'):]
+        type_ = str(self.ptr.type)[len("SNodeType."):]
         shape = str(list(self.shape))
         parent = str(self.parent())
-        return f'{parent} => {type_} {shape}'
+        return f"{parent} => {type_} {shape}"
 
     def __eq__(self, other):
         return self.ptr == other.ptr
@@ -445,6 +448,12 @@ def get_addr(f, indices):
 
 
 __all__ = [
-    'activate', 'append', 'deactivate', 'get_addr', 'is_active', 'length',
-    'rescale_index', "SNode"
+    "activate",
+    "append",
+    "deactivate",
+    "get_addr",
+    "is_active",
+    "length",
+    "rescale_index",
+    "SNode",
 ]

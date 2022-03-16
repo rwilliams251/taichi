@@ -14,9 +14,9 @@ def _eigen_vector_equal(v1, v2, tol):
         try:
             np.testing.assert_allclose(v1, v2, atol=tol, rtol=tol)
         except AssertionError:
-            assert np.allclose(v1, -v2, atol=tol, rtol=tol) or np.allclose(
-                v1, 1.j * v2, atol=tol, rtol=tol) or np.allclose(
-                    v1, -1.j * v2, atol=tol, rtol=tol)
+            assert (np.allclose(v1, -v2, atol=tol, rtol=tol)
+                    or np.allclose(v1, 1.0j * v2, atol=tol, rtol=tol)
+                    or np.allclose(v1, -1.0j * v2, atol=tol, rtol=tol))
 
 
 def _test_eig2x2_real(dt):
@@ -65,8 +65,8 @@ def _test_eig2x2_complex(dt):
     v_np, w_np = np.linalg.eig(A.to_numpy().astype(dtype))
     v_ti = v.to_numpy().astype(dtype)
     w_ti = w.to_numpy().astype(dtype)
-    v_ti_complex = v_ti[:, 0] + v_ti[:, 1] * 1.j
-    w_ti_complex = w_ti[0::2, :] + w_ti[1::2, :] * 1.j
+    v_ti_complex = v_ti[:, 0] + v_ti[:, 1] * 1.0j
+    w_ti_complex = w_ti[0::2, :] + w_ti[1::2, :] * 1.0j
 
     # sort by eigenvalues
     idx_np = np.argsort(v_np)

@@ -24,7 +24,7 @@ def get_field_info(field):
     info.dtype = field.dtype
     info.snode = field.snode.ptr
 
-    if hasattr(field, 'n'):
+    if hasattr(field, "n"):
         info.field_type = _ti_core.FieldType.Matrix
         info.matrix_rows = field.n
         info.matrix_cols = field.m

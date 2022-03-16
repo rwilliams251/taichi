@@ -167,8 +167,13 @@ When this is used, Taichi automatically picks the matching CPU backend.
 """
 # ----------------------
 
-timeline_clear = lambda: impl.get_runtime().prog.timeline_clear()  # pylint: disable=unnecessary-lambda
-timeline_save = lambda fn: impl.get_runtime().prog.timeline_save(fn)  # pylint: disable=unnecessary-lambda
+timeline_clear = (lambda: impl.get_runtime().prog.timeline_clear()
+                  )  # pylint: disable=unnecessary-lambda
+
+
+def timeline_save(fn):
+    return impl.get_runtime().prog.timeline_save(fn)  # pylint: disable=unnecessary-lambda
+
 
 # Legacy API
 type_factory_ = _ti_core.get_type_factory_instance()
@@ -217,6 +222,7 @@ def reset():
 
 
 class _EnvironmentConfigurator:
+
     def __init__(self, kwargs, _cfg):
         self.cfg = _cfg
         self.kwargs = kwargs
@@ -230,8 +236,8 @@ class _EnvironmentConfigurator:
         # TI_ASYNC=   : no effect
         # TI_ASYNC=0  : False
         # TI_ASYNC=1  : True
-        name = 'TI_' + key.upper()
-        value = os.environ.get(name, '')
+        name = "TI_" + key.upper()
+        value = os.environ.get(name, "")
         if len(value):
             self[key] = _cast(value)
             if key in self.kwargs:
@@ -257,29 +263,29 @@ class _EnvironmentConfigurator:
 class _SpecialConfig:
     # like CompileConfig in C++, this is the configurations that belong to other submodules
     def __init__(self):
-        self.log_level = 'info'
+        self.log_level = "info"
         self.gdb_trigger = False
         self.short_circuit_operators = False
 
 
 def prepare_sandbox():
-    '''
+    """
     Returns a temporary directory, which will be automatically deleted on exit.
     It may contain the taichi_core shared object or some misc. files.
-    '''
-    tmp_dir = tempfile.mkdtemp(prefix='taichi-')
+    """
+    tmp_dir = tempfile.mkdtemp(prefix="taichi-")
     atexit.register(shutil.rmtree, tmp_dir)
-    print(f'[Taichi] preparing sandbox at {tmp_dir}')
-    os.mkdir(os.path.join(tmp_dir, 'runtime/'))
+    print(f"[Taichi] preparing sandbox at {tmp_dir}")
+    os.mkdir(os.path.join(tmp_dir, "runtime/"))
     return tmp_dir
 
 
 def check_require_version(require_version):
-    '''
+    """
     Check if installed version meets the requirements.
     Allow to specify <major>.<minor>.<patch>.<hash>.
     <patch>.<hash> is optional. If not match, raise an exception.
-    '''
+    """
     # Extract version number part (i.e. toss any revision / hash parts).
     version_number_str = require_version
     for c_idx, c in enumerate(require_version):
@@ -296,8 +302,9 @@ def check_require_version(require_version):
         if len(version_number_tuple) > 2:
             patch = version_number_tuple[2]
     except:
-        raise Exception("The require_version should be formatted following PEP 440, " \
-            "and inlucdes major, minor, and patch number, " \
+        raise Exception(
+            "The require_version should be formatted following PEP 440, "
+            "and inlucdes major, minor, and patch number, "
             "e.g., major.minor.patch.") from None
     # Get installed version
     versions = [
@@ -315,13 +322,15 @@ def check_require_version(require_version):
         )
 
 
-def init(arch=None,
-         default_fp=None,
-         default_ip=None,
-         _test_mode=False,
-         enable_fallback=True,
-         require_version=None,
-         **kwargs):
+def init(
+    arch=None,
+    default_fp=None,
+    default_ip=None,
+    _test_mode=False,
+    enable_fallback=True,
+    require_version=None,
+    **kwargs,
+):
     """Initializes the Taichi runtime.
 
     This should always be the entry point of your Taichi program. Most
@@ -371,13 +380,13 @@ def init(arch=None,
             _ti_core.warn(
                 f'ti.init argument "default_fp" overridden by environment variable TI_DEFAULT_FP={env_default_fp}'
             )
-        if env_default_fp == '32':
+        if env_default_fp == "32":
             default_fp = f32
-        elif env_default_fp == '64':
+        elif env_default_fp == "64":
             default_fp = f64
         elif env_default_fp is not None:
             raise ValueError(
-                f'Invalid TI_DEFAULT_FP={env_default_fp}, should be 32 or 64')
+                f"Invalid TI_DEFAULT_FP={env_default_fp}, should be 32 or 64")
 
     env_default_ip = os.environ.get("TI_DEFAULT_IP")
     if env_default_ip:
@@ -385,13 +394,13 @@ def init(arch=None,
             _ti_core.warn(
                 f'ti.init argument "default_ip" overridden by environment variable TI_DEFAULT_IP={env_default_ip}'
             )
-        if env_default_ip == '32':
+        if env_default_ip == "32":
             default_ip = i32
-        elif env_default_ip == '64':
+        elif env_default_ip == "64":
             default_ip = i64
         elif env_default_ip is not None:
             raise ValueError(
-                f'Invalid TI_DEFAULT_IP={env_default_ip}, should be 32 or 64')
+                f"Invalid TI_DEFAULT_IP={env_default_ip}, should be 32 or 64")
 
     if default_fp is not None:
         impl.get_runtime().set_default_fp(default_fp)
@@ -399,13 +408,13 @@ def init(arch=None,
         impl.get_runtime().set_default_ip(default_ip)
 
     # submodule configurations (spec_cfg):
-    env_spec.add('log_level', str)
-    env_spec.add('gdb_trigger')
-    env_spec.add('short_circuit_operators')
+    env_spec.add("log_level", str)
+    env_spec.add("gdb_trigger")
+    env_spec.add("short_circuit_operators")
 
     # compiler configurations (ti.cfg):
     for key in dir(cfg):
-        if key in ['arch', 'default_fp', 'default_ip']:
+        if key in ["arch", "default_fp", "default_ip"]:
             continue
         _cast = type(getattr(cfg, key))
         if _cast is bool:
@@ -422,19 +431,19 @@ def init(arch=None,
     # dispatch configurations that are not in ti.cfg:
     if not _test_mode:
         _ti_core.set_core_trigger_gdb_when_crash(spec_cfg.gdb_trigger)
-        impl.get_runtime().short_circuit_operators = \
-            spec_cfg.short_circuit_operators
+        impl.get_runtime(
+        ).short_circuit_operators = spec_cfg.short_circuit_operators
         _logging.set_logging_level(spec_cfg.log_level.lower())
 
     # select arch (backend):
-    env_arch = os.environ.get('TI_ARCH')
+    env_arch = os.environ.get("TI_ARCH")
     if env_arch is not None:
-        _logging.info(f'Following TI_ARCH setting up for arch={env_arch}')
+        _logging.info(f"Following TI_ARCH setting up for arch={env_arch}")
         arch = _ti_core.arch_from_name(env_arch)
     cfg.arch = adaptive_arch_select(arch, enable_fallback, cfg.use_gles)
     if cfg.arch == cc:
         _ti_core.set_tmp_dir(locale_encode(prepare_sandbox()))
-    print(f'[Taichi] Starting on arch={_ti_core.arch_name(cfg.arch)}')
+    print(f"[Taichi] Starting on arch={_ti_core.arch_name(cfg.arch)}")
 
     # user selected visible device
     visible_device = os.environ.get("TI_VISIBLE_DEVICE")
@@ -449,7 +458,7 @@ def init(arch=None,
     # create a new program:
     impl.get_runtime().create_program()
 
-    _logging.trace('Materializing runtime...')
+    _logging.trace("Materializing runtime...")
     impl.get_runtime().prog.materialize_runtime()
 
     impl._root_fb = _snode.FieldsBuilder()
@@ -523,8 +532,7 @@ def _serialize():
 
 
 def _block_dim(dim):
-    """Set the number of threads in a block to `dim`.
-    """
+    """Set the number of threads in a block to `dim`."""
     get_runtime().prog.current_ast_builder().block_dim(dim)
 
 
@@ -580,23 +588,23 @@ def Tape(loss, clear_gradients=True):
     impl.get_runtime().materialize()
     if len(loss.shape) != 0:
         raise RuntimeError(
-            'The loss of `Tape` must be a 0-D field, i.e. scalar')
+            "The loss of `Tape` must be a 0-D field, i.e. scalar")
     if not loss.snode.ptr.has_grad():
         raise RuntimeError(
-            'Gradients of loss are not allocated, please use ti.field(..., needs_grad=True)'
-            ' for all fields that are required by autodiff.')
+            "Gradients of loss are not allocated, please use ti.field(..., needs_grad=True)"
+            " for all fields that are required by autodiff.")
     if clear_gradients:
         clear_all_gradients()
 
     from taichi._kernels import clear_loss  # pylint: disable=C0415
+
     clear_loss(loss)
 
     return impl.get_runtime().get_tape(loss)
 
 
 def clear_all_gradients():
-    """Set the gradients of all fields to zero.
-    """
+    """Set the gradients of all fields to zero."""
     impl.get_runtime().materialize()
 
     def visit(node):
@@ -611,8 +619,8 @@ def clear_all_gradients():
 
         places = tuple(places)
         if places:
-            from taichi._kernels import \
-                clear_gradients  # pylint: disable=C0415
+            from taichi._kernels import clear_gradients  # pylint: disable=C0415
+
             clear_gradients(places)
 
     for root_fb in _snode.FieldsBuilder._finalized_roots():
@@ -663,8 +671,8 @@ def adaptive_arch_select(arch, enable_fallback, use_gles):
         if is_arch_supported(a, use_gles):
             return a
     if not enable_fallback:
-        raise RuntimeError(f'Arch={arch} is not supported')
-    _logging.warn(f'Arch={arch} is not supported, falling back to CPU')
+        raise RuntimeError(f"Arch={arch} is not supported")
+    _logging.warn(f"Arch={arch} is not supported, falling back to CPU")
     return cpu
 
 
@@ -673,10 +681,44 @@ def get_host_arch_list():
 
 
 __all__ = [
-    'i', 'ij', 'ijk', 'ijkl', 'ijl', 'ik', 'ikl', 'il', 'j', 'jk', 'jkl', 'jl',
-    'k', 'kl', 'l', 'x86_64', 'x64', 'dx11', 'wasm', 'arm64', 'cc', 'cpu',
-    'cuda', 'gpu', 'metal', 'opengl', 'vulkan', 'extension', 'loop_config',
-    'global_thread_idx', 'Tape', 'assume_in_range', 'block_local',
-    'cache_read_only', 'clear_all_gradients', 'init', 'mesh_local',
-    'no_activate', 'reset', 'mesh_patch_idx'
+    "i",
+    "ij",
+    "ijk",
+    "ijkl",
+    "ijl",
+    "ik",
+    "ikl",
+    "il",
+    "j",
+    "jk",
+    "jkl",
+    "jl",
+    "k",
+    "kl",
+    "l",
+    "x86_64",
+    "x64",
+    "dx11",
+    "wasm",
+    "arm64",
+    "cc",
+    "cpu",
+    "cuda",
+    "gpu",
+    "metal",
+    "opengl",
+    "vulkan",
+    "extension",
+    "loop_config",
+    "global_thread_idx",
+    "Tape",
+    "assume_in_range",
+    "block_local",
+    "cache_read_only",
+    "clear_all_gradients",
+    "init",
+    "mesh_local",
+    "no_activate",
+    "reset",
+    "mesh_patch_idx",
 ]

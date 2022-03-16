@@ -10,6 +10,7 @@ from taichi.types.primitive_types import integer_types, real_types
 # Scalar, basic data type
 class Expr(TaichiOperations):
     """A Python-side Expr wrapper, whose member variable `ptr` is an instance of C++ Expr class. A C++ Expr object contains member variable `expr` which holds an instance of C++ Expression class."""
+
     def __init__(self, *args, tb=None, dtype=None):
         self.tb = tb
         if len(args) == 1:
@@ -20,8 +21,8 @@ class Expr(TaichiOperations):
                 self.tb = args[0].tb
             elif is_taichi_class(args[0]):
                 raise TaichiTypeError(
-                    'Cannot initialize scalar expression from '
-                    f'taichi class: {type(args[0])}')
+                    "Cannot initialize scalar expression from "
+                    f"taichi class: {type(args[0])}")
             else:
                 # assume to be constant
                 arg = args[0]
@@ -42,10 +43,10 @@ class Expr(TaichiOperations):
         return self.ptr.get_raw_address()
 
     def __str__(self):
-        return '<ti.Expr>'
+        return "<ti.Expr>"
 
     def __repr__(self):
-        return '<ti.Expr>'
+        return "<ti.Expr>"
 
 
 def _check_in_range(npty, val):
@@ -54,7 +55,7 @@ def _check_in_range(npty, val):
         # This isn't the case we want to deal with: |val| does't fall into the valid range of either
         # the signed or the unsigned type.
         raise TaichiTypeError(
-            f'Constant {val} has exceeded the range of {to_taichi_type(npty)}: [{iif.min}, {iif.max}]'
+            f"Constant {val} has exceeded the range of {to_taichi_type(npty)}: [{iif.min}, {iif.max}]"
         )
 
 
@@ -63,7 +64,7 @@ def _clamp_unsigned_to_range(npty, val):
     iif = np.iinfo(npty)
     if iif.min <= val <= iif.max:
         return val
-    cap = (1 << iif.bits)
+    cap = 1 << iif.bits
     assert 0 <= val < cap
     new_val = val - cap
     return new_val
@@ -75,7 +76,7 @@ def make_constant_expr(val, dtype):
         ).default_ip if dtype is None else dtype
         if constant_dtype not in integer_types:
             raise TaichiTypeError(
-                'Integer literals must be annotated with a integer type. For type casting, use `ti.cast`.'
+                "Integer literals must be annotated with a integer type. For type casting, use `ti.cast`."
             )
         _check_in_range(to_numpy_type(constant_dtype), val)
         return Expr(
@@ -86,21 +87,22 @@ def make_constant_expr(val, dtype):
         ).default_fp if dtype is None else dtype
         if constant_dtype not in real_types:
             raise TaichiTypeError(
-                'Floating-point literals must be annotated with a floating-point type. For type casting, use `ti.cast`.'
+                "Floating-point literals must be annotated with a floating-point type. For type casting, use `ti.cast`."
             )
         return Expr(_ti_core.make_const_expr_fp(constant_dtype, val))
-    raise TaichiTypeError(f'Invalid constant scalar data type: {type(val)}')
+    raise TaichiTypeError(f"Invalid constant scalar data type: {type(val)}")
 
 
 def make_var_list(size):
     exprs = []
     for _ in range(size):
-        exprs.append(_ti_core.make_id_expr(''))
+        exprs.append(_ti_core.make_id_expr(""))
     return exprs
 
 
 def make_expr_group(*exprs):
     from taichi.lang.matrix import Matrix  # pylint: disable=C0415
+
     if len(exprs) == 1:
         if isinstance(exprs[0], (list, tuple)):
             exprs = exprs[0]

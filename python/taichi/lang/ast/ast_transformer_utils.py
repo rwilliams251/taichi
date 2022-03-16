@@ -5,14 +5,18 @@ from enum import Enum
 from sys import version_info
 from textwrap import TextWrapper
 
-from taichi.lang.exception import (TaichiCompilationError, TaichiNameError,
-                                   TaichiSyntaxError,
-                                   handle_exception_from_cpp)
+from taichi.lang.exception import (
+    TaichiCompilationError,
+    TaichiNameError,
+    TaichiSyntaxError,
+    handle_exception_from_cpp,
+)
 
 
 class Builder:
+
     def __call__(self, ctx, node):
-        method = getattr(self, 'build_' + node.__class__.__name__, None)
+        method = getattr(self, "build_" + node.__class__.__name__, None)
         try:
             if method is None:
                 error_msg = f'Unsupported node "{node.__class__.__name__}"'
@@ -31,6 +35,7 @@ class Builder:
 
 
 class VariableScopeGuard:
+
     def __init__(self, scopes):
         self.scopes = scopes
 
@@ -42,11 +47,13 @@ class VariableScopeGuard:
 
 
 class StaticScopeStatus:
+
     def __init__(self):
         self.is_in_static_scope = False
 
 
 class StaticScopeGuard:
+
     def __init__(self, status):
         self.status = status
 
@@ -59,11 +66,13 @@ class StaticScopeGuard:
 
 
 class NonStaticControlFlowStatus:
+
     def __init__(self):
         self.is_in_non_static_control_flow = False
 
 
 class NonStaticControlFlowGuard:
+
     def __init__(self, status):
         self.status = status
 
@@ -82,12 +91,14 @@ class LoopStatus(Enum):
 
 
 class LoopScopeAttribute:
+
     def __init__(self, is_static):
         self.is_static = is_static
         self.status = LoopStatus.Normal
 
 
 class LoopScopeGuard:
+
     def __init__(self, scopes, non_static_guard=None):
         self.scopes = scopes
         self.non_static_guard = non_static_guard
@@ -104,18 +115,21 @@ class LoopScopeGuard:
 
 
 class ASTTransformerContext:
-    def __init__(self,
-                 excluded_parameters=(),
-                 is_kernel=True,
-                 func=None,
-                 arg_features=None,
-                 global_vars=None,
-                 argument_data=None,
-                 file=None,
-                 src=None,
-                 start_lineno=None,
-                 ast_builder=None,
-                 is_real_function=False):
+
+    def __init__(
+        self,
+        excluded_parameters=(),
+        is_kernel=True,
+        func=None,
+        arg_features=None,
+        global_vars=None,
+        argument_data=None,
+        file=None,
+        src=None,
+        start_lineno=None,
+        ast_builder=None,
+        is_real_function=False,
+    ):
         self.func = func
         self.local_scopes = []
         self.loop_scopes = []
@@ -130,7 +144,7 @@ class ASTTransformerContext:
         self.src = src
         self.indent = 0
         for c in self.src[0]:
-            if c == ' ':
+            if c == " ":
                 self.indent += 1
             else:
                 break
@@ -224,15 +238,15 @@ class ASTTransformerContext:
         wrapper = TextWrapper(width=80)
 
         def gen_line(code, hint):
-            hint += ' ' * (len(code) - len(hint))
+            hint += " " * (len(code) - len(hint))
             code = wrapper.wrap(code)
             hint = wrapper.wrap(hint)
             if not len(code):
                 return "\n\n"
-            return "".join([c + '\n' + h + '\n' for c, h in zip(code, hint)])
+            return "".join([c + "\n" + h + "\n" for c, h in zip(code, hint)])
 
         if node.lineno == node.end_lineno:
-            hint = ' ' * col_offset + '^' * (end_col_offset - col_offset)
+            hint = " " * col_offset + "^" * (end_col_offset - col_offset)
             msg += gen_line(self.src[node.lineno - 1], hint)
         else:
             node_type = node.__class__.__name__
@@ -253,12 +267,12 @@ class ASTTransformerContext:
                         or not self.src[i][first].isprintable()):
                     first += 1
                 if i == node.lineno - 1:
-                    hint = ' ' * col_offset + '^' * (last - col_offset)
+                    hint = " " * col_offset + "^" * (last - col_offset)
                 elif i == node.end_lineno - 1:
-                    hint = ' ' * first + '^' * (end_col_offset - first)
+                    hint = " " * first + "^" * (end_col_offset - first)
                 elif first < last:
-                    hint = ' ' * first + '^' * (last - first)
+                    hint = " " * first + "^" * (last - first)
                 else:
-                    hint = ''
+                    hint = ""
                 msg += gen_line(self.src[i], hint)
         return msg

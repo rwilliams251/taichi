@@ -99,7 +99,7 @@ def attract(pos_x: ti.f32, pos_y: ti.f32):
 
 
 def main():
-    gui = ti.GUI('Explicit Mass Spring System',
+    gui = ti.GUI("Explicit Mass Spring System",
                  res=(512, 512),
                  background_color=0xDDDDDD)
 
@@ -120,21 +120,21 @@ def main():
             elif e.key == ti.GUI.LMB:
                 new_particle(e.pos[0], e.pos[1],
                              int(gui.is_pressed(ti.GUI.SHIFT)))
-            elif e.key == 'c':
+            elif e.key == "c":
                 num_particles[None] = 0
                 rest_length.fill(0)
-            elif e.key == 'y':
-                if gui.is_pressed('Shift'):
+            elif e.key == "y":
+                if gui.is_pressed("Shift"):
                     spring_Y[None] /= 1.1
                 else:
                     spring_Y[None] *= 1.1
-            elif e.key == 'd':
-                if gui.is_pressed('Shift'):
+            elif e.key == "d":
+                if gui.is_pressed("Shift"):
                     drag_damping[None] /= 1.1
                 else:
                     drag_damping[None] *= 1.1
-            elif e.key == 'x':
-                if gui.is_pressed('Shift'):
+            elif e.key == "x":
+                if gui.is_pressed("Shift"):
                     dashpot_damping[None] /= 1.1
                 else:
                     dashpot_damping[None] *= 1.1
@@ -162,24 +162,30 @@ def main():
             gui.circle(pos=X[i], color=c, radius=5)
 
         gui.text(
-            content=
-            f'Left click: add mass point (with shift to fix); Right click: attract',
+            content=f"Left click: add mass point (with shift to fix); Right click: attract",
             pos=(0, 0.99),
-            color=0x0)
-        gui.text(content=f'C: clear all; Space: pause',
+            color=0x0,
+        )
+        gui.text(content=f"C: clear all; Space: pause",
                  pos=(0, 0.95),
                  color=0x0)
-        gui.text(content=f'Y: Spring Young\'s modulus {spring_Y[None]:.1f}',
-                 pos=(0, 0.9),
-                 color=0x0)
-        gui.text(content=f'D: Drag damping {drag_damping[None]:.2f}',
-                 pos=(0, 0.85),
-                 color=0x0)
-        gui.text(content=f'X: Dashpot damping {dashpot_damping[None]:.2f}',
-                 pos=(0, 0.8),
-                 color=0x0)
+        gui.text(
+            content=f"Y: Spring Young's modulus {spring_Y[None]:.1f}",
+            pos=(0, 0.9),
+            color=0x0,
+        )
+        gui.text(
+            content=f"D: Drag damping {drag_damping[None]:.2f}",
+            pos=(0, 0.85),
+            color=0x0,
+        )
+        gui.text(
+            content=f"X: Dashpot damping {dashpot_damping[None]:.2f}",
+            pos=(0, 0.8),
+            color=0x0,
+        )
         gui.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

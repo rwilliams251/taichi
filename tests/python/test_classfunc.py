@@ -6,8 +6,10 @@ from tests import test_utils
 
 @test_utils.test(arch=get_host_arch_list())
 def test_classfunc():
+
     @ti.data_oriented
     class Foo:
+
         def __init__(self):
             self.val = ti.Matrix.field(n=3, m=3, dtype=ti.f32, shape=3)
 

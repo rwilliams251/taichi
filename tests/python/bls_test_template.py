@@ -24,9 +24,14 @@ def bls_test_template(dim,
     grid_size = [N // bs[i] for i in range(dim)]
 
     if dense:
-        create_block = lambda: ti.root.dense(index, grid_size)
+
+        def create_block():
+            return ti.root.dense(index, grid_size)
+
     else:
-        create_block = lambda: ti.root.pointer(index, grid_size)
+
+        def create_block():
+            return ti.root.pointer(index, grid_size)
 
     if scatter:
         block = create_block()
@@ -93,7 +98,7 @@ def bls_test_template(dim,
     def check():
         for I in ti.grouped(y2):
             if y[I] != y2[I]:
-                print('check failed', I, y[I], y2[I])
+                print("check failed", I, y[I], y2[I])
                 mismatch[None] = 1
 
     check()
@@ -103,14 +108,16 @@ def bls_test_template(dim,
     assert mismatch[None] == 0
 
 
-def bls_particle_grid(N,
-                      ppc=8,
-                      block_size=16,
-                      scatter=True,
-                      benchmark=0,
-                      pointer_level=1,
-                      sort_points=True,
-                      use_offset=True):
+def bls_particle_grid(
+    N,
+    ppc=8,
+    block_size=16,
+    scatter=True,
+    benchmark=0,
+    pointer_level=1,
+    sort_points=True,
+    use_offset=True,
+):
     M = N * N * ppc
 
     m1 = ti.field(ti.f32)
@@ -135,7 +142,7 @@ def bls_particle_grid(N,
     elif pointer_level == 2:
         block = ti.root.pointer(ti.ij, N // block_size // 4).pointer(ti.ij, 4)
     else:
-        raise ValueError('pointer_level must be 1 or 2')
+        raise ValueError("pointer_level must be 1 or 2")
 
     if use_offset:
         grid_offset = (-N // 2, -N // 2)
@@ -159,9 +166,10 @@ def bls_particle_grid(N,
 
     extend = 4
 
-    x_ = [(random.random() * (1 - 2 * bound) + bound + world_offset,
-           random.random() * (1 - 2 * bound) + bound + world_offset)
-          for _ in range(M)]
+    x_ = [(
+        random.random() * (1 - 2 * bound) + bound + world_offset,
+        random.random() * (1 - 2 * bound) + bound + world_offset,
+    ) for _ in range(M)]
     if sort_points:
         x_.sort(key=lambda q: int(q[0] * N) // block_size * N + int(q[1] * N)
                 // block_size)
@@ -176,7 +184,7 @@ def bls_particle_grid(N,
             # coordinates. Otherwise there might be coordinate mismatch due to float-point errors.
             base = ti.Vector([
                 int(ti.floor(x[i][0] * N) - grid_offset[0]),
-                int(ti.floor(x[i][1] * N) - grid_offset[1])
+                int(ti.floor(x[i][1] * N) - grid_offset[1]),
             ])
             base_p = ti.rescale_index(m1, pid, base)
             ti.append(pid.parent(), base_p, i)

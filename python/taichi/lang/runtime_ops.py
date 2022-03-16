@@ -9,4 +9,4 @@ def async_flush():
     impl.get_runtime().prog.async_flush()
 
 
-__all__ = ['sync']
+__all__ = ["sync"]

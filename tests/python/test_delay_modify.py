@@ -4,6 +4,7 @@ from tests import test_utils
 
 @test_utils.test()
 def test_simplify_bug():
+
     @ti.kernel
     def foo() -> ti.types.vector(4, dtype=ti.i32):
         a = ti.Vector([0, 0, 0, 0])

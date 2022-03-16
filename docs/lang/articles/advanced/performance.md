@@ -74,7 +74,7 @@ see the [Fields (advanced)](layout.md) section.
 
 ## Local Storage Optimizations
 
-Taichi comes with a few optimizations that leverage the *fast memory* (e.g. CUDA
+Taichi comes with a few optimizations that leverage the _fast memory_ (e.g. CUDA
 shared memory, L1 cache) for performance optimization. The idea is straightforward:
 Wherever possible, Taichi substitutes the access to the global memroy (slow) with
 that to the local one (fast), and writes the data in the local memory (e.g., CUDA
@@ -108,10 +108,10 @@ What this means is that each physical CUDA thread could handle more than one ite
 That is, the number of threads launched for `sum` can be fewer than the shape of `x`.
 
 One optimization enabled by this strategy is to substitute the global memory access
-with a *thread-local* one. Concretely, instead of directly and atomically adding
+with a _thread-local_ one. Concretely, instead of directly and atomically adding
 `x[i]` into the destination `s[None]`, which resides in the global memory, Taichi
 preallocates a thread-local buffer upon entering the thread, accumulates
-(*non-atomically*) the value of `x` into this buffer, then adds the result of the
+(_non-atomically_) the value of `x` into this buffer, then adds the result of the
 buffer back to `s[None]` atomically before exiting the thread. Assuming each thread
 handles `N` items in `x`, the number of atomic adds is reduced to one-N-th its
 original size.
@@ -124,8 +124,8 @@ Currently, Taichi supports TLS optimization for these reduction operators: `add`
 a benchmark comparison when running a global max reduction on a 1-D Taichi field
 of 8M floats on an Nvidia GeForce RTX 3090 card:
 
-* TLS disabled: 5.2 x 1e3 us
-* TLS enabled: 5.7 x 1e1 us
+- TLS disabled: 5.2 x 1e3 us
+- TLS enabled: 5.7 x 1e1 us
 
 TLS has led to an approximately 100x speedup.
 
@@ -140,8 +140,8 @@ BLS aims to accelerate the stencil computation patterns by leveraging the CUDA
 shared memory. This optimization starts with the users annotating the set of fields
 they would like to cache via `ti.block_local`. Taichi then attempts to figure out
 the accessing range w.r.t the `dense` block of these annotated fields at
-*compile time*. If succeeded, Taichi generates code that first fetches all the
-accessed data in range into a *block local* buffer (CUDA's shared memory), then
+_compile time_. If succeeded, Taichi generates code that first fetches all the
+accessed data in range into a _block local_ buffer (CUDA's shared memory), then
 substitutes all the accesses to the corresponding slots into this buffer.
 
 Here is an example illustrating the usage of BLS. `a` is a sparse field with a

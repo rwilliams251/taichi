@@ -17,15 +17,23 @@ class Window:
         res (Tuple[Int]): resolution (width, height) of the window, in pixels.
         layout (vsync): whether or not vertical sync should be enabled.
     """
+
     def __init__(self, name, res, vsync=False, show_window=True):
         check_ggui_availability()
         package_path = str(pathlib.Path(__file__).parent.parent)
 
         ti_arch = default_cfg().arch
         is_packed = default_cfg().packed
-        self.window = _ti_core.PyWindow(get_runtime().prog, name, res, vsync,
-                                        show_window, package_path, ti_arch,
-                                        is_packed)
+        self.window = _ti_core.PyWindow(
+            get_runtime().prog,
+            name,
+            res,
+            vsync,
+            show_window,
+            package_path,
+            ti_arch,
+            is_packed,
+        )
 
     @property
     def running(self):
@@ -44,7 +52,7 @@ class Window:
         self.window.set_current_event(value)
 
     def get_events(self, tag=None):
-        """ Obtain a list of unprocessed events.
+        """Obtain a list of unprocessed events.
 
         Args:
             tag (str): A tag used for filtering events. If it is None, then all events are returned.
@@ -58,7 +66,7 @@ class Window:
         raise Exception("unrecognized event tag")
 
     def get_event(self, tag=None):
-        """ Returns whether or not a event that matches tag has occurred.
+        """Returns whether or not a event that matches tag has occurred.
 
         If tag is None, then no filters are applied. If this function returns `True`, the `event` property of the window will be set to the corresponding event.
 
@@ -78,12 +86,12 @@ class Window:
         return False
 
     def get_canvas(self):
-        """Returns a canvas handle. See :class`~taichi.ui.canvas.Canvas` """
+        """Returns a canvas handle. See :class`~taichi.ui.canvas.Canvas`"""
         return Canvas(self.window.get_canvas())
 
     @property
     def GUI(self):
-        """Returns a IMGUI handle. See :class`~taichi.ui.ui.Gui` """
+        """Returns a IMGUI handle. See :class`~taichi.ui.ui.Gui`"""
         return Gui(self.window.GUI())
 
     def get_cursor_pos(self):

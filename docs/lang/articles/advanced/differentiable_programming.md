@@ -11,8 +11,9 @@ such as scientific computing and artificial intelligence. For instance,
 a controller optimization system equipped with differentiable simulators converges one to
 four orders of magnitude faster than those using model-free reinforcement learning algorithms.[^1][^2]
 
-[^1]: [End-to-End Differentiable Physics for Learning and Control
-](https://papers.nips.cc/paper/2018/file/842424a1d0595b76ec4fa03c46e8d755-Paper.pdf)
+[^1]:
+    [End-to-End Differentiable Physics for Learning and Control
+    ](https://papers.nips.cc/paper/2018/file/842424a1d0595b76ec4fa03c46e8d755-Paper.pdf)
 
 [^2]: [ChainQueen: A Real-Time Differentiable Physical Simulator for Soft Robotics](https://arxiv.org/pdf/1810.01054.pdf)
 
@@ -74,6 +75,7 @@ with ti.Tape(y):
 
 print('dy/dx =', x.grad[None], ' at x =', x[None])
 ```
+
 ### Case study: gravity simulation
 
 A common problem in physical simulation is that it's usually easy to compute
@@ -375,15 +377,12 @@ x.grad[None] = 0.0
 print(x.grad[None])
 ```
 
-
 ## Extending Taichi Autodiff system
-
 
 Sometimes user may want to override the gradients provided by the Taichi autodiff system. For example, when differentiating a 3D singular value decomposition (SVD) used in an iterative
 solver, it is preferred to use a manually engineered SVD derivative subroutine for better numerical stability.
 Taichi provides two decorators `ti.ad.grad_replaced` and `ti.ad.grad_for` to overwrite the default
 automatic differentiation behavior.
-
 
 Here's a simple example to use customized gradient function in autodiff:
 

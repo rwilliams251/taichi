@@ -4,6 +4,7 @@ from tests import test_utils
 
 @test_utils.test(ti.cpu)
 def test_func_closure():
+
     def my_test():
         a = 32
 

@@ -13,7 +13,7 @@ from tests import test_utils
 @test_utils.test(arch=ti.cc)
 def test_record():
     with tempfile.TemporaryDirectory() as tmpdir:
-        recorded_file = os.path.join(tmpdir, 'record.yml')
+        recorded_file = os.path.join(tmpdir, "record.yml")
         ti.aot.start_recording(recorded_file)
 
         loss = ti.field(float, (), needs_grad=True)
@@ -30,8 +30,8 @@ def test_record():
         assert os.path.exists(recorded_file)
 
         # Make sure kernel info is in the file
-        with open(recorded_file, 'r') as f:
-            assert 'compute_loss' in ''.join(f.readlines())
+        with open(recorded_file, "r") as f:
+            assert "compute_loss" in "".join(f.readlines())
 
 
 @test_utils.test(arch=ti.opengl, max_block_dim=32)
@@ -45,15 +45,15 @@ def test_opengl_max_block_dim():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         m = ti.aot.Module(ti.opengl)
-        m.add_field('density', density)
+        m.add_field("density", density)
         m.add_kernel(init)
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             res = json.load(json_file)
-            gl_file_path = res['aot_data']['kernels']['init']['tasks'][0][
-                'source_path']
+            gl_file_path = res["aot_data"]["kernels"]["init"]["tasks"][0][
+                "source_path"]
             with open(gl_file_path) as gl_file:
-                s = 'layout(local_size_x = 32, local_size_y = 1, local_size_z = 1) in;\n'
+                s = "layout(local_size_x = 32, local_size_y = 1, local_size_z = 1) in;\n"
                 assert s in gl_file.readlines()
 
 
@@ -68,14 +68,14 @@ def test_aot_field_range_hint():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         m = ti.aot.Module(ti.opengl)
-        m.add_field('density', density)
+        m.add_field("density", density)
         m.add_kernel(init)
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             res = json.load(json_file)
-            range_hint = res['aot_data']['kernels']['init']['tasks'][0][
-                'range_hint']
-            assert range_hint == '64'
+            range_hint = res["aot_data"]["kernels"]["init"]["tasks"][0][
+                "range_hint"]
+            assert range_hint == "64"
 
 
 @test_utils.test(arch=[ti.opengl, ti.vulkan])
@@ -92,16 +92,16 @@ def test_aot_bind_id():
     with tempfile.TemporaryDirectory() as tmpdir:
         m = ti.aot.Module(ti.lang.impl.current_cfg().arch)
         m.add_kernel(init)
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             res = json.load(json_file)
-            buffer_binds = res['aot_data']['kernels']['init']['tasks'][0][
-                'buffer_binds']
+            buffer_binds = res["aot_data"]["kernels"]["init"]["tasks"][0][
+                "buffer_binds"]
             for buffer_bind in buffer_binds:
-                if buffer_bind['buffer']['type'] == 0:  # Root
-                    assert buffer_bind['binding'] != -1
-                elif buffer_bind['buffer']['type'] == 2:  # Rets
-                    assert buffer_bind['binding'] != -1
+                if buffer_bind["buffer"]["type"] == 0:  # Root
+                    assert buffer_bind["binding"] != -1
+                elif buffer_bind["buffer"]["type"] == 2:  # Rets
+                    assert buffer_bind["binding"] != -1
 
 
 @test_utils.test(arch=ti.opengl)
@@ -116,12 +116,12 @@ def test_aot_ndarray_range_hint():
     with tempfile.TemporaryDirectory() as tmpdir:
         m = ti.aot.Module(ti.opengl)
         m.add_kernel(init, (density, ))
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             res = json.load(json_file)
-            range_hint = res['aot_data']['kernels']['init']['tasks'][0][
-                'range_hint']
-            assert range_hint == 'arg 0'
+            range_hint = res["aot_data"]["kernels"]["init"]["tasks"][0][
+                "range_hint"]
+            assert range_hint == "arg 0"
 
 
 @test_utils.test(arch=ti.opengl)
@@ -132,17 +132,19 @@ def test_element_size_alignment():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         s = ti.aot.Module(ti.lang.impl.current_cfg().arch)
-        s.add_field('a', a)
-        s.add_field('b', b)
-        s.add_field('c', c)
-        s.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        s.add_field("a", a)
+        s.add_field("b", b)
+        s.add_field("c", c)
+        s.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             res = json.load(json_file)
-            offsets = (res['aot_data']['fields'][0]['mem_offset_in_parent'],
-                       res['aot_data']['fields'][1]['mem_offset_in_parent'],
-                       res['aot_data']['fields'][2]['mem_offset_in_parent'])
+            offsets = (
+                res["aot_data"]["fields"][0]["mem_offset_in_parent"],
+                res["aot_data"]["fields"][1]["mem_offset_in_parent"],
+                res["aot_data"]["fields"][2]["mem_offset_in_parent"],
+            )
             assert 0 in offsets and 4 in offsets and 24 in offsets
-            assert res['aot_data']['root_buffer_size'] == 216
+            assert res["aot_data"]["root_buffer_size"] == 216
 
 
 @test_utils.test(arch=[ti.opengl, ti.vulkan])
@@ -157,10 +159,10 @@ def test_save():
     with tempfile.TemporaryDirectory() as tmpdir:
         # note ti.aot.Module(ti.opengl) is no-op according to its docstring.
         m = ti.aot.Module(ti.lang.impl.current_cfg().arch)
-        m.add_field('density', density)
+        m.add_field("density", density)
         m.add_kernel(init)
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             json.load(json_file)
 
 
@@ -176,12 +178,12 @@ def test_save_template_kernel():
     with tempfile.TemporaryDirectory() as tmpdir:
         # note ti.aot.Module(ti.opengl) is no-op according to its docstring.
         m = ti.aot.Module(ti.lang.impl.current_cfg().arch)
-        m.add_field('density', density)
+        m.add_field("density", density)
         with m.add_kernel_template(foo) as kt:
             kt.instantiate(n=6)
             kt.instantiate(n=8)
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             json.load(json_file)
 
 
@@ -194,10 +196,10 @@ def test_non_dense_snode():
     blk.place(x)
     blk.dense(ti.i, n).place(y)
 
-    with pytest.raises(RuntimeError, match='AOT: only supports dense field'):
+    with pytest.raises(RuntimeError, match="AOT: only supports dense field"):
         m = ti.aot.Module(ti.lang.impl.current_cfg().arch)
-        m.add_field('x', x)
-        m.add_field('y', y)
+        m.add_field("x", x)
+        m.add_field("y", y)
 
 
 @test_utils.test(arch=[ti.opengl, ti.vulkan])
@@ -289,8 +291,8 @@ def test_mpm88_aot():
         m.add_field("grid_m", grid_m)
         m.add_kernel(substep)
         m.add_kernel(init)
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             json.load(json_file)
 
 
@@ -306,9 +308,15 @@ def test_opengl_8_ssbo():
     density6 = ti.ndarray(dtype=ti.f32, shape=(4, 4))
 
     @ti.kernel
-    def init(d: ti.i32, density1: ti.any_arr(), density2: ti.any_arr(),
-             density3: ti.any_arr(), density4: ti.any_arr(),
-             density5: ti.any_arr(), density6: ti.any_arr()):
+    def init(
+            d: ti.i32,
+            density1: ti.any_arr(),
+            density2: ti.any_arr(),
+            density3: ti.any_arr(),
+            density4: ti.any_arr(),
+            density5: ti.any_arr(),
+            density6: ti.any_arr(),
+    ):
         for i, j in density1:
             density1[i, j] = d + 1
             density2[i, j] = d + 2
@@ -340,10 +348,17 @@ def test_opengl_exceed_max_ssbo():
     density8 = ti.ndarray(dtype=ti.f32, shape=(n, n))
 
     @ti.kernel
-    def init(d: ti.i32, density1: ti.any_arr(), density2: ti.any_arr(),
-             density3: ti.any_arr(), density4: ti.any_arr(),
-             density5: ti.any_arr(), density6: ti.any_arr(),
-             density7: ti.any_arr(), density8: ti.any_arr()):
+    def init(
+            d: ti.i32,
+            density1: ti.any_arr(),
+            density2: ti.any_arr(),
+            density3: ti.any_arr(),
+            density4: ti.any_arr(),
+            density5: ti.any_arr(),
+            density6: ti.any_arr(),
+            density7: ti.any_arr(),
+            density8: ti.any_arr(),
+    ):
         for i, j in density1:
             density1[i, j] = d + 1
             density2[i, j] = d + 2
@@ -355,8 +370,17 @@ def test_opengl_exceed_max_ssbo():
             density8[i, j] = d + 8
 
     with pytest.raises(RuntimeError):
-        init(0, density1, density2, density3, density4, density5, density6,
-             density7, density8)
+        init(
+            0,
+            density1,
+            density2,
+            density3,
+            density4,
+            density5,
+            density6,
+            density7,
+            density8,
+        )
 
 
 @test_utils.test(arch=[ti.opengl, ti.vulkan])
@@ -422,11 +446,12 @@ def test_mpm99_aot():
                 Jp[p] *= sig[d, d] / new_sig
                 sig[d, d] = new_sig
                 J *= new_sig
-            if material[
-                    p] == 0:  # Reset deformation gradient to avoid numerical instability
+            if (material[p] == 0
+                ):  # Reset deformation gradient to avoid numerical instability
                 F[p] = ti.Matrix.identity(float, 2) * ti.sqrt(J)
             elif material[p] == 2:
-                F[p] = U @ sig @ V.transpose(
+                F[p] = (
+                    U @ sig @ V.transpose()
                 )  # Reconstruct elastic deformation gradient after plasticity
             stress = 2 * mu * (F[p] - U @ V.transpose()) @ F[p].transpose(
             ) + ti.Matrix.identity(float, 2) * la * J * (J - 1)
@@ -450,9 +475,12 @@ def test_mpm99_aot():
                 grid_v[i, j][1] -= dt * 50  # gravity
                 if i < 3 and grid_v[i, j][0] < 0:
                     grid_v[i, j][0] = 0  # Boundary conditions
-                if i > n_grid - 3 and grid_v[i, j][0] > 0: grid_v[i, j][0] = 0
-                if j < 3 and grid_v[i, j][1] < 0: grid_v[i, j][1] = 0
-                if j > n_grid - 3 and grid_v[i, j][1] > 0: grid_v[i, j][1] = 0
+                if i > n_grid - 3 and grid_v[i, j][0] > 0:
+                    grid_v[i, j][0] = 0
+                if j < 3 and grid_v[i, j][1] < 0:
+                    grid_v[i, j][1] = 0
+                if j > n_grid - 3 and grid_v[i, j][1] > 0:
+                    grid_v[i, j][1] = 0
         for p in x:  # grid to particle (G2P)
             base = (x[p] * inv_dx - 0.5).cast(int)
             fx = x[p] * inv_dx - base.cast(float)
@@ -478,7 +506,7 @@ def test_mpm99_aot():
         for i in range(n_particles):
             x[i] = [
                 ti.random() * 0.2 + 0.3 + 0.10 * (i // group_size),
-                ti.random() * 0.2 + 0.05 + 0.32 * (i // group_size)
+                ti.random() * 0.2 + 0.05 + 0.32 * (i // group_size),
             ]
             material[i] = i // group_size  # 0: fluid 1: jelly 2: snow
             v[i] = ti.Matrix([0, 0])
@@ -487,20 +515,20 @@ def test_mpm99_aot():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         m = ti.aot.Module(ti.lang.impl.current_cfg().arch)
-        m.add_field('x', x)
-        m.add_field('v', v)
-        m.add_field('C', C)
-        m.add_field('J', Jp)
-        m.add_field('grid_v', grid_v)
-        m.add_field('grid_m', grid_m)
-        m.add_field('grid_v_int', grid_v_int)
-        m.add_field('grid_m_int', grid_m_int)
-        m.add_field('material', material)
+        m.add_field("x", x)
+        m.add_field("v", v)
+        m.add_field("C", C)
+        m.add_field("J", Jp)
+        m.add_field("grid_v", grid_v)
+        m.add_field("grid_m", grid_m)
+        m.add_field("grid_v_int", grid_v_int)
+        m.add_field("grid_m_int", grid_m_int)
+        m.add_field("material", material)
         m.add_kernel(initialize)
         m.add_kernel(substep)
 
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             json.load(json_file)
 
 
@@ -519,9 +547,14 @@ def test_mpm88_ndarray():
     E = 400
 
     @ti.kernel
-    def substep(x: ti.any_arr(element_dim=1), v: ti.any_arr(element_dim=1),
-                C: ti.any_arr(element_dim=2), J: ti.any_arr(),
-                grid_v: ti.any_arr(element_dim=1), grid_m: ti.any_arr()):
+    def substep(
+            x: ti.any_arr(element_dim=1),
+            v: ti.any_arr(element_dim=1),
+            C: ti.any_arr(element_dim=2),
+            J: ti.any_arr(),
+            grid_v: ti.any_arr(element_dim=1),
+            grid_m: ti.any_arr(),
+    ):
         for p in x:
             base = (x[p] * inv_dx - 0.5).cast(int)
             fx = x[p] * inv_dx - base.cast(float)
@@ -583,6 +616,6 @@ def test_mpm88_ndarray():
         m = ti.aot.Module(ti.opengl)
         m.add_kernel(substep, (x, v, C, J, grid_v, grid_m))
 
-        m.save(tmpdir, '')
-        with open(os.path.join(tmpdir, 'metadata.json')) as json_file:
+        m.save(tmpdir, "")
+        with open(os.path.join(tmpdir, "metadata.json")) as json_file:
             json.load(json_file)

@@ -6,28 +6,28 @@ from taichi._lib import core as _ti_core
 import taichi as ti
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--exp',
-                    choices=['implicit', 'explicit'],
-                    default='implicit')
-parser.add_argument('--dim', type=int, default=3)
-parser.add_argument('--gui', choices=['auto', 'ggui', 'cpu'], default='auto')
-parser.add_argument('place_holder', nargs='*')
+parser.add_argument("--exp",
+                    choices=["implicit", "explicit"],
+                    default="implicit")
+parser.add_argument("--dim", type=int, default=3)
+parser.add_argument("--gui", choices=["auto", "ggui", "cpu"], default="auto")
+parser.add_argument("place_holder", nargs="*")
 args = parser.parse_args()
 
 ti.init(arch=ti.gpu, dynamic_index=True)
 
-if args.gui == 'auto':
+if args.gui == "auto":
     if _ti_core.GGUI_AVAILABLE:
-        args.gui = 'ggui'
+        args.gui = "ggui"
     else:
-        args.gui = 'cpu'
+        args.gui = "cpu"
 
 E, nu = 5e4, 0.0
 mu, la = E / (2 * (1 + nu)), E * nu / ((1 + nu) * (1 - 2 * nu))  # lambda = 0
 density = 1000.0
 dt = 2e-4
 
-if args.exp == 'implicit':
+if args.exp == "implicit":
     dt = 1e-2
 
 n_cube = np.array([5] * 3)
@@ -62,10 +62,10 @@ def set_element(e, I, verts):
 
 @ti.kernel
 def get_vertices():
-    '''
+    """
     This kernel partitions the cube into tetrahedrons.
     Each unit cube is divided into 5 tetrahedrons.
-    '''
+    """
     for I in ti.grouped(ti.ndrange(*(n_cube - 1))):
         e = ((I.x * (n_cube[1] - 1) + I.y) * (n_cube[2] - 1) + I.z) * 5
         for i, j in ti.static(enumerate([0, 3, 5, 6])):
@@ -136,8 +136,8 @@ def matmul_cell(ret: ti.template(), vel: ti.template()):
                 dH = -W_c * dP @ B_c.transpose()
                 for i in range(3):
                     for j in range(3):
-                        tmp = (vel[verts[i]][j] - vel[verts[3]][j])
-                        ret[verts[u]][d] += -dt**2 * dH[j, i] * tmp
+                        tmp = vel[verts[i]][j] - vel[verts[3]][j]
+                        ret[verts[u]][d] += -(dt**2) * dH[j, i] * tmp
 
 
 @ti.kernel
@@ -166,6 +166,7 @@ def get_b():
 
 
 def cg():
+
     def mul(x):
         matmul_cell(mul_ans, x)
         return mul_ans
@@ -189,7 +190,8 @@ def cg():
         add(r0, r0, -alpha, q)
         r_2 = r_2_new
         r_2_new = dot(r0, r0)
-        if r_2_new <= r_2_init * epsilon**2: break
+        if r_2_new <= r_2_init * epsilon**2:
+            break
         beta = r_2_new / r_2
         add(d, r0, beta, d)
     f.fill(0)
@@ -237,8 +239,10 @@ def check(u):
     for i in ti.static(range(3)):
         k = rest % n_cube[2 - i]
         rest = rest // n_cube[2 - i]
-        if k == 0: ans |= (1 << (i * 2))
-        if k == n_cube[2 - i] - 1: ans |= (1 << (i * 2 + 1))
+        if k == 0:
+            ans |= 1 << (i * 2)
+        if k == n_cube[2 - i] - 1:
+            ans |= 1 << (i * 2 + 1)
     return ans
 
 
@@ -272,7 +276,7 @@ def get_indices():
 
 
 def substep():
-    if args.exp == 'explicit':
+    if args.exp == "explicit":
         for i in range(10):
             get_force()
             advect()
@@ -282,12 +286,12 @@ def substep():
     floor_bound()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     get_vertices()
     init()
     get_indices()
 
-    if args.gui == 'ggui':
+    if args.gui == "ggui":
         res = (800, 600)
         window = ti.ui.Window("Implicit FEM", res, vsync=True)
 
@@ -318,7 +322,7 @@ if __name__ == '__main__':
             frame_id += 1
             frame_id = frame_id % 256
             substep()
-            if window.is_pressed('r'):
+            if window.is_pressed("r"):
                 init()
             if window.is_pressed(ti.GUI.ESCAPE):
                 break
@@ -341,13 +345,14 @@ if __name__ == '__main__':
             u, v = x, y * C + z * S
             return np.array([u, v]).swapaxes(0, 1) + 0.5
 
-        gui = ti.GUI('Implicit FEM')
+        gui = ti.GUI("Implicit FEM")
         while gui.running:
             substep()
             if gui.get_event(ti.GUI.PRESS):
-                if gui.event.key in [ti.GUI.ESCAPE, ti.GUI.EXIT]: break
-            if gui.is_pressed('r'):
+                if gui.event.key in [ti.GUI.ESCAPE, ti.GUI.EXIT]:
+                    break
+            if gui.is_pressed("r"):
                 init()
             gui.clear(0x000000)
-            gui.circles(T(x.to_numpy() / 3), radius=1.5, color=0xba543a)
+            gui.circles(T(x.to_numpy() / 3), radius=1.5, color=0xBA543A)
             gui.show()

@@ -22,9 +22,9 @@ def main():
     fill()
     print(a.to_numpy())
 
-    impl.get_runtime().prog.visualize_layout('layout.pdf')
+    impl.get_runtime().prog.visualize_layout("layout.pdf")
 
-    gui = ti.GUI('layout', res=(256, 512), background_color=0xFFFFFF)
+    gui = ti.GUI("layout", res=(256, 512), background_color=0xFFFFFF)
 
     while True:
         for i in range(1, m):
@@ -39,11 +39,14 @@ def main():
                      color=0x000000)
         for i in range(n):
             for j in range(m):
-                gui.text(f'{a[i, j]}', ((i + 0.3) / n, (j + 0.75) / m),
-                         font_size=30,
-                         color=0x0)
+                gui.text(
+                    f"{a[i, j]}",
+                    ((i + 0.3) / n, (j + 0.75) / m),
+                    font_size=30,
+                    color=0x0,
+                )
         gui.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

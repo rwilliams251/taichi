@@ -13,7 +13,7 @@ You also need to install the Vulkan environment: [https://vulkan.lunarg.com/sdk/
 
 A new UI system has been added to Taichi in version `v0.8.0`. The new GUI system uses GPU for rendering, enabling it to be much faster and to render 3d scenes. For these reasons, this new system is sometimes referred to as GGUI. This doc describes the APIs provided.
 
-Apart from this doc, a good way of getting familiarized with GGUI is to look at the examples. Please checkout the examples provided in  [`examples/ggui_examples`](https://github.com/taichi-dev/taichi/tree/master/python/taichi/examples/ggui_examples).
+Apart from this doc, a good way of getting familiarized with GGUI is to look at the examples. Please checkout the examples provided in [`examples/ggui_examples`](https://github.com/taichi-dev/taichi/tree/master/python/taichi/examples/ggui_examples).
 
 ## Creating a window
 
@@ -25,9 +25,9 @@ window = ti.ui.Window('Window Title', (640, 360))
 
 There are three types of objects that can be displayed on a `ti.ui.Window`:
 
-* 2D Canvas, which can be used to draw simple 2D geometries such as circles, triangles, etc.
-* 3D Scene, which can be used to render 3D meshes and particles, with a configurable camera and light sources.
-* Immediate mode GUI components, e.g., buttons, textboxes, etc.
+- 2D Canvas, which can be used to draw simple 2D geometries such as circles, triangles, etc.
+- 3D Scene, which can be used to render 3D meshes and particles, with a configurable camera and light sources.
+- Immediate mode GUI components, e.g., buttons, textboxes, etc.
 
 ## 2D Canvas
 
@@ -36,6 +36,7 @@ There are three types of objects that can be displayed on a `ti.ui.Window`:
 ```python
 canvas = window.get_canvas()
 ```
+
 this retrieves a `Canvas` object that covers the entire window.
 
 ### Drawing on the canvas
@@ -54,14 +55,16 @@ The positions/centers of geometries will be represented as floats between 0 and 
 
 The canvas will be cleared after every frame. You should call these methods within the render loop.
 
-
 ## 3D Scene
 
 ### Creating a scene
+
 ```python
 scene = ti.ui.Scene()
 ```
+
 ### Configuring camera
+
 ```python
 camera = ti.ui.make_camera()
 camera.position(pos)
@@ -71,16 +74,18 @@ camera.projection_mode(mode)
 scene.set_camera(camera)
 ```
 
-
 ### Configuring light sources
+
 #### Adding a point light
+
 ```python
 scene.point_light(pos, color)
 ```
+
 Note that `point_light` method needs to be called every frame. Similar to the `canvas` methods, you should call this within your render loop.
 
-
 ### 3d Geometries
+
 ```python
 scene.mesh(vertices, indices, normals, color, per_vertex_color)
 scene.particles(vertices, radius, color, per_vertex_color)
@@ -97,9 +102,10 @@ If a mesh has `num` triangles, the `indices` should be a 1D scalar field with a 
 The `normals` parameter for `scene.mesh` is optional.
 :::
 
-
 ### Rendering the scene
+
 A scene can be rendered on a canvas.
+
 ```python
 canvas.scene(scene)
 ```
@@ -123,9 +129,11 @@ window.GUI.end()
 ...
 window.show()
 ```
+
 Call this method at the very end of the render loop for each frame.
 
 ## User Input Processing
+
 To obtain the events that have occurred since the previous poll:
 
 ```python
@@ -133,16 +141,17 @@ events = window.get_events()
 ```
 
 Each `event` in `events` is an instance of `ti.ui.Event`. It has the following properties:
-* `event.action`, which could be `ti.ui.PRESS`, `ti.ui.RELEASE`, ...
-* `event.key`, which indicates the key related to this event
+
+- `event.action`, which could be `ti.ui.PRESS`, `ti.ui.RELEASE`, ...
+- `event.key`, which indicates the key related to this event
 
 To obtain the mouse position:
-* `window.get_cursor_pos()`
+
+- `window.get_cursor_pos()`
 
 To check if a specific key is currently pressed:
-* `window.is_pressed(key)`
 
-
+- `window.is_pressed(key)`
 
 Here is an input processing example in GGUI version [`mpm128`](https://github.com/taichi-dev/taichi/blob/master/python/taichi/examples/ggui_examples/mpm128_ggui.py):
 
@@ -167,7 +176,6 @@ while window.running:
         attractor_strength[None] = -1
 ```
 
-
 ## Image I/O
 
 To write the current screen content into an image file:
@@ -178,7 +186,6 @@ window.write_image(filename)
 
 Notice that, when the window is showing, you have to call `window.write_image()` before the `window.show()` call.
 
-
 ## Off-screen rendering
 
 GGUI supports rendering contents off-screen, that is, writing the results into image files without showing the window at all. This is sometimes referred to as "headless" rendering. To enable this mode, initialize the window with the argument `show_window=False`:
@@ -186,4 +193,5 @@ GGUI supports rendering contents off-screen, that is, writing the results into i
 ```python
 window = ti.ui.Window('Window Title', (640, 360), show_window = False)
 ```
+
 Then, you can use `window.write_image()` as normal, and remove the `window.show()` call at the end.

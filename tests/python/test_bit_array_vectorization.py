@@ -26,8 +26,10 @@ def test_vectorized_struct_for():
 
     @ti.kernel
     def init():
-        for i, j in ti.ndrange((boundary_offset, N - boundary_offset),
-                               (boundary_offset, N - boundary_offset)):
+        for i, j in ti.ndrange(
+            (boundary_offset, N - boundary_offset),
+            (boundary_offset, N - boundary_offset),
+        ):
             x[i, j] = ti.random(dtype=ti.i32) % 2
 
     @ti.kernel
@@ -38,8 +40,10 @@ def test_vectorized_struct_for():
 
     @ti.kernel
     def verify():
-        for i, j in ti.ndrange((boundary_offset, N - boundary_offset),
-                               (boundary_offset, N - boundary_offset)):
+        for i, j in ti.ndrange(
+            (boundary_offset, N - boundary_offset),
+            (boundary_offset, N - boundary_offset),
+        ):
             assert y[i, j] == x[i, j]
 
     init()
@@ -71,8 +75,10 @@ def test_offset_load():
 
     @ti.kernel
     def init():
-        for i, j in ti.ndrange((boundary_offset, N - boundary_offset),
-                               (boundary_offset, N - boundary_offset)):
+        for i, j in ti.ndrange(
+            (boundary_offset, N - boundary_offset),
+            (boundary_offset, N - boundary_offset),
+        ):
             x[i, j] = ti.random(dtype=ti.i32) % 2
 
     @ti.kernel
@@ -84,8 +90,10 @@ def test_offset_load():
 
     @ti.kernel
     def verify(dx: ti.template(), dy: ti.template()):
-        for i, j in ti.ndrange((boundary_offset, N - boundary_offset),
-                               (boundary_offset, N - boundary_offset)):
+        for i, j in ti.ndrange(
+            (boundary_offset, N - boundary_offset),
+            (boundary_offset, N - boundary_offset),
+        ):
             assert y[i, j] == x[i + dx, j + dy]
 
     init()
@@ -131,8 +139,10 @@ def test_evolve():
 
     @ti.kernel
     def init():
-        for i, j in ti.ndrange((boundary_offset, N - boundary_offset),
-                               (boundary_offset, N - boundary_offset)):
+        for i, j in ti.ndrange(
+            (boundary_offset, N - boundary_offset),
+            (boundary_offset, N - boundary_offset),
+        ):
             x[i, j] = ti.random(dtype=ti.i32) % 2
 
     @ti.kernel
@@ -148,13 +158,16 @@ def test_evolve():
             num_active_neighbors += ti.cast(x[i + 1, j - 1], ti.u32)
             num_active_neighbors += ti.cast(x[i + 1, j], ti.u32)
             num_active_neighbors += ti.cast(x[i + 1, j + 1], ti.u32)
-            y[i, j] = (num_active_neighbors == 3) | \
-                      ((num_active_neighbors == 2) & (x[i, j] == 1))
+            y[i,
+              j] = (num_active_neighbors == 3) | ((num_active_neighbors == 2) &
+                                                  (x[i, j] == 1))
 
     @ti.kernel
     def evolve_naive(x: ti.template(), y: ti.template()):
-        for i, j in ti.ndrange((boundary_offset, N - boundary_offset),
-                               (boundary_offset, N - boundary_offset)):
+        for i, j in ti.ndrange(
+            (boundary_offset, N - boundary_offset),
+            (boundary_offset, N - boundary_offset),
+        ):
             num_active_neighbors = 0
             num_active_neighbors += ti.cast(x[i - 1, j - 1], ti.u32)
             num_active_neighbors += ti.cast(x[i - 1, j], ti.u32)
@@ -169,8 +182,10 @@ def test_evolve():
 
     @ti.kernel
     def verify():
-        for i, j in ti.ndrange((boundary_offset, N - boundary_offset),
-                               (boundary_offset, N - boundary_offset)):
+        for i, j in ti.ndrange(
+            (boundary_offset, N - boundary_offset),
+            (boundary_offset, N - boundary_offset),
+        ):
             assert y[i, j] == z[i, j]
 
     init()

@@ -1,8 +1,7 @@
 import taichi as ti
 from tests import test_utils
 
-from .fuse_test_template import (template_fuse_dense_x2y2z,
-                                 template_fuse_reduction)
+from .fuse_test_template import template_fuse_dense_x2y2z, template_fuse_reduction
 
 
 @test_utils.test(require=ti.extension.async_mode, async_mode=True)

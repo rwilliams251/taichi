@@ -1,16 +1,16 @@
-export_file = ''  # use '/tmp/mpm3d.ply' for exporting result to disk
-
 import numpy as np
 
 import taichi as ti
 
+export_file = ""  # use '/tmp/mpm3d.ply' for exporting result to disk
+
 ti.init(arch=ti.gpu)
 
-#dim, n_grid, steps, dt = 2, 128, 20, 2e-4
-#dim, n_grid, steps, dt = 2, 256, 32, 1e-4
+# dim, n_grid, steps, dt = 2, 128, 20, 2e-4
+# dim, n_grid, steps, dt = 2, 256, 32, 1e-4
 dim, n_grid, steps, dt = 3, 32, 25, 4e-4
-#dim, n_grid, steps, dt = 3, 64, 25, 2e-4
-#dim, n_grid, steps, dt = 3, 128, 25, 8e-5
+# dim, n_grid, steps, dt = 3, 64, 25, 2e-4
+# dim, n_grid, steps, dt = 3, 128, 25, 8e-5
 
 n_particles = n_grid**dim // 2**(dim - 1)
 dx = 1 / n_grid
@@ -57,8 +57,8 @@ def substep():
         if grid_m[I] > 0:
             grid_v[I] /= grid_m[I]
         grid_v[I][1] -= dt * gravity
-        cond = (I < bound) & (grid_v[I] < 0) | \
-               (I > n_grid - bound) & (grid_v[I] > 0)
+        cond = (I < bound) & (grid_v[I] <
+                              0) | (I > n_grid - bound) & (grid_v[I] > 0)
         grid_v[I] = 0 if cond else grid_v[I]
     ti.block_dim(n_grid)
     for p in x:
@@ -105,7 +105,7 @@ def T(a):
 
 
 init()
-gui = ti.GUI('MPM3D', background_color=0x112F41)
+gui = ti.GUI("MPM3D", background_color=0x112F41)
 while gui.running and not gui.get_event(gui.ESCAPE):
     for s in range(steps):
         substep()
@@ -114,5 +114,5 @@ while gui.running and not gui.get_event(gui.ESCAPE):
         writer = ti.PLYWriter(num_vertices=n_particles)
         writer.add_vertex_pos(pos[:, 0], pos[:, 1], pos[:, 2])
         writer.export_frame(gui.frame, export_file)
-    gui.circles(T(pos), radius=1.5, color=0x66ccff)
+    gui.circles(T(pos), radius=1.5, color=0x66CCFF)
     gui.show()

@@ -223,6 +223,7 @@ def test_ndrange_ast_transform():
 
 @test_utils.test()
 def test_grouped_ndrange_star():
+
     @ti.kernel
     def foo() -> ti.i32:
         ret = 0
@@ -235,6 +236,7 @@ def test_grouped_ndrange_star():
 
 @test_utils.test()
 def test_ndrange_three_arguments():
+
     @ti.kernel
     def foo():
         for i in ti.ndrange((1, 2, 3)):
@@ -242,7 +244,6 @@ def test_ndrange_three_arguments():
 
     with pytest.raises(
             ti.TaichiSyntaxError,
-            match=
-            r"Every argument of ndrange should be a scalar or a tuple/list like \(begin, end\)"
+            match=r"Every argument of ndrange should be a scalar or a tuple/list like \(begin, end\)",
     ):
         foo()

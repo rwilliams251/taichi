@@ -1,11 +1,16 @@
-from .staging_buffer import (copy_colors_to_vbo, copy_vertices_to_vbo,
-                             get_vbo_field, to_u8_rgba)
+from .staging_buffer import (
+    copy_colors_to_vbo,
+    copy_vertices_to_vbo,
+    get_vbo_field,
+    to_u8_rgba,
+)
 from .utils import get_field_info
 
 
 class Canvas:
+
     def __init__(self, canvas) -> None:
-        self.canvas = canvas  #reference to a PyCanvas
+        self.canvas = canvas  # reference to a PyCanvas
 
     def set_background_color(self, color):
         self.canvas.set_background_color(color)
@@ -38,12 +43,14 @@ class Canvas:
         self.canvas.triangles(vbo_info, indices_info, has_per_vertex_color,
                               color)
 
-    def lines(self,
-              vertices,
-              width,
-              indices=None,
-              color=(0.5, 0.5, 0.5),
-              per_vertex_color=None):
+    def lines(
+            self,
+            vertices,
+            width,
+            indices=None,
+            color=(0.5, 0.5, 0.5),
+            per_vertex_color=None,
+    ):
         """Declare a set of 2D lines inside the scene.
 
         Args:

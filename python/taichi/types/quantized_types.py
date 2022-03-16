@@ -5,6 +5,7 @@ from taichi.types.primitive_types import i32
 
 class TypeFactory:
     """A Python-side TypeFactory wrapper."""
+
     def __init__(self):
         self.core = _ti_core.get_type_factory_instance()
 
@@ -60,6 +61,7 @@ class Quant:
 
     For more details, read https://yuanming.taichi.graphics/publication/2021-quantaichi/quantaichi.pdf.
     """
+
     @staticmethod
     def int(bits, signed=False, compute=None):
         """Generates a quantized type for integers.

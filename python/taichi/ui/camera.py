@@ -6,6 +6,7 @@ from .utils import euler_to_vec, vec_to_euler
 
 
 class Camera:
+
     def __init__(self, ptr):
         self.ptr = ptr
 
@@ -64,17 +65,17 @@ class Camera:
         position_change = Vector([0.0, 0.0, 0.0])
         left = self.curr_up.cross(front)
         up = self.curr_up
-        if window.is_pressed('w'):
+        if window.is_pressed("w"):
             position_change = front * movement_speed
-        if window.is_pressed('s'):
+        if window.is_pressed("s"):
             position_change = -front * movement_speed
-        if window.is_pressed('a'):
+        if window.is_pressed("a"):
             position_change = left * movement_speed
-        if window.is_pressed('d'):
+        if window.is_pressed("d"):
             position_change = -left * movement_speed
-        if window.is_pressed('e'):
+        if window.is_pressed("e"):
             position_change = up * movement_speed
-        if window.is_pressed('q'):
+        if window.is_pressed("q"):
             position_change = -up * movement_speed
         self.position(*(self.curr_position + position_change))
         self.lookat(*(self.curr_lookat + position_change))

@@ -59,6 +59,7 @@ def test_simple_2d():
 
 def _test_bls_stencil(*args, **kwargs):
     from .bls_test_template import bls_test_template
+
     bls_test_template(*args, **kwargs)
 
 
@@ -100,10 +101,16 @@ def test_scatter_1d_trivial():
 
 @test_utils.test(require=ti.extension.bls)
 def test_scatter_1d():
-    _test_bls_stencil(1, 128, bs=32, stencil=(
-        (1, ),
-        (0, ),
-    ), scatter=True)
+    _test_bls_stencil(
+        1,
+        128,
+        bs=32,
+        stencil=(
+            (1, ),
+            (0, ),
+        ),
+        scatter=True,
+    )
 
 
 @test_utils.test(require=ti.extension.bls)
@@ -114,8 +121,13 @@ def test_scatter_2d():
 
 @test_utils.test(require=ti.extension.bls)
 def test_multiple_inputs():
-    x, y, z, w, w2 = ti.field(ti.i32), ti.field(ti.i32), ti.field(
-        ti.i32), ti.field(ti.i32), ti.field(ti.i32)
+    x, y, z, w, w2 = (
+        ti.field(ti.i32),
+        ti.field(ti.i32),
+        ti.field(ti.i32),
+        ti.field(ti.i32),
+        ti.field(ti.i32),
+    )
 
     N = 128
     bs = 8
@@ -134,9 +146,8 @@ def test_multiple_inputs():
         if ti.static(bls):
             ti.block_local(x, y, z)
         for i, j in x:
-            w[i,
-              j] = x[i, j - 2] + y[i + 2, j -
-                                   1] + y[i - 1, j] + z[i - 1, j] + z[i + 1, j]
+            w[i, j] = (x[i, j - 2] + y[i + 2, j - 1] + y[i - 1, j] +
+                       z[i - 1, j] + z[i + 1, j])
 
     populate()
     copy(False, w2)

@@ -9,18 +9,20 @@ FRAMES = 100
 
 def test_print_offset():
     from taichi.examples.algorithm.print_offset import fill
+
     fill()
 
 
 def video_print_offset(result_dir):
     from taichi.examples.algorithm.print_offset import a, fill, m, n
+
     video_manager = ti.VideoManager(output_dir=result_dir,
                                     framerate=24,
                                     automatic_build=False)
 
     fill()
 
-    gui = ti.GUI('layout',
+    gui = ti.GUI("layout",
                  res=(256, 512),
                  background_color=0xFFFFFF,
                  show_gui=False)
@@ -38,17 +40,20 @@ def video_print_offset(result_dir):
                      color=0x000000)
         for i in range(n):
             for j in range(m):
-                gui.text(f'{a[i, j]}', ((i + 0.3) / n, (j + 0.75) / m),
-                         font_size=30,
-                         color=0x0)
+                gui.text(
+                    f"{a[i, j]}",
+                    ((i + 0.3) / n, (j + 0.75) / m),
+                    font_size=30,
+                    color=0x0,
+                )
         video_manager.write_frame(gui.get_image())
         gui.clear()
 
     video_manager.make_video(mp4=True, gif=False)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate print_offset video')
-    parser.add_argument('output_directory',
-                        help='output directory of generated video')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate print_offset video")
+    parser.add_argument("output_directory",
+                        help="output directory of generated video")
     video_print_offset(parser.parse_args().output_directory)

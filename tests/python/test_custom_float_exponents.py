@@ -17,8 +17,23 @@ def test_custom_float_unsigned():
     ti.root.bit_struct(num_bits=32).place(x)
 
     tests = [
-        0, 1 / 1024, 1.75 / 1024, 0.25, 0.5, 0.75, 1, 2, 3, 4, 5, 6, 7, 128,
-        256, 512, 1024
+        0,
+        1 / 1024,
+        1.75 / 1024,
+        0.25,
+        0.5,
+        0.75,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        128,
+        256,
+        512,
+        1024,
     ]
 
     assert x[None] == 0
@@ -58,7 +73,7 @@ def test_custom_float_signed():
         assert x[None] == approx(-v, abs=1e-5)
 
 
-@pytest.mark.parametrize('digits_bits', [23, 24])
+@pytest.mark.parametrize("digits_bits", [23, 24])
 @test_utils.test(require=ti.extension.quant)
 def test_custom_float_precision(digits_bits):
     cu24 = ti.types.quantized_types.quant.int(digits_bits, True)
@@ -82,7 +97,7 @@ def test_custom_float_precision(digits_bits):
             assert x[None] == pytest.approx(v, rel=3e-7)
 
 
-@pytest.mark.parametrize('signed', [True, False])
+@pytest.mark.parametrize("signed", [True, False])
 @test_utils.test(require=ti.extension.quant)
 def test_custom_float_truncation(signed):
     cit = ti.types.quantized_types.quant.int(2, signed)

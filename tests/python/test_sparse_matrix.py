@@ -4,7 +4,7 @@ import taichi as ti
 from tests import test_utils
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_builder_deprecated_anno(dtype):
     n = 8
@@ -25,7 +25,7 @@ def test_sparse_matrix_builder_deprecated_anno(dtype):
             assert A[i, j] == i + j
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_builder(dtype):
     n = 8
@@ -46,7 +46,7 @@ def test_sparse_matrix_builder(dtype):
             assert A[i, j] == i + j
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_shape(dtype):
     n, m = 8, 9
@@ -65,7 +65,7 @@ def test_sparse_matrix_shape(dtype):
     assert A.shape() == (n, m)
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_element_access(dtype):
     n = 8
@@ -85,7 +85,7 @@ def test_sparse_matrix_element_access(dtype):
         assert A[i, i] == i
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_element_modify(dtype):
     n = 8
@@ -105,7 +105,7 @@ def test_sparse_matrix_element_modify(dtype):
     assert A[0, 0] == 1024.0
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_addition(dtype):
     n = 8
@@ -119,8 +119,10 @@ def test_sparse_matrix_addition(dtype):
                                              dtype=dtype)
 
     @ti.kernel
-    def fill(Abuilder: ti.types.sparse_matrix_builder(),
-             Bbuilder: ti.types.sparse_matrix_builder()):
+    def fill(
+            Abuilder: ti.types.sparse_matrix_builder(),
+            Bbuilder: ti.types.sparse_matrix_builder(),
+    ):
         for i, j in ti.ndrange(n, n):
             Abuilder[i, j] += i + j
             Bbuilder[i, j] += i - j
@@ -134,7 +136,7 @@ def test_sparse_matrix_addition(dtype):
             assert C[i, j] == 2 * i
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_subtraction(dtype):
     n = 8
@@ -148,8 +150,10 @@ def test_sparse_matrix_subtraction(dtype):
                                              dtype=dtype)
 
     @ti.kernel
-    def fill(Abuilder: ti.types.sparse_matrix_builder(),
-             Bbuilder: ti.types.sparse_matrix_builder()):
+    def fill(
+            Abuilder: ti.types.sparse_matrix_builder(),
+            Bbuilder: ti.types.sparse_matrix_builder(),
+    ):
         for i, j in ti.ndrange(n, n):
             Abuilder[i, j] += i + j
             Bbuilder[i, j] += i - j
@@ -163,7 +167,7 @@ def test_sparse_matrix_subtraction(dtype):
             assert C[i, j] == 2 * j
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_scalar_multiplication(dtype):
     n = 8
@@ -185,7 +189,7 @@ def test_sparse_matrix_scalar_multiplication(dtype):
             assert B[i, j] == 3 * (i + j)
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_transpose(dtype):
     n = 8
@@ -207,7 +211,7 @@ def test_sparse_matrix_transpose(dtype):
             assert B[i, j] == A[j, i]
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_elementwise_multiplication(dtype):
     n = 8
@@ -221,8 +225,10 @@ def test_sparse_matrix_elementwise_multiplication(dtype):
                                              dtype=dtype)
 
     @ti.kernel
-    def fill(Abuilder: ti.types.sparse_matrix_builder(),
-             Bbuilder: ti.types.sparse_matrix_builder()):
+    def fill(
+            Abuilder: ti.types.sparse_matrix_builder(),
+            Bbuilder: ti.types.sparse_matrix_builder(),
+    ):
         for i, j in ti.ndrange(n, n):
             Abuilder[i, j] += i + j
             Bbuilder[i, j] += i - j
@@ -236,7 +242,7 @@ def test_sparse_matrix_elementwise_multiplication(dtype):
             assert C[i, j] == (i + j) * (i - j)
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_multiplication(dtype):
     n = 2
@@ -250,8 +256,10 @@ def test_sparse_matrix_multiplication(dtype):
                                              dtype=dtype)
 
     @ti.kernel
-    def fill(Abuilder: ti.types.sparse_matrix_builder(),
-             Bbuilder: ti.types.sparse_matrix_builder()):
+    def fill(
+            Abuilder: ti.types.sparse_matrix_builder(),
+            Bbuilder: ti.types.sparse_matrix_builder(),
+    ):
         for i, j in ti.ndrange(n, n):
             Abuilder[i, j] += i + j
             Bbuilder[i, j] += i - j
@@ -266,7 +274,7 @@ def test_sparse_matrix_multiplication(dtype):
     assert C[1, 1] == -1.0
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 @test_utils.test(arch=ti.cpu)
 def test_sparse_matrix_nonsymmetric_multiplication(dtype):
     n, k, m = 2, 3, 4
@@ -280,8 +288,10 @@ def test_sparse_matrix_nonsymmetric_multiplication(dtype):
                                              dtype=dtype)
 
     @ti.kernel
-    def fill(Abuilder: ti.types.sparse_matrix_builder(),
-             Bbuilder: ti.types.sparse_matrix_builder()):
+    def fill(
+            Abuilder: ti.types.sparse_matrix_builder(),
+            Bbuilder: ti.types.sparse_matrix_builder(),
+    ):
         for i, j in ti.ndrange(n, k):
             Abuilder[i, j] += i + j
         for i, j in ti.ndrange(k, m):

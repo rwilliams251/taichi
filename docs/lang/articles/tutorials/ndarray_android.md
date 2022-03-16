@@ -12,14 +12,14 @@ Taking a simulation of celestial bodies' orbits as an example, this tutorial wal
 
 ## A definition of Ndarray
 
-Taichi provides a data container called Ndarray.  An Ndarray is a multidimensional container of elements of the same type and size; an element in an Ndarray is virtually a scalar or a tensor.
+Taichi provides a data container called Ndarray. An Ndarray is a multidimensional container of elements of the same type and size; an element in an Ndarray is virtually a scalar or a tensor.
 
 ### Ndarray shape
 
 Ndarray shape defines the Ndarray's layout; element shape defines the element's layout. For example:
 
 - An Ndarray with an Ndarray shape of [2, 1024] and an element shape of [] is an array of 2 x 1,024 = 2,048 scalars.
-- An Ndarray with an Ndarray shape of [128, 128] and an element shape of [2, 4] is an array of  128 x 128 = 16,384 2 x 4 matrices.
+- An Ndarray with an Ndarray shape of [128, 128] and an element shape of [2, 4] is an array of 128 x 128 = 16,384 2 x 4 matrices.
 
 ### Ndarray dimension
 
@@ -32,7 +32,7 @@ The dimension here refers to the number of dimensions of an Ndarray. For example
 
 Each Ndarray has a fixed dimension but gives you the flexibility of changing its shape in accordance with its dimension.
 
-Unlike a field's shape, which requires you to rewrite and recompile your Taichi program once it is changed, an Ndarray's shape can be *dynamically* changed without the need to recompile.
+Unlike a field's shape, which requires you to rewrite and recompile your Taichi program once it is changed, an Ndarray's shape can be _dynamically_ changed without the need to recompile.
 
 Taking the simulation of celestial bodies' orbits as an example, suppose you wish to double the number of your celestial bodies to 2,000:
 
@@ -59,9 +59,7 @@ From Step 2, you are required to come up with your own runtime program. We provi
 
 The following Python script defines a Taichi AOT module for generating and saving the necessary compute shaders (GLES shaders in this case) based on the chosen backend (OpenGL).
 
-> Taichi kernels and compute shaders are *not* one-to-one mapping. Each Taichi kernel can generate multiple compute shaders, the number *usually* comparable to that of the loops in the kernel.
-
-
+> Taichi kernels and compute shaders are _not_ one-to-one mapping. Each Taichi kernel can generate multiple compute shaders, the number _usually_ comparable to that of the loops in the kernel.
 
 ```python
 import taichi as ti
@@ -155,7 +153,7 @@ dir_name = 'nbody_aot'
 m.save(dir_name, '')
 ```
 
-*The necessary compute shaders together with a JSON file appear under the specified directory.*
+_The necessary compute shaders together with a JSON file appear under the specified directory._
 
 ### Parse the generated JSON file
 
@@ -184,7 +182,7 @@ After generating the necessary GLES compute shaders, you need to write your runt
 
   Ndarrays' shape information is organized by their argument index in the `array_args` JSON array: `0` (line 29) corresponds to the `pos` Ndarray, and `1` (line 37) corresponds to the `vel` Ndarray. The argument index is determined by the sequence by which you pass in the Ndarrays when calling `add_kernel()`. See line 53 in the Python script.
 
-  The `pos` Ndarray's shape information in `args_buffer` has an offset of  `64` Bytes in `args_buffer` (line 64). According to line 35 and line 43, the `pos` Ndarray's shape information occupies 96 - 64 = 32 Bytes in `args_buffer`.
+  The `pos` Ndarray's shape information in `args_buffer` has an offset of `64` Bytes in `args_buffer` (line 64). According to line 35 and line 43, the `pos` Ndarray's shape information occupies 96 - 64 = 32 Bytes in `args_buffer`.
 
   :::tip ATTENTION
   The JSON file only specifies the dimension of the corresponding Ndarray (line 30, 38), allowing you to dynamically update an Ndarray's shape in your runtime program.
@@ -253,30 +251,32 @@ After generating the necessary GLES compute shaders, you need to write your runt
   }
 }
 ```
+
 The following provides a detailed description of the keys in the generated JSON file:
 
 `aot_data`: The overarching JSON object.
- - `kernels`: All Taichi kernels.
-	- `$(kernel_name)`: Name of a specific Taichi kernel.
-		- `tasks`: A JSON array of the generated compute shaders.
-			- `name`: Name of a specific compute shader.
-			- `src`: Relative path to the shader file.
-			- `workgroup_size`: N/A
-			- `num_groups`: N/A
-		- `arg_count`: Number of the arguments that the Taichi kernel takes.
-		- `ret_count`: Number of the values that the Taichi kernel returns.
-		- `args_buf_size`: The size of `args_buf` in Bytes.
-		- `ret_buf_size`: The size of `ret_buf` in Bytes.
-		- `scalar_args`: Scalar arguments that the kernel takes.
-		- `arr_args`: Shape information of the Ndarrays in the kernel.
-			- `$(arg_index)`: Argument index of an Ndarray
-				- `field_dim`: The dimension of the Ndarray.
-				- `is_scalar`: Whether the elements in the Ndarray are scalar.
-				- `element_shape`: An `int` array indicating the shape of each element in the Ndarray.
-				- `shape_offset_in_bytes_in_args_buf`: The offset of the Ndarray's shape information in `args_buf`.
-		- `used.arr_arg_to_bind_idx`: A map specifying the SSBO to bind for a given Ndarray. For example, `"1": 5` (line 48) binds the `vel` Ndarray to the binding index `5`.
 
-*Well, we hope you were not overwhelmed with that much information coming in all at once. In the following section, we will revisit the JSON file, as well as provide tables and graphs that help illustrate some of the concepts and notions listed above.*
+- `kernels`: All Taichi kernels.
+  - `$(kernel_name)`: Name of a specific Taichi kernel.
+    - `tasks`: A JSON array of the generated compute shaders.
+      - `name`: Name of a specific compute shader.
+      - `src`: Relative path to the shader file.
+      - `workgroup_size`: N/A
+      - `num_groups`: N/A
+    - `arg_count`: Number of the arguments that the Taichi kernel takes.
+    - `ret_count`: Number of the values that the Taichi kernel returns.
+    - `args_buf_size`: The size of `args_buf` in Bytes.
+    - `ret_buf_size`: The size of `ret_buf` in Bytes.
+    - `scalar_args`: Scalar arguments that the kernel takes.
+    - `arr_args`: Shape information of the Ndarrays in the kernel.
+      - `$(arg_index)`: Argument index of an Ndarray
+        - `field_dim`: The dimension of the Ndarray.
+        - `is_scalar`: Whether the elements in the Ndarray are scalar.
+        - `element_shape`: An `int` array indicating the shape of each element in the Ndarray.
+        - `shape_offset_in_bytes_in_args_buf`: The offset of the Ndarray's shape information in `args_buf`.
+    - `used.arr_arg_to_bind_idx`: A map specifying the SSBO to bind for a given Ndarray. For example, `"1": 5` (line 48) binds the `vel` Ndarray to the binding index `5`.
+
+_Well, we hope you were not overwhelmed with that much information coming in all at once. In the following section, we will revisit the JSON file, as well as provide tables and graphs that help illustrate some of the concepts and notions listed above._
 
 ### Prepare SSBO and shape information
 
@@ -290,13 +290,13 @@ Before executing the GLES compute shaders in your runtime program, you need to g
 
 The following table lists the buffers commonly used in a Taichi program together with their binding indexes:
 
-| **Buffer**    | **Global/kernel-spedific** | **Storing**                                                  | **Binding index** |
-| ------------- | -------------------------- | ------------------------------------------------------------ | ----------------- |
-| `root_buffer` | Global                     | All fields with fixed offsets and of fixed sizes.            | `0`               |
-| `gtmp_buffer` | Global                     | Global temporary data                                        | `1`               |
-| `args_buffer` | Kernel-specific            | Arguments passed to the Taichi kernel <ul><li>Scalar arguments</li> <li>Each Ndarray's shape information:  <ul><li>Shape of the Ndarray</li> <li>Element shape</li></ul></li></ul> | `2`               |
+| **Buffer**    | **Global/kernel-spedific** | **Storing**                                                                                                                                                                       | **Binding index** |
+| ------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `root_buffer` | Global                     | All fields with fixed offsets and of fixed sizes.                                                                                                                                 | `0`               |
+| `gtmp_buffer` | Global                     | Global temporary data                                                                                                                                                             | `1`               |
+| `args_buffer` | Kernel-specific            | Arguments passed to the Taichi kernel <ul><li>Scalar arguments</li> <li>Each Ndarray's shape information: <ul><li>Shape of the Ndarray</li> <li>Element shape</li></ul></li></ul> | `2`               |
 
-1. You *only* need to bind an SSBO for `root_buffer` if your Taichi script uses at least one field. Skip this step if your script does not involve field.
+1. You _only_ need to bind an SSBO for `root_buffer` if your Taichi script uses at least one field. Skip this step if your script does not involve field.
 2. Bind a small SSBO, say an SSBO of 1,024 Bytes, to `1`, the binding index of `gtmp_buffer`.
 3. Bind an SSBO of 64 x 5 = 320 Bytes to `2`, the binding index of `args_buffer`.
 
@@ -323,9 +323,9 @@ Therefore you need to:
 
 #### Fill `args_buffer` with Ndarray shape information
 
-When explaining the JSON file, we mention that each kernel has a dedicated `args_buffer` for storing scalar arguments specified in `scalar_args` and Ndarray shape information in accordance with what `array_args` specifies. `array_args` does not specify the Ndarray shape, therefore the final step in your preparation is to fill `args_buffer` with  each Ndarray's shape information in your runtime program.
+When explaining the JSON file, we mention that each kernel has a dedicated `args_buffer` for storing scalar arguments specified in `scalar_args` and Ndarray shape information in accordance with what `array_args` specifies. `array_args` does not specify the Ndarray shape, therefore the final step in your preparation is to fill `args_buffer` with each Ndarray's shape information in your runtime program.
 
-The typical size of an `args_buffer` is 64 + 64 x 4  Bytes. The first 64 Bytes are reserved for scalar arguments; the remaining buffer is then 64 x 4 Bytes. Each Ndarray is allocated 8 x 4 Bytes for storing its shape information (each has *at most* 8 numbers to indicate its shape information), therefore the remaining buffer can store up to 8 Ndarrays' shape information.
+The typical size of an `args_buffer` is 64 + 64 x 4 Bytes. The first 64 Bytes are reserved for scalar arguments; the remaining buffer is then 64 x 4 Bytes. Each Ndarray is allocated 8 x 4 Bytes for storing its shape information (each has _at most_ 8 numbers to indicate its shape information), therefore the remaining buffer can store up to 8 Ndarrays' shape information.
 
 - If your Ndarray shape is [100, 200] and element dimension [3, 2], then you fill 100, 200, 3, and 2 in the corresponding location.
 - In this case, both `pos` and `vel` have an Ndarray shape of [500] and an element dimension of [2]. Therefore, you fill 500 and 2 in the corresponding locations.
@@ -338,14 +338,12 @@ To perform the rendering (drawing celestial bodies in this case), you are requir
 
 When executing shaders in your runtime program, ensure that you bind SSBOs before executing a Taichi kernel and unbind them when you are done.
 
- Our [example Android Java runtime](https://github.com/taichi-dev/taichi-aot-demo/blob/master/nbody_ndarray/java_runtime/NbodyNdarray.java) does the following:
+Our [example Android Java runtime](https://github.com/taichi-dev/taichi-aot-demo/blob/master/nbody_ndarray/java_runtime/NbodyNdarray.java) does the following:
 
 1. Run the GLES compute shaders in `initialize` once.
 2. For each frame:
    1. Run the GLES compute shaders in `compute_force` 10 times.
    2. Run the vertex and fragment shaders once to do the rendering.
-
-
 
 ## OpenGL-specific Terms & Definitions
 

@@ -38,10 +38,10 @@ def paint_all_pixels(color: ti.f32):
 ti.deactivate_all_snodes()
 activate()
 
-gui = ti.GUI('bitmasked', (n, n))
+gui = ti.GUI("bitmasked", (n, n))
 for frame in range(10000):
     color = math.sin(frame * 0.05) * 0.5 + 0.5
     paint_active_pixels(color)
-    #paint_all_pixels(color)  # try this and compare the difference!
+    # paint_all_pixels(color)  # try this and compare the difference!
     gui.set_image(x)
     gui.show()

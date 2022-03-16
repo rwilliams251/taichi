@@ -2,9 +2,9 @@ from inspect import currentframe, getframeinfo
 from sys import version_info
 
 import pytest
-from tests import test_utils
 
 import taichi as ti
+from tests import test_utils
 
 
 @test_utils.test()
@@ -84,7 +84,7 @@ def test_tab():
         # yapf: disable
         @ti.kernel
         def foo():
-            a(11,	22,	3)
+            a(11, 22, 3)
         foo()
         # yapf: enable
     lineno = frameinfo.lineno
@@ -109,7 +109,8 @@ def test_super_long_line():
         # yapf: disable
         @ti.kernel
         def foo():
-            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(111)
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(
+                111)
         foo()
         # yapf: enable
     lineno = frameinfo.lineno
@@ -132,10 +133,12 @@ bbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(111)
     assert e.value.args[0][:len(msg)] == msg
 
 
-@pytest.mark.skipif(version_info < (3, 8), reason="This is a feature for python>=3.8")
+@pytest.mark.skipif(version_info < (3, 8),
+                    reason="This is a feature for python>=3.8")
 @test_utils.test()
 def test_exception_in_node_with_body():
     frameinfo = getframeinfo(currentframe())
+
     @ti.kernel
     def foo():
         for i in range(1, 2, 3):
@@ -155,4 +158,3 @@ On line {lineno + 3} of file "{file}", in foo:
 Range should have 1 or 2 arguments, found 3"""
     print(e.value.args[0])
     assert e.value.args[0] == msg
-

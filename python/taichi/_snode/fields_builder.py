@@ -33,6 +33,7 @@ class FieldsBuilder:
         #  +-- pointer +-- dense +-- place(y)
         fb.finalize()
     """
+
     def __init__(self):
         self.ptr = _snode_registry.create_root(impl.get_runtime().prog)
         self.root = snode.SNode(self.ptr)
@@ -64,15 +65,21 @@ class FieldsBuilder:
                 """'deactivate_all()' would do nothing if FieldsBuilder is not finalized"""
             )
 
-    def dense(self, indices: Union[Sequence[_Axis], _Axis],
-              dimensions: Union[Sequence[int], int]):
+    def dense(
+        self,
+        indices: Union[Sequence[_Axis], _Axis],
+        dimensions: Union[Sequence[int], int],
+    ):
         """Same as :func:`taichi.lang.snode.SNode.dense`"""
         self._check_not_finalized()
         self.empty = False
         return self.root.dense(indices, dimensions)
 
-    def pointer(self, indices: Union[Sequence[_Axis], _Axis],
-                dimensions: Union[Sequence[int], int]):
+    def pointer(
+        self,
+        indices: Union[Sequence[_Axis], _Axis],
+        dimensions: Union[Sequence[int], int],
+    ):
         """Same as :func:`taichi.lang.snode.SNode.pointer`"""
         self._check_not_finalized()
         self.empty = False
@@ -82,17 +89,22 @@ class FieldsBuilder:
         """Same as :func:`taichi.lang.snode.SNode.hash`"""
         raise NotImplementedError()
 
-    def dynamic(self,
-                index: Union[Sequence[_Axis], _Axis],
-                dimension: Union[Sequence[int], int],
-                chunk_size: Optional[int] = None):
+    def dynamic(
+        self,
+        index: Union[Sequence[_Axis], _Axis],
+        dimension: Union[Sequence[int], int],
+        chunk_size: Optional[int] = None,
+    ):
         """Same as :func:`taichi.lang.snode.SNode.dynamic`"""
         self._check_not_finalized()
         self.empty = False
         return self.root.dynamic(index, dimension, chunk_size)
 
-    def bitmasked(self, indices: Union[Sequence[_Axis], _Axis],
-                  dimensions: Union[Sequence[int], int]):
+    def bitmasked(
+        self,
+        indices: Union[Sequence[_Axis], _Axis],
+        dimensions: Union[Sequence[int], int],
+    ):
         """Same as :func:`taichi.lang.snode.SNode.bitmasked`"""
         self._check_not_finalized()
         self.empty = False
@@ -104,8 +116,12 @@ class FieldsBuilder:
         self.empty = False
         return self.root.bit_struct(num_bits)
 
-    def bit_array(self, indices: Union[Sequence[_Axis], _Axis],
-                  dimensions: Union[Sequence[int], int], num_bits: int):
+    def bit_array(
+        self,
+        indices: Union[Sequence[_Axis], _Axis],
+        dimensions: Union[Sequence[int], int],
+        num_bits: int,
+    ):
         """Same as :func:`taichi.lang.snode.SNode.bit_array`"""
         self._check_not_finalized()
         self.empty = False
@@ -150,4 +166,4 @@ class FieldsBuilder:
 
     def _check_not_finalized(self):
         if self.finalized:
-            raise TaichiRuntimeError('FieldsBuilder finalized')
+            raise TaichiRuntimeError("FieldsBuilder finalized")

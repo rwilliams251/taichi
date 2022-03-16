@@ -33,8 +33,8 @@ def _test_scalar_ndarray(dtype, shape):
     assert x.dtype == dtype
 
 
-@pytest.mark.parametrize('dtype', data_types)
-@pytest.mark.parametrize('shape', ndarray_shapes)
+@pytest.mark.parametrize("dtype", data_types)
+@pytest.mark.parametrize("shape", ndarray_shapes)
 @test_utils.test(arch=get_host_arch_list())
 def test_scalar_ndarray(dtype, shape):
     _test_scalar_ndarray(dtype, shape)
@@ -53,9 +53,9 @@ def _test_vector_ndarray(n, dtype, shape):
     assert x.n == n
 
 
-@pytest.mark.parametrize('n', vector_dims)
-@pytest.mark.parametrize('dtype', data_types)
-@pytest.mark.parametrize('shape', ndarray_shapes)
+@pytest.mark.parametrize("n", vector_dims)
+@pytest.mark.parametrize("dtype", data_types)
+@pytest.mark.parametrize("shape", ndarray_shapes)
 @test_utils.test(arch=get_host_arch_list())
 def test_vector_ndarray(n, dtype, shape):
     _test_vector_ndarray(n, dtype, shape)
@@ -75,15 +75,15 @@ def _test_matrix_ndarray(n, m, dtype, shape):
     assert x.m == m
 
 
-@pytest.mark.parametrize('n,m', matrix_dims)
-@pytest.mark.parametrize('dtype', data_types)
-@pytest.mark.parametrize('shape', ndarray_shapes)
+@pytest.mark.parametrize("n,m", matrix_dims)
+@pytest.mark.parametrize("dtype", data_types)
+@pytest.mark.parametrize("shape", ndarray_shapes)
 @test_utils.test(arch=get_host_arch_list())
 def test_matrix_ndarray(n, m, dtype, shape):
     _test_matrix_ndarray(n, m, dtype, shape)
 
 
-@pytest.mark.parametrize('dtype', [ti.f32, ti.f64])
+@pytest.mark.parametrize("dtype", [ti.f32, ti.f64])
 def test_default_fp_ndarray(dtype):
     ti.init(arch=supported_archs_taichi_ndarray, default_fp=dtype)
 
@@ -92,7 +92,7 @@ def test_default_fp_ndarray(dtype):
     assert x.dtype == impl.get_runtime().default_fp
 
 
-@pytest.mark.parametrize('dtype', [ti.i32, ti.i64])
+@pytest.mark.parametrize("dtype", [ti.i32, ti.i64])
 def test_default_ip_ndarray(dtype):
     ti.init(arch=supported_archs_taichi_ndarray, default_ip=dtype)
 
@@ -347,13 +347,14 @@ def _test_matrix_ndarray_python_scope(layout):
     assert a[4][0, 1] == 1
 
 
-@pytest.mark.parametrize('layout', layouts)
+@pytest.mark.parametrize("layout", layouts)
 @test_utils.test(arch=supported_archs_taichi_ndarray)
 def test_matrix_ndarray_python_scope(layout):
     _test_matrix_ndarray_python_scope(layout)
 
 
 def _test_matrix_ndarray_taichi_scope(layout):
+
     @ti.kernel
     def func(a: ti.any_arr()):
         for i in range(5):
@@ -369,13 +370,14 @@ def _test_matrix_ndarray_taichi_scope(layout):
     assert m[4][0, 1] == 1
 
 
-@pytest.mark.parametrize('layout', layouts)
+@pytest.mark.parametrize("layout", layouts)
 @test_utils.test(arch=supported_archs_taichi_ndarray)
 def test_matrix_ndarray_taichi_scope(layout):
     _test_matrix_ndarray_taichi_scope(layout)
 
 
 def _test_matrix_ndarray_taichi_scope_struct_for(layout):
+
     @ti.kernel
     def func(a: ti.any_arr()):
         for i in a:
@@ -391,13 +393,13 @@ def _test_matrix_ndarray_taichi_scope_struct_for(layout):
     assert m[4][0, 1] == 1
 
 
-@pytest.mark.parametrize('layout', layouts)
+@pytest.mark.parametrize("layout", layouts)
 @test_utils.test(arch=supported_archs_taichi_ndarray)
 def test_matrix_ndarray_taichi_scope_struct_for(layout):
     _test_matrix_ndarray_taichi_scope_struct_for(layout)
 
 
-@pytest.mark.parametrize('layout', layouts)
+@pytest.mark.parametrize("layout", layouts)
 @test_utils.test(arch=supported_archs_taichi_ndarray)
 def test_vector_ndarray_python_scope(layout):
     a = ti.Vector.ndarray(10, ti.i32, 5, layout=layout)
@@ -411,9 +413,10 @@ def test_vector_ndarray_python_scope(layout):
     assert a[4][9] == 9
 
 
-@pytest.mark.parametrize('layout', layouts)
+@pytest.mark.parametrize("layout", layouts)
 @test_utils.test(arch=supported_archs_taichi_ndarray)
 def test_vector_ndarray_taichi_scope(layout):
+
     @ti.kernel
     def func(a: ti.any_arr()):
         for i in range(5):
@@ -433,6 +436,7 @@ def test_vector_ndarray_taichi_scope(layout):
 
 
 def _test_compiled_functions():
+
     @ti.kernel
     def func(a: ti.any_arr(element_dim=1)):
         for i in range(5):
@@ -462,6 +466,7 @@ def test_compiled_functions():
 
 
 def _test_arg_not_match():
+
     @ti.kernel
     def func1(a: ti.any_arr(element_dim=1)):
         pass
@@ -469,8 +474,7 @@ def _test_arg_not_match():
     x = ti.Matrix.ndarray(2, 3, ti.i32, shape=(4, 7))
     with pytest.raises(
             ValueError,
-            match=
-            r'Invalid argument into ti\.any_arr\(\) - required element_dim=1, but .* is provided'
+            match=r"Invalid argument into ti\.any_arr\(\) - required element_dim=1, but .* is provided",
     ):
         func1(x)
 
@@ -481,8 +485,7 @@ def _test_arg_not_match():
     x = ti.Vector.ndarray(2, ti.i32, shape=(4, 7))
     with pytest.raises(
             ValueError,
-            match=
-            r'Invalid argument into ti\.any_arr\(\) - required element_dim=2, but .* is provided'
+            match=r"Invalid argument into ti\.any_arr\(\) - required element_dim=2, but .* is provided",
     ):
         func2(x)
 
@@ -493,8 +496,7 @@ def _test_arg_not_match():
     x = ti.Matrix.ndarray(2, 3, ti.i32, shape=(4, 7), layout=ti.Layout.SOA)
     with pytest.raises(
             ValueError,
-            match=
-            r'Invalid argument into ti\.any_arr\(\) - required layout=Layout\.AOS, but .* is provided'
+            match=r"Invalid argument into ti\.any_arr\(\) - required layout=Layout\.AOS, but .* is provided",
     ):
         func3(x)
 
@@ -505,8 +507,7 @@ def _test_arg_not_match():
     x = ti.Vector.ndarray(2, ti.i32, shape=(4, 7))
     with pytest.raises(
             ValueError,
-            match=
-            r'Invalid argument into ti\.any_arr\(\) - required layout=Layout\.SOA, but .* is provided'
+            match=r"Invalid argument into ti\.any_arr\(\) - required layout=Layout\.SOA, but .* is provided",
     ):
         func4(x)
 
@@ -517,13 +518,13 @@ def _test_arg_not_match():
     x = ti.Vector.ndarray(2, ti.i32, shape=(4, 7))
     with pytest.raises(
             ValueError,
-            match=
-            r'Invalid argument into ti\.any_arr\(\) - required element_dim'):
+            match=r"Invalid argument into ti\.any_arr\(\) - required element_dim",
+    ):
         func5(x)
 
     with pytest.raises(
             ValueError,
-            match=r'Both element_shape and element_dim are specified'):
+            match=r"Both element_shape and element_dim are specified"):
 
         @ti.kernel
         def func6(a: ti.any_arr(element_dim=1, element_shape=(2, 3))):
@@ -536,7 +537,7 @@ def _test_arg_not_match():
     x = ti.ndarray(ti.i32, shape=(3, ))
     with pytest.raises(
             ValueError,
-            match=r'Invalid argument into ti\.any_arr\(\) - required field_dim'
+            match=r"Invalid argument into ti\.any_arr\(\) - required field_dim"
     ):
         func7(x)
 

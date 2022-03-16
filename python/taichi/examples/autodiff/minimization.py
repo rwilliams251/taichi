@@ -32,7 +32,7 @@ def main():
     for k in range(100):
         with ti.Tape(loss=L):
             reduce()
-        print('Loss =', L[None])
+        print("Loss =", L[None])
         gradient_descent()
 
     for i in range(n):
@@ -40,5 +40,5 @@ def main():
         print(x[i], y[i])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

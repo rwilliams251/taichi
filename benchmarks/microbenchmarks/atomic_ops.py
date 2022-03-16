@@ -31,12 +31,13 @@ def reduction_default(arch, repeat, atomic_op, container, dtype, dsize,
 
 
 class AtomicOpsPlan(BenchmarkPlan):
+
     def __init__(self, arch: str):
-        super().__init__('atomic_ops', arch, basic_repeat_times=10)
+        super().__init__("atomic_ops", arch, basic_repeat_times=10)
         atomic_ops = AtomicOps()
         atomic_ops.remove(
-            ['atomic_sub', 'atomic_and', 'atomic_xor', 'atomic_max'])
+            ["atomic_sub", "atomic_and", "atomic_xor", "atomic_max"])
         self.create_plan(atomic_ops, Container(), DataType(), DataSize(),
                          MetricType())
-        self.add_func(['field'], reduction_default)
-        self.add_func(['ndarray'], reduction_default)
+        self.add_func(["field"], reduction_default)
+        self.add_func(["ndarray"], reduction_default)

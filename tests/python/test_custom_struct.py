@@ -86,7 +86,7 @@ def test_struct_fill():
         "a": ti.f32,
         "b": ti.types.vector(3, ti.i32)
     },
-                        shape=(n, ))
+        shape=(n, ))
 
     def fill_each():
         x.a.fill(1.0)
@@ -304,14 +304,14 @@ def test_local_struct_assign():
 
 @test_utils.test(debug=True)
 def test_copy_python_scope_struct_to_taichi_scope():
-    a = ti.Struct({'a': 2, 'b': 3})
+    a = ti.Struct({"a": 2, "b": 3})
 
     @ti.kernel
     def test():
         b = a
         assert b.a == 2
         assert b.b == 3
-        b = ti.Struct({'a': 3, 'b': 4})
+        b = ti.Struct({"a": 3, "b": 4})
         assert b.a == 3
         assert b.b == 4
 
@@ -320,7 +320,7 @@ def test_copy_python_scope_struct_to_taichi_scope():
 
 @test_utils.test(debug=True)
 def test_copy_struct_field_element_to_taichi_scope():
-    a = ti.Struct.field({'a': ti.i32, 'b': ti.i32}, shape=())
+    a = ti.Struct.field({"a": ti.i32, "b": ti.i32}, shape=())
     a[None].a = 2
     a[None].b = 3
 
@@ -341,9 +341,10 @@ def test_copy_struct_field_element_to_taichi_scope():
 
 @test_utils.test(debug=True)
 def test_copy_struct_in_taichi_scope():
+
     @ti.kernel
     def test():
-        a = ti.Struct({'a': 2, 'b': 3})
+        a = ti.Struct({"a": 2, "b": 3})
         b = a
         assert b.a == 2
         assert b.b == 3

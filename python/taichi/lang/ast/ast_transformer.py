@@ -24,6 +24,7 @@ else:
 
 
 class ASTTransformer(Builder):
+
     @staticmethod
     def build_Name(ctx, node):
         node.ptr = ctx.get_var_by_name(node.id)
@@ -34,8 +35,8 @@ class ASTTransformer(Builder):
         build_stmt(ctx, node.value)
         build_stmt(ctx, node.annotation)
 
-        is_static_assign = isinstance(
-            node.value, ast.Call) and node.value.func.ptr is impl.static
+        is_static_assign = (isinstance(node.value, ast.Call)
+                            and node.value.func.ptr is impl.static)
 
         node.ptr = ASTTransformer.build_assign_annotated(
             ctx, node.target, node.value.ptr, is_static_assign,
@@ -47,13 +48,13 @@ class ASTTransformer(Builder):
                                annotation):
         """Build an annotated assginment like this: target: annotation = value.
 
-         Args:
-            ctx (ast_builder_utils.BuilderContext): The builder context.
-            target (ast.Name): A variable name. `target.id` holds the name as
-            a string.
-            annotation: A type we hope to assign to the target
-            value: A node representing the value.
-            is_static_assign: A boolean value indicating whether this is a static assignment
+        Args:
+           ctx (ast_builder_utils.BuilderContext): The builder context.
+           target (ast.Name): A variable name. `target.id` holds the name as
+           a string.
+           annotation: A type we hope to assign to the target
+           value: A node representing the value.
+           is_static_assign: A boolean value indicating whether this is a static assignment
         """
         is_local = isinstance(target, ast.Name)
         anno = impl.expr_init(annotation)
@@ -76,8 +77,8 @@ class ASTTransformer(Builder):
     def build_Assign(ctx, node):
         build_stmt(ctx, node.value)
 
-        is_static_assign = isinstance(
-            node.value, ast.Call) and node.value.func.ptr is impl.static
+        is_static_assign = (isinstance(node.value, ast.Call)
+                            and node.value.func.ptr is impl.static)
 
         # Keep all generated assign statements and compose single one at last.
         # The variable is introduced to support chained assignments.
@@ -104,8 +105,8 @@ class ASTTransformer(Builder):
             return ASTTransformer.build_assign_basic(ctx, node_target, values,
                                                      is_static_assign)
         targets = node_target.elts
-        tmp_tuple = values if is_static_assign else impl.expr_init_list(
-            values, len(targets))
+        tmp_tuple = (values if is_static_assign else impl.expr_init_list(
+            values, len(targets)))
 
         for i, target in enumerate(targets):
             ASTTransformer.build_assign_basic(ctx, target, tmp_tuple[i],
@@ -117,12 +118,12 @@ class ASTTransformer(Builder):
     def build_assign_basic(ctx, target, value, is_static_assign):
         """Build basic assginment like this: target = value.
 
-         Args:
-            ctx (ast_builder_utils.BuilderContext): The builder context.
-            target (ast.Name): A variable name. `target.id` holds the name as
-            a string.
-            value: A node representing the value.
-            is_static_assign: A boolean value indicating whether this is a static assignment
+        Args:
+           ctx (ast_builder_utils.BuilderContext): The builder context.
+           target (ast.Name): A variable name. `target.id` holds the name as
+           a string.
+           value: A node representing the value.
+           is_static_assign: A boolean value indicating whether this is a static assignment
         """
         is_local = isinstance(target, ast.Name)
         if is_static_assign:
@@ -147,8 +148,8 @@ class ASTTransformer(Builder):
     @staticmethod
     def build_NamedExpr(ctx, node):
         build_stmt(ctx, node.value)
-        is_static_assign = isinstance(
-            node.value, ast.Call) and node.value.func.ptr is impl.static
+        is_static_assign = (isinstance(node.value, ast.Call)
+                            and node.value.func.ptr is impl.static)
         node.ptr = ASTTransformer.build_assign_basic(ctx, node.target,
                                                      node.value.ptr,
                                                      is_static_assign)
@@ -182,9 +183,11 @@ class ASTTransformer(Builder):
         if node.step is not None:
             build_stmt(ctx, node.step)
 
-        node.ptr = slice(node.lower.ptr if node.lower else None,
-                         node.upper.ptr if node.upper else None,
-                         node.step.ptr if node.step else None)
+        node.ptr = slice(
+            node.lower.ptr if node.lower else None,
+            node.upper.ptr if node.upper else None,
+            node.step.ptr if node.step else None,
+        )
         return node.ptr
 
     @staticmethod
@@ -319,11 +322,11 @@ class ASTTransformer(Builder):
 
     @staticmethod
     def build_JoinedStr(ctx, node):
-        str_spec = ''
+        str_spec = ""
         args = []
         for sub_node in node.values:
             if isinstance(sub_node, ast.FormattedValue):
-                str_spec += '{}'
+                str_spec += "{}"
                 args.append(build_stmt(ctx, sub_node.value))
             elif isinstance(sub_node, ast.Constant):
                 str_spec += sub_node.value
@@ -356,8 +359,11 @@ class ASTTransformer(Builder):
                 name = "min" if func is min else "max"
                 warnings.warn_explicit(
                     f'Calling builtin function "{name}" in Taichi scope is deprecated. '
-                    f'Please use "ti.{name}" instead.', DeprecationWarning,
-                    ctx.file, node.lineno + ctx.lineno_offset)
+                    f'Please use "ti.{name}" instead.',
+                    DeprecationWarning,
+                    ctx.file,
+                    node.lineno + ctx.lineno_offset,
+                )
             return True
         return False
 
@@ -380,21 +386,23 @@ class ASTTransformer(Builder):
         if hasattr(func, "_is_taichi_function") or hasattr(
                 func, "_is_wrapped_kernel"):  # taichi func/kernel
             return
-        if hasattr(
-                func, "__module__"
-        ) and func.__module__ and func.__module__.startswith("taichi."):
+        if (hasattr(func, "__module__") and func.__module__
+                and func.__module__.startswith("taichi.")):
             return
         name = unparse(node.func).strip()
         warnings.warn_explicit(
             f'Calling non-taichi function "{name}". '
-            f'Scope inside the function is not processed by the Taichi AST transformer. '
-            f'The function may not work as expected. Proceed with caution! '
-            f'Maybe you can consider turning it into a @ti.func?', UserWarning,
-            ctx.file, node.lineno + ctx.lineno_offset)
+            f"Scope inside the function is not processed by the Taichi AST transformer. "
+            f"The function may not work as expected. Proceed with caution! "
+            f"Maybe you can consider turning it into a @ti.func?",
+            UserWarning,
+            ctx.file,
+            node.lineno + ctx.lineno_offset,
+        )
 
     @staticmethod
     def build_Call(ctx, node):
-        if ASTTransformer.get_decorator(ctx, node) == 'static':
+        if ASTTransformer.get_decorator(ctx, node) == "static":
             with ctx.static_scope_guard():
                 build_stmt(ctx, node.func)
                 build_stmts(ctx, node.args)
@@ -414,8 +422,9 @@ class ASTTransformer(Builder):
         keywords = dict(ChainMap(*[keyword.ptr for keyword in node.keywords]))
         func = node.func.ptr
 
-        if isinstance(node.func, ast.Attribute) and isinstance(
-                node.func.value.ptr, str) and node.func.attr == 'format':
+        if (isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value.ptr, str)
+                and node.func.attr == "format"):
             args.insert(0, node.func.value.ptr)
             node.ptr = impl.ti_format(*args, **keywords)
             return node.ptr
@@ -459,20 +468,25 @@ class ASTTransformer(Builder):
                     ctx.create_variable(
                         arg.arg,
                         kernel_arguments.decl_sparse_matrix(
-                            to_taichi_type(ctx.arg_features[i])))
+                            to_taichi_type(ctx.arg_features[i])),
+                    )
                 elif isinstance(ctx.func.argument_annotations[i],
                                 annotations.any_arr):
                     ctx.create_variable(
                         arg.arg,
                         kernel_arguments.decl_any_arr_arg(
                             to_taichi_type(ctx.arg_features[i][0]),
-                            ctx.arg_features[i][1], ctx.arg_features[i][2],
-                            ctx.arg_features[i][3]))
+                            ctx.arg_features[i][1],
+                            ctx.arg_features[i][2],
+                            ctx.arg_features[i][3],
+                        ),
+                    )
                 elif isinstance(ctx.func.argument_annotations[i], MatrixType):
                     ctx.create_variable(
                         arg.arg,
                         kernel_arguments.decl_matrix_arg(
-                            ctx.func.argument_annotations[i]))
+                            ctx.func.argument_annotations[i]),
+                    )
                 else:
                     ctx.global_vars[
                         arg.arg] = kernel_arguments.decl_scalar_arg(
@@ -537,8 +551,8 @@ class ASTTransformer(Builder):
                 if ctx.func.return_type is None:
                     raise TaichiSyntaxError(
                         f'A {"kernel" if ctx.is_kernel else "function"} '
-                        'with a return value must be annotated '
-                        'with a return type, e.g. def func() -> ti.f32')
+                        "with a return value must be annotated "
+                        "with a return type, e.g. def func() -> ti.f32")
                 if id(ctx.func.return_type) in primitive_types.type_ids:
                     ctx.ast_builder.create_kernel_exprgroup_return(
                         expr.make_expr_group(
@@ -662,6 +676,7 @@ class ASTTransformer(Builder):
 
     @staticmethod
     def build_normal_bool_op(op):
+
         def inner(ast_builder, operands):
             result = op(operands[0].ptr, operands[1].ptr)
             for i in range(2, len(operands)):
@@ -738,8 +753,10 @@ class ASTTransformer(Builder):
                 name = "is" if isinstance(node_op, ast.Is) else "is not"
                 warnings.warn_explicit(
                     f'Operator "{name}" in Taichi scope is deprecated. Please avoid using it.',
-                    DeprecationWarning, ctx.file,
-                    node.lineno + ctx.lineno_offset)
+                    DeprecationWarning,
+                    ctx.file,
+                    node.lineno + ctx.lineno_offset,
+                )
             if op is None:
                 if type(node_op) in ops_static:
                     raise TaichiSyntaxError(
@@ -756,15 +773,15 @@ class ASTTransformer(Builder):
     @staticmethod
     def get_decorator(ctx, node):
         if not isinstance(node, ast.Call):
-            return ''
+            return ""
         for wanted, name in [
-            (impl.static, 'static'),
-            (impl.grouped, 'grouped'),
-            (ndrange, 'ndrange'),
+            (impl.static, "static"),
+            (impl.grouped, "grouped"),
+            (ndrange, "ndrange"),
         ]:
             if ASTResolver.resolve_to(node.func, wanted, ctx.global_vars):
                 return name
-        return ''
+        return ""
 
     @staticmethod
     def get_for_loop_targets(node):
@@ -805,9 +822,8 @@ class ASTTransformer(Builder):
             build_stmt(ctx, node.iter)
             targets = ASTTransformer.get_for_loop_targets(node)
             for target_values in node.iter.ptr:
-                if not isinstance(
-                        target_values,
-                        collections.abc.Sequence) or len(targets) == 1:
+                if (not isinstance(target_values, collections.abc.Sequence)
+                        or len(targets) == 1):
                     target_values = [target_values]
                 with ctx.variable_scope_guard():
                     for target, target_value in zip(targets, target_values):
@@ -825,7 +841,7 @@ class ASTTransformer(Builder):
         with ctx.variable_scope_guard():
             loop_name = node.target.id
             ctx.check_loop_var(loop_name)
-            loop_var = expr.Expr(_ti_core.make_id_expr(''))
+            loop_var = expr.Expr(_ti_core.make_id_expr(""))
             ctx.create_variable(loop_name, loop_var)
             if len(node.iter.args) not in [1, 2]:
                 raise TaichiSyntaxError(
@@ -856,8 +872,9 @@ class ASTTransformer(Builder):
             ndrange_begin = ti_ops.cast(expr.Expr(0), primitive_types.i32)
             ndrange_end = ti_ops.cast(
                 expr.Expr(impl.subscript(ndrange_var.acc_dimensions, 0)),
-                primitive_types.i32)
-            ndrange_loop_var = expr.Expr(_ti_core.make_id_expr(''))
+                primitive_types.i32,
+            )
+            ndrange_loop_var = expr.Expr(_ti_core.make_id_expr(""))
             ctx.ast_builder.begin_frontend_range_for(ndrange_loop_var.ptr,
                                                      ndrange_begin.ptr,
                                                      ndrange_end.ptr)
@@ -872,7 +889,8 @@ class ASTTransformer(Builder):
                 ctx.create_variable(
                     target,
                     impl.expr_init(target_tmp + impl.subscript(
-                        impl.subscript(ndrange_var.bounds, i), 0)))
+                        impl.subscript(ndrange_var.bounds, i), 0)),
+                )
                 if i + 1 < len(targets):
                     I._assign(I -
                               target_tmp * ndrange_var.acc_dimensions[i + 1])
@@ -887,8 +905,9 @@ class ASTTransformer(Builder):
             ndrange_begin = ti_ops.cast(expr.Expr(0), primitive_types.i32)
             ndrange_end = ti_ops.cast(
                 expr.Expr(impl.subscript(ndrange_var.acc_dimensions, 0)),
-                primitive_types.i32)
-            ndrange_loop_var = expr.Expr(_ti_core.make_id_expr(''))
+                primitive_types.i32,
+            )
+            ndrange_loop_var = expr.Expr(_ti_core.make_id_expr(""))
             ctx.ast_builder.begin_frontend_range_for(ndrange_loop_var.ptr,
                                                      ndrange_begin.ptr,
                                                      ndrange_end.ptr)
@@ -993,16 +1012,19 @@ class ASTTransformer(Builder):
         with ctx.variable_scope_guard():
             ctx.mesh = node.iter.ptr.mesh
             assert isinstance(ctx.mesh, impl.MeshInstance)
-            loop_name = node.target.id + '_index__'
-            loop_var = expr.Expr(_ti_core.make_id_expr(''))
+            loop_name = node.target.id + "_index__"
+            loop_var = expr.Expr(_ti_core.make_id_expr(""))
             ctx.create_variable(loop_name, loop_var)
             begin = expr.Expr(0)
             end = node.iter.ptr.size
             ctx.ast_builder.begin_frontend_range_for(loop_var.ptr, begin.ptr,
                                                      end.ptr)
             entry_expr = _ti_core.get_relation_access(
-                ctx.mesh.mesh_ptr, node.iter.ptr.from_index.ptr,
-                node.iter.ptr.to_element_type, loop_var.ptr)
+                ctx.mesh.mesh_ptr,
+                node.iter.ptr.from_index.ptr,
+                node.iter.ptr.to_element_type,
+                loop_var.ptr,
+            )
             entry_expr.type_check(impl.get_runtime().prog.config)
             mesh_idx = mesh.MeshElementFieldProxy(
                 ctx.mesh, node.iter.ptr.to_element_type, entry_expr)
@@ -1018,37 +1040,38 @@ class ASTTransformer(Builder):
             raise TaichiSyntaxError(
                 "'else' clause for 'for' not supported in Taichi kernels")
         decorator = ASTTransformer.get_decorator(ctx, node.iter)
-        double_decorator = ''
-        if decorator != '' and len(node.iter.args) == 1:
+        double_decorator = ""
+        if decorator != "" and len(node.iter.args) == 1:
             double_decorator = ASTTransformer.get_decorator(
                 ctx, node.iter.args[0])
 
-        if decorator == 'static':
-            if double_decorator == 'static':
+        if decorator == "static":
+            if double_decorator == "static":
                 raise TaichiSyntaxError("'ti.static' cannot be nested")
             with ctx.loop_scope_guard(is_static=True):
                 return ASTTransformer.build_static_for(
-                    ctx, node, double_decorator == 'grouped')
+                    ctx, node, double_decorator == "grouped")
         with ctx.loop_scope_guard():
-            if decorator == 'ndrange':
-                if double_decorator != '':
+            if decorator == "ndrange":
+                if double_decorator != "":
                     raise TaichiSyntaxError(
                         "No decorator is allowed inside 'ti.ndrange")
                 return ASTTransformer.build_ndrange_for(ctx, node)
-            if decorator == 'grouped':
-                if double_decorator == 'static':
+            if decorator == "grouped":
+                if double_decorator == "static":
                     raise TaichiSyntaxError(
                         "'ti.static' is not allowed inside 'ti.grouped'")
-                elif double_decorator == 'ndrange':
+                elif double_decorator == "ndrange":
                     return ASTTransformer.build_grouped_ndrange_for(ctx, node)
-                elif double_decorator == 'grouped':
+                elif double_decorator == "grouped":
                     raise TaichiSyntaxError("'ti.grouped' cannot be nested")
                 else:
                     return ASTTransformer.build_struct_for(ctx,
                                                            node,
                                                            is_grouped=True)
-            elif isinstance(node.iter, ast.Call) and isinstance(
-                    node.iter.func, ast.Name) and node.iter.func.id == 'range':
+            elif (isinstance(node.iter, ast.Call)
+                  and isinstance(node.iter.func, ast.Name)
+                  and node.iter.func.id == "range"):
                 return ASTTransformer.build_range_for(ctx, node)
             else:
                 build_stmt(ctx, node.iter)
@@ -1056,8 +1079,8 @@ class ASTTransformer(Builder):
                     if not _ti_core.is_extension_supported(
                             impl.default_cfg().arch, _ti_core.Extension.mesh):
                         raise Exception(
-                            'Backend ' + str(impl.default_cfg().arch) +
-                            ' doesn\'t support MeshTaichi extension')
+                            "Backend " + str(impl.default_cfg().arch) +
+                            " doesn't support MeshTaichi extension")
                     return ASTTransformer.build_mesh_for(ctx, node)
                 if isinstance(node.iter.ptr, mesh.MeshRelationAccessProxy):
                     return ASTTransformer.build_nested_mesh_for(ctx, node)
@@ -1088,8 +1111,7 @@ class ASTTransformer(Builder):
     @staticmethod
     def build_If(ctx, node):
         build_stmt(ctx, node.test)
-        is_static_if = (ASTTransformer.get_decorator(ctx,
-                                                     node.test) == "static")
+        is_static_if = ASTTransformer.get_decorator(ctx, node.test) == "static"
 
         if is_static_if:
             if node.test.ptr:
@@ -1114,7 +1136,7 @@ class ASTTransformer(Builder):
         if not isinstance(node.value, ast.Call):
             return None
         is_taichi_function = getattr(node.value.func.ptr,
-                                     '_is_taichi_function', False)
+                                     "_is_taichi_function", False)
         if is_taichi_function and node.value.func.ptr._is_real_function:
             func_call_result = node.value.ptr
             ctx.ast_builder.insert_expr_stmt(func_call_result.ptr)
@@ -1126,19 +1148,21 @@ class ASTTransformer(Builder):
         build_stmt(ctx, node.body)
         build_stmt(ctx, node.orelse)
 
-        if is_taichi_class(node.test.ptr) or is_taichi_class(
-                node.body.ptr) or is_taichi_class(node.orelse.ptr):
+        if (is_taichi_class(node.test.ptr) or is_taichi_class(node.body.ptr)
+                or is_taichi_class(node.orelse.ptr)):
             node.ptr = ti_ops.select(node.test.ptr, node.body.ptr,
                                      node.orelse.ptr)
             warnings.warn_explicit(
-                'Using conditional expression for element-wise select operation on '
-                'Taichi vectors/matrices is deprecated. '
-                'Please use "ti.select" instead.', DeprecationWarning,
-                ctx.file, node.lineno + ctx.lineno_offset)
+                "Using conditional expression for element-wise select operation on "
+                "Taichi vectors/matrices is deprecated. "
+                'Please use "ti.select" instead.',
+                DeprecationWarning,
+                ctx.file,
+                node.lineno + ctx.lineno_offset,
+            )
             return node.ptr
 
-        is_static_if = (ASTTransformer.get_decorator(ctx,
-                                                     node.test) == "static")
+        is_static_if = ASTTransformer.get_decorator(ctx, node.test) == "static"
 
         if is_static_if:
             if node.test.ptr:

@@ -6,8 +6,13 @@ from taichi.lang.enums import Layout
 from taichi.lang.exception import TaichiSyntaxError
 from taichi.lang.field import Field, ScalarField, SNodeHostAccess
 from taichi.lang.matrix import Matrix
-from taichi.lang.util import (cook_dtype, in_python_scope, is_taichi_class,
-                              python_scope, taichi_scope)
+from taichi.lang.util import (
+    cook_dtype,
+    in_python_scope,
+    is_taichi_class,
+    python_scope,
+    taichi_scope,
+)
 from taichi.types import primitive_types
 from taichi.types.compound_types import CompoundType
 
@@ -37,6 +42,7 @@ class Struct(TaichiOperations):
         >>> print(B.items)
         dict_items([('v', [0. 0. 0.]), ('t', 1.0), ('A', {'v': [[0.], [0.], [0.]], 't': 1.0})])
     """
+
     _is_taichi_class = True
 
     def __init__(self, *args, **kwargs):
@@ -71,11 +77,14 @@ class Struct(TaichiOperations):
 
     def _register_members(self):
         for k in self.keys:
-            setattr(Struct, k,
-                    property(
-                        Struct._make_getter(k),
-                        Struct._make_setter(k),
-                    ))
+            setattr(
+                Struct,
+                k,
+                property(
+                    Struct._make_getter(k),
+                    Struct._make_setter(k),
+                ),
+            )
 
     def __getitem__(self, key):
         ret = self.entries[key]
@@ -109,6 +118,7 @@ class Struct(TaichiOperations):
 
     @staticmethod
     def _make_getter(key):
+
         def getter(self):
             """Get an entry from custom struct by name."""
             return self[key]
@@ -117,6 +127,7 @@ class Struct(TaichiOperations):
 
     @staticmethod
     def _make_setter(key):
+
         @python_scope
         def setter(self, value):
             self[key] = value
@@ -159,10 +170,10 @@ class Struct(TaichiOperations):
         return other
 
     def _element_wise_writeback_binary(self, foo, other):
-        if foo.__name__ == 'assign' and not isinstance(other, (dict, Struct)):
+        if foo.__name__ == "assign" and not isinstance(other, (dict, Struct)):
             raise TaichiSyntaxError(
-                'cannot assign scalar expr to '
-                f'taichi class {type(self)}, maybe you want to use `a.fill(b)` instead?'
+                "cannot assign scalar expr to "
+                f"taichi class {type(self)}, maybe you want to use `a.fill(b)` instead?"
             )
         other = self._broadcast_copy(other)
         entries = {}
@@ -171,7 +182,7 @@ class Struct(TaichiOperations):
                 entries[k] = v._element_wise_binary(foo, other.entries[k])
             else:
                 entries[k] = foo(v, other.entries[k])
-        return self if foo.__name__ == 'assign' else Struct(entries)
+        return self if foo.__name__ == "assign" else Struct(entries)
 
     def _element_wise_ternary(self, foo, other, extra):
         other = self._broadcast_copy(other)
@@ -192,6 +203,7 @@ class Struct(TaichiOperations):
         Args:
             val (Union[int, float]): Value to fill.
         """
+
         def assign_renamed(x, y):
             return ops.assign(x, y)
 
@@ -209,7 +221,7 @@ class Struct(TaichiOperations):
         if impl.inside_kernel():
             item_str = ", ".join(
                 [str(k) + "=" + str(v) for k, v in self.items])
-            return f'<ti.Struct {item_str}>'
+            return f"<ti.Struct {item_str}>"
         return str(self.to_dict())
 
     def __repr__(self):
@@ -231,13 +243,15 @@ class Struct(TaichiOperations):
 
     @classmethod
     @python_scope
-    def field(cls,
-              members,
-              shape=None,
-              name="<Struct>",
-              offset=None,
-              needs_grad=False,
-              layout=Layout.AOS):
+    def field(
+        cls,
+        members,
+        shape=None,
+        name="<Struct>",
+        offset=None,
+        needs_grad=False,
+        layout=Layout.AOS,
+    ):
 
         if shape is None and offset is not None:
             raise TaichiSyntaxError(
@@ -246,18 +260,20 @@ class Struct(TaichiOperations):
         field_dict = {}
 
         for key, dtype in members.items():
-            field_name = name + '.' + key
+            field_name = name + "." + key
             if isinstance(dtype, CompoundType):
                 field_dict[key] = dtype.field(shape=None,
                                               name=field_name,
                                               offset=offset,
                                               needs_grad=needs_grad)
             else:
-                field_dict[key] = impl.field(dtype,
-                                             shape=None,
-                                             name=field_name,
-                                             offset=offset,
-                                             needs_grad=needs_grad)
+                field_dict[key] = impl.field(
+                    dtype,
+                    shape=None,
+                    name=field_name,
+                    offset=offset,
+                    needs_grad=needs_grad,
+                )
 
         if shape is not None:
             if isinstance(shape, numbers.Number):
@@ -267,7 +283,7 @@ class Struct(TaichiOperations):
 
             if offset is not None and len(shape) != len(offset):
                 raise TaichiSyntaxError(
-                    f'The dimensionality of shape and offset must be the same ({len(shape)} != {len(offset)})'
+                    f"The dimensionality of shape and offset must be the same ({len(shape)} != {len(offset)})"
                 )
             dim = len(shape)
             if layout == Layout.SOA:
@@ -295,6 +311,7 @@ class _IntermediateStruct(Struct):
     Args:
         entries (Dict[str, Union[Expr, Matrix, Struct]]): keys and values for struct members.
     """
+
     def __init__(self, entries):
         assert isinstance(entries, dict)
         self.entries = entries
@@ -310,6 +327,7 @@ class StructField(Field):
         field_dict (Dict[str, Field]): Struct field members.
         name (string, optional): The custom name of the field.
     """
+
     def __init__(self, field_dict, name=None):
         # will not call Field initializer
         self.field_dict = field_dict
@@ -330,6 +348,7 @@ class StructField(Field):
 
     @staticmethod
     def _make_getter(key):
+
         def getter(self):
             """Get an entry from custom struct by name."""
             return self.field_dict[key]
@@ -338,6 +357,7 @@ class StructField(Field):
 
     @staticmethod
     def _make_setter(key):
+
         @python_scope
         def setter(self, value):
             self.field_dict[key] = value
@@ -347,11 +367,13 @@ class StructField(Field):
     def _register_fields(self):
         for k in self.keys:
             setattr(
-                StructField, k,
+                StructField,
+                k,
                 property(
                     StructField._make_getter(k),
                     StructField._make_setter(k),
-                ))
+                ),
+            )
 
     def _get_field_members(self):
         """Get A flattened list of all struct elements.
@@ -472,6 +494,7 @@ class StructField(Field):
 
 
 class StructType(CompoundType):
+
     def __init__(self, **kwargs):
         self.members = {}
         for k, dtype in kwargs.items():
@@ -511,9 +534,9 @@ class StructType(CompoundType):
             else:
                 if in_python_scope():
                     v = struct.entries[k]
-                    entries[k] = int(
-                        v
-                    ) if dtype in primitive_types.integer_types else float(v)
+                    entries[k] = (int(v)
+                                  if dtype in primitive_types.integer_types
+                                  else float(v))
                 else:
                     entries[k] = ops.cast(struct.entries[k], dtype)
         return Struct(entries)
