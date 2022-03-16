@@ -11,7 +11,7 @@ if has_pytorch():
     import torch
 
 
-@pytest.mark.skipif(not has_pytorch(), reason='Pytorch not installed.')
+@pytest.mark.skipif(not has_pytorch(), reason="Pytorch not installed.")
 @test_utils.test(exclude=ti.opengl)
 def test_torch_ad():
     n = 32
@@ -26,6 +26,7 @@ def test_torch_ad():
             y[n - i - 1] = x[i] * x[i]
 
     class Sqr(torch.autograd.Function):
+
         @staticmethod
         def forward(ctx, inp):
             x.from_torch(inp)
@@ -51,14 +52,14 @@ def test_torch_ad():
             assert ret[j] == 4
 
 
-@pytest.mark.skipif(not has_pytorch(), reason='Pytorch not installed.')
-@pytest.mark.skipif(sys.platform == 'win32', reason='not working on Windows.')
+@pytest.mark.skipif(not has_pytorch(), reason="Pytorch not installed.")
+@pytest.mark.skipif(sys.platform == "win32", reason="not working on Windows.")
 @test_utils.test(exclude=ti.opengl)
 def test_torch_ad_gpu():
     if not torch.cuda.is_available():
         return
 
-    device = torch.device('cuda:0')
+    device = torch.device("cuda:0")
     n = 32
 
     x = ti.field(ti.f32, shape=n, needs_grad=True)
@@ -71,6 +72,7 @@ def test_torch_ad_gpu():
             y[n - i - 1] = x[i] * x[i]
 
     class Sqr(torch.autograd.Function):
+
         @staticmethod
         def forward(ctx, inp):
             x.from_torch(inp)

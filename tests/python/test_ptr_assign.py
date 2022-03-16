@@ -88,8 +88,10 @@ def test_ptr_func():
 
 @test_utils.test()
 def test_ptr_class_func():
+
     @ti.data_oriented
     class MyClass:
+
         def __init__(self):
             self.a = ti.field(dtype=ti.f32, shape=())
 

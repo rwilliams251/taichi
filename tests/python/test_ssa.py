@@ -1,8 +1,8 @@
-'''
+"""
 SSA violation edge-case regression test.
 1. Ensure working well when computation result is assigned to self.
 2. Prevent duplicate-evaluation on expression with side-effect like random.
-'''
+"""
 import math
 
 import numpy as np
@@ -49,6 +49,7 @@ def test_random_vector_dup_eval():
 
 @test_utils.test()
 def test_func_argument_dup_eval():
+
     @ti.func
     def func(a, t):
         return a * t - a
@@ -63,6 +64,7 @@ def test_func_argument_dup_eval():
 
 @test_utils.test()
 def test_func_random_argument_dup_eval():
+
     @ti.func
     def func(a):
         return ti.Vector([ti.cos(a), ti.sin(a)])

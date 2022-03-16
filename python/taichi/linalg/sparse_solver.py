@@ -15,20 +15,27 @@ class SparseSolver:
         solver_type (str): The factorization type.
         ordering (str): The method for matrices re-ordering.
     """
+
     def __init__(self, dtype=f32, solver_type="LLT", ordering="AMD"):
         solver_type_list = ["LLT", "LDLT", "LU"]
-        solver_ordering = ['AMD', 'COLAMD']
+        solver_ordering = ["AMD", "COLAMD"]
         if solver_type in solver_type_list and ordering in solver_ordering:
             taichi_arch = taichi.lang.impl.get_runtime().prog.config.arch
-            assert taichi_arch == _ti_core.Arch.x64 or taichi_arch == _ti_core.Arch.arm64, "SparseSolver only supports CPU for now."
+            assert (taichi_arch == _ti_core.Arch.x64
+                    or taichi_arch == _ti_core.Arch.arm64
+                    ), "SparseSolver only supports CPU for now."
             self.solver = _ti_core.make_sparse_solver(dtype, solver_type,
                                                       ordering)
         else:
-            assert False, f"The solver type {solver_type} with {ordering} is not supported for now. Only {solver_type_list} with {solver_ordering} are supported."
+            assert (
+                False
+            ), f"The solver type {solver_type} with {ordering} is not supported for now. Only {solver_type_list} with {solver_ordering} are supported."
 
     @staticmethod
     def _type_assert(sparse_matrix):
-        assert False, f"The parameter type: {type(sparse_matrix)} is not supported in linear solvers for now."
+        assert (
+            False
+        ), f"The parameter type: {type(sparse_matrix)} is not supported in linear solvers for now."
 
     def compute(self, sparse_matrix):
         """This method is equivalent to calling both `analyze_pattern` and then `factorize`.
@@ -75,7 +82,9 @@ class SparseSolver:
             return self.solver.solve(b.to_numpy())
         if isinstance(b, np.ndarray):
             return self.solver.solve(b)
-        assert False, f"The parameter type: {type(b)} is not supported in linear solvers for now."
+        assert (
+            False
+        ), f"The parameter type: {type(b)} is not supported in linear solvers for now."
 
     def info(self):
         """Check if the linear systems are solved successfully.

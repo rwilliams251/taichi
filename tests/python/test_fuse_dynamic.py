@@ -32,23 +32,23 @@ def benchmark_fuse_dynamic_x2y2z(size=1024**2, repeat=10, first_n=100):
         t = time.time()
         x_to_y()
         ti.sync()
-        print('x_to_y', time.time() - t)
-    print('')
+        print("x_to_y", time.time() - t)
+    print("")
 
     for _ in range(repeat):
         t = time.time()
         y_to_z()
         ti.sync()
-        print('y_to_z', time.time() - t)
-    print('')
+        print("y_to_z", time.time() - t)
+    print("")
 
     for _ in range(repeat):
         t = time.time()
         x_to_y()
         y_to_z()
         ti.sync()
-        print('fused x->y->z', time.time() - t)
-    print('')
+        print("fused x->y->z", time.time() - t)
+    print("")
 
     for i in range(first_n):
         assert x[i] == i * 10

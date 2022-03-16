@@ -21,6 +21,7 @@ pixels = ti.Vector.field(3, dtype=ti.f32, shape=(width, height))
 
 @ti.data_oriented
 class TriangleRasterizer:
+
     def __init__(self, n):
         self.n = n
         self.A = ti.Vector.field(2, dtype=ti.f32)
@@ -57,13 +58,14 @@ class TriangleRasterizer:
         beta = -(P.x - C.x) * (A.y - C.y) + (P.y - C.y) * (A.x - C.x)
         beta /= -(B.x - C.x) * (A.y - C.y) + (B.y - C.y) * (A.x - C.x)
         gamma = 1.0 - alpha - beta
-        result = alpha >= 0.0 and alpha <= 1.0 and beta >= 0.0 and beta <= 1.0 and gamma >= 0.0
+        result = (alpha >= 0.0 and alpha <= 1.0 and beta >= 0.0 and beta <= 1.0
+                  and gamma >= 0.0)
         return result, alpha, beta, gamma
 
     @staticmethod
     @ti.func
     def bbox_intersect(A0, A1, B0, B1):
-        return (B0.x < A1.x and B0.y < A1.y and B1.x > A0.x and B1.y > A0.y)
+        return B0.x < A1.x and B0.y < A1.y and B1.x > A0.x and B1.y > A0.y
 
     @ti.kernel
     def tile_culling(self):
@@ -92,7 +94,7 @@ class TriangleRasterizer:
                 for subi, subj in ti.ndrange(num_spp_sqrt, num_spp_sqrt):
                     P = ti.Vector([
                         i + (subi + 0.5) / num_spp_sqrt,
-                        j + (subj + 0.5) / num_spp_sqrt
+                        j + (subj + 0.5) / num_spp_sqrt,
                     ])
                     result, alpha, beta, gamma = self.point_in_triangle(
                         P, A, B, C)
@@ -114,13 +116,15 @@ triangles = TriangleRasterizer(num_triangles)
 i = 0
 while gui.running:
     # Set a triangle to a new random triangle
-    triangles.set_triangle(i % num_triangles,
-                           ti.Vector(np.random.rand(2) * [width, height]),
-                           ti.Vector(np.random.rand(2) * [width, height]),
-                           ti.Vector(np.random.rand(2) * [width, height]),
-                           ti.Vector(np.random.rand(3)),
-                           ti.Vector(np.random.rand(3)),
-                           ti.Vector(np.random.rand(3)))
+    triangles.set_triangle(
+        i % num_triangles,
+        ti.Vector(np.random.rand(2) * [width, height]),
+        ti.Vector(np.random.rand(2) * [width, height]),
+        ti.Vector(np.random.rand(2) * [width, height]),
+        ti.Vector(np.random.rand(3)),
+        ti.Vector(np.random.rand(3)),
+        ti.Vector(np.random.rand(3)),
+    )
     i = i + 1
 
     samples.fill(ti.Vector([1.0, 1.0, 1.0]))

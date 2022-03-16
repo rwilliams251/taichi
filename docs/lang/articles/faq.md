@@ -14,7 +14,7 @@ There is no built-in constant such as `pi`. We recommended using `math.pi` direc
 
 ### Outer-most loops in Taichi kernels are by default parallel. How can I **serialize** one of them?
 
-A solution is to add an additional *ghost* loop with only one iteration outside the loop you want to serialize.
+A solution is to add an additional _ghost_ loop with only one iteration outside the loop you want to serialize.
 
 ```python {1}
 for _ in range(1):  # This "ghost" loop will be "parallelized", but with only one thread. Therefore, the containing loop below is serialized.

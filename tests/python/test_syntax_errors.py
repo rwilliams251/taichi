@@ -57,6 +57,7 @@ def test_while_else():
 
 @test_utils.test()
 def test_raise():
+
     @ti.kernel
     def foo():
         raise Exception()
@@ -116,8 +117,10 @@ def test_loop_var_struct():
 
 @test_utils.test()
 def test_func_def_in_kernel():
+
     @ti.kernel
     def kernel():
+
         @ti.func
         def func():
             return 1
@@ -130,8 +133,10 @@ def test_func_def_in_kernel():
 
 @test_utils.test()
 def test_func_def_in_func():
+
     @ti.func
     def func():
+
         @ti.func
         def func2():
             return 1
@@ -148,24 +153,25 @@ def test_func_def_in_func():
 
 @test_utils.test(arch=ti.cpu)
 def test_kernel_bad_argument_annotation():
-    with pytest.raises(ti.TaichiSyntaxError, match='annotation'):
+    with pytest.raises(ti.TaichiSyntaxError, match="annotation"):
 
         @ti.kernel
-        def kernel(x: 'bar'):
+        def kernel(x: "bar"):
             print(x)
 
 
 @test_utils.test(arch=ti.cpu)
 def test_func_bad_argument_annotation():
-    with pytest.raises(ti.TaichiSyntaxError, match='annotation'):
+    with pytest.raises(ti.TaichiSyntaxError, match="annotation"):
 
         @ti.func
-        def func(x: 'foo'):
+        def func(x: "foo"):
             print(x)
 
 
 @test_utils.test()
 def test_nested_static():
+
     @ti.kernel
     def func():
         for i in ti.static(ti.static(range(1))):
@@ -177,6 +183,7 @@ def test_nested_static():
 
 @test_utils.test()
 def test_nested_grouped():
+
     @ti.kernel
     def func():
         for i in ti.grouped(ti.grouped(range(1))):
@@ -188,6 +195,7 @@ def test_nested_grouped():
 
 @test_utils.test()
 def test_nested_ndrange():
+
     @ti.kernel
     def func():
         for i in ti.ndrange(ti.ndrange(1)):
@@ -266,6 +274,7 @@ def test_not_in():
 
 @test_utils.test()
 def test_expr_set():
+
     @ti.kernel
     def func():
         x = {2, 4, 6}
@@ -276,20 +285,21 @@ def test_expr_set():
 
 @test_utils.test()
 def test_redefining_template_args():
+
     @ti.kernel
     def foo(a: ti.template()):
         a = 5
 
     with pytest.raises(
             ti.TaichiSyntaxError,
-            match=
-            "Variable 'a' cannot be assigned. Maybe it is not a Taichi object?"
+            match="Variable 'a' cannot be assigned. Maybe it is not a Taichi object?",
     ):
         foo(1)
 
 
 @test_utils.test()
 def test_break_in_outermost_for():
+
     @ti.kernel
     def foo():
         for i in range(10):
@@ -302,8 +312,10 @@ def test_break_in_outermost_for():
 
 @test_utils.test()
 def test_funcdef_in_kernel():
+
     @ti.kernel
     def foo():
+
         def bar():
             pass
 
@@ -315,8 +327,10 @@ def test_funcdef_in_kernel():
 
 @test_utils.test()
 def test_funcdef_in_func():
+
     @ti.func
     def foo():
+
         def bar():
             pass
 

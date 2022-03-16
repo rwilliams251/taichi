@@ -464,7 +464,7 @@ def render():
                 break
 
             hit_pos = pos + closest * ray_dir
-            hit_light = (mat == mat_light)
+            hit_light = mat == mat_light
             if hit_light:
                 acc_color += throughput * light_color
                 break
@@ -476,8 +476,8 @@ def render():
             ray_dir, pdf = sample_ray_dir(ray_dir, hit_normal, hit_pos, mat)
             pos = hit_pos + 1e-4 * ray_dir
             if mat == mat_lambertian:
-                throughput *= lambertian_brdf * hit_color * dot_or_zero(
-                    hit_normal, ray_dir) / pdf
+                throughput *= (lambertian_brdf * hit_color *
+                               dot_or_zero(hit_normal, ray_dir) / pdf)
             else:
                 throughput *= hit_color
         color_buffer[u, v] += acc_color
@@ -492,7 +492,7 @@ def tonemap(accumulated: ti.f32):
 
 
 def main():
-    gui = ti.GUI('Cornell Box', res, fast_gui=True)
+    gui = ti.GUI("Cornell Box", res, fast_gui=True)
     gui.fps_limit = 300
     last_t = time.time()
     i = 0
@@ -509,5 +509,5 @@ def main():
         i += 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

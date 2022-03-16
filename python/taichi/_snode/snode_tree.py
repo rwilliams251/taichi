@@ -8,18 +8,19 @@ from taichi.lang.exception import TaichiRuntimeError
 
 
 class SNodeTree:
+
     def __init__(self, ptr):
         self.ptr = ptr
         self.destroyed = False
 
     def destroy(self):
         if self.destroyed:
-            raise TaichiRuntimeError('SNode tree has been destroyed')
+            raise TaichiRuntimeError("SNode tree has been destroyed")
         self.ptr.destroy_snode_tree(impl.get_runtime().prog)
         self.destroyed = True
 
     @property
     def id(self):
         if self.destroyed:
-            raise TaichiRuntimeError('SNode tree has been destroyed')
+            raise TaichiRuntimeError("SNode tree has been destroyed")
         return self.ptr.id()

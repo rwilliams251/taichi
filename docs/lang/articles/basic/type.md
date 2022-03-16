@@ -18,19 +18,19 @@ which represents the number of **bits** for storing the data. For example, the t
 
 ### Supported primitive types on each backend
 
-| type | CPU              | CUDA             | OpenGL               | Metal            |  Vulkan              |
-| ---- | ---------------- | ---------------- | -------------------- | ---------------- | -------------------- |
-| i8   |:heavy_check_mark:|:heavy_check_mark:|:x:                   |:heavy_check_mark:|:large_orange_diamond:|
-| i16  |:heavy_check_mark:|:heavy_check_mark:|:x:                   |:heavy_check_mark:|:large_orange_diamond:|
-| i32  |:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:    |:heavy_check_mark:|:heavy_check_mark:    |
-| i64  |:heavy_check_mark:|:heavy_check_mark:|:large_orange_diamond:|:x:               |:large_orange_diamond:|
-| u8   |:heavy_check_mark:|:heavy_check_mark:|:x:                   |:heavy_check_mark:|:large_orange_diamond:|
-| u16  |:heavy_check_mark:|:heavy_check_mark:|:x:                   |:heavy_check_mark:|:large_orange_diamond:|
-| u32  |:heavy_check_mark:|:heavy_check_mark:|:x:                   |:heavy_check_mark:|:heavy_check_mark:    |
-| u64  |:heavy_check_mark:|:heavy_check_mark:|:x:                   |:x:               |:large_orange_diamond:|
-| f16  |:heavy_check_mark:|:heavy_check_mark:|:x:                   |:x:               |:heavy_check_mark:    |
-| f32  |:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:    |:heavy_check_mark:|:heavy_check_mark:    |
-| f64  |:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:    |:x:               |:large_orange_diamond:|
+| type | CPU                | CUDA               | OpenGL                 | Metal              | Vulkan                 |
+| ---- | ------------------ | ------------------ | ---------------------- | ------------------ | ---------------------- |
+| i8   | :heavy_check_mark: | :heavy_check_mark: | :x:                    | :heavy_check_mark: | :large_orange_diamond: |
+| i16  | :heavy_check_mark: | :heavy_check_mark: | :x:                    | :heavy_check_mark: | :large_orange_diamond: |
+| i32  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :heavy_check_mark: | :heavy_check_mark:     |
+| i64  | :heavy_check_mark: | :heavy_check_mark: | :large_orange_diamond: | :x:                | :large_orange_diamond: |
+| u8   | :heavy_check_mark: | :heavy_check_mark: | :x:                    | :heavy_check_mark: | :large_orange_diamond: |
+| u16  | :heavy_check_mark: | :heavy_check_mark: | :x:                    | :heavy_check_mark: | :large_orange_diamond: |
+| u32  | :heavy_check_mark: | :heavy_check_mark: | :x:                    | :heavy_check_mark: | :heavy_check_mark:     |
+| u64  | :heavy_check_mark: | :heavy_check_mark: | :x:                    | :x:                | :large_orange_diamond: |
+| f16  | :heavy_check_mark: | :heavy_check_mark: | :x:                    | :x:                | :heavy_check_mark:     |
+| f32  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :heavy_check_mark: | :heavy_check_mark:     |
+| f64  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :x:                | :large_orange_diamond: |
 
 (:large_orange_diamond: Requiring extensions of the backend)
 
@@ -68,8 +68,8 @@ def func(a: ti.f32) -> ti.i64:
 
 Just like programming in other languages, you may encounter situations where you have a certain
 type of data, but it is not feasible for the assignment or calculation you want to perform. In this
-case, you can do *explicit type casting*. There are two kinds of explicit type casting in Taichi,
-namely *normal casting* and *bit casting*.
+case, you can do _explicit type casting_. There are two kinds of explicit type casting in Taichi,
+namely _normal casting_ and _bit casting_.
 
 :::caution
 In Taichi-scope, the type of a variable is **static** and **determined on its initialization**.
@@ -131,7 +131,7 @@ Relying on implicit type casting is bad practice and one major source of bugs.
 #### In binary operations
 
 Following the [implicit conversion rules](https://en.cppreference.com/w/c/language/conversion) of the C programming language, Taichi implicitly casts
-binary operation operands into a *common type* if they have different types. Some simple but most
+binary operation operands into a _common type_ if they have different types. Some simple but most
 commonly used rules to determine the common type of two types are listed below:
 
 - `i32 + f32 = f32` (int + float = float)
@@ -177,6 +177,7 @@ my_vec3f = ti.types.vector(3, float)
 my_mat2f = ti.types.matrix(2, 2, float)
 my_ray3f = ti.types.struct(ro=my_vec3f, rd=my_vec3f, l=ti.f32)
 ```
+
 In this example, we define four compound types for creating fields and local variables.
 
 ### Creating fields
@@ -193,11 +194,13 @@ vec1 = ti.Vector.field(2, dtype=ti.i32, shape=(128, 128, 128))
 mat2 = ti.Matrix.field(2, 2, dtype=ti.i32, shape=(24, 32))
 ray3 = ti.Struct.field({'ro': my_vec3f, 'rd': my_vec3f, 'l': ti.f32}, shape=(1024, 768))
 ```
+
 In this example, we define three fields in two different ways but of exactly the same effect.
 
 ### Creating local variables
 
 Compound types can be directly called to create vector, matrix or struct instances. Vectors, matrices and structs can be created using GLSL-like broadcast syntax since their shapes are already known:
+
 ```python
 ray1 = my_ray3f(0.0)            # ti.Struct(ro=[0.0, 0.0, 0.0], rd=[0.0, 0.0, 0.0], l=0.0)
 vec1 = my_vec3f(0.0)            # ti.Vector([0.0, 0.0, 0.0])
@@ -205,6 +208,7 @@ mat1 = my_mat2f(1.0)            # ti.Matrix([[1.0, 1.0], [1.0, 1.0]])
 vec2 = my_vec3f(my_vec2i(0), 1) # ti.Vector([0.0, 0.0, 1.0]), will perform implicit cast
 ray2 = my_ray3f(ro=vec1, rd=vec2, l=1.0)
 ```
+
 In this example, we define five local variables, each of a different type. In the definition statement of `vec2`, `my_vec3f()` performs an implicit cast operation when combining `my_vec2i(0)` with `1`.
 
 ### Type casting on vectors and matrices

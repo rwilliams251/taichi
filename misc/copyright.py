@@ -85,15 +85,14 @@ def get_ctime_year(filepath: str) -> str:
     using git-log.
     """
     # %aI: author date as an YYYY-MM-DDTHH:MM:SS-HH:MM string (git 2.21).
-    command = "git --no-pager log --reverse --format=\"%aI\" {}".format(
-        filepath)
+    command = 'git --no-pager log --reverse --format="%aI" {}'.format(filepath)
     try:
         out = subprocess.check_output(command.split())
     except subprocess.CalledProcessError as e:
         sys.exit("%s error: %s" % (command, e))
-    assert (type(out) == bytes)
-    initial_commit_time = out.decode().strip('"').strip("'").split('\n', 1)[0]
-    return initial_commit_time.split('-')[0]  # str
+    assert type(out) == bytes
+    initial_commit_time = out.decode().strip('"').strip("'").split("\n", 1)[0]
+    return initial_commit_time.split("-")[0]  # str
 
 
 def make_notice(comment_style: CommentStyle, ctime_year: str) -> List[str]:
@@ -132,7 +131,7 @@ def check_and_modify(filepath: str, comment_style: CommentStyle,
     Effects: see DOC_STRING
     """
     new_header_lines, body_lines = [], []
-    with open(filepath, 'r') as f:
+    with open(filepath, "r") as f:
         body_lines = f.readlines()
     existent_notice_match, incorrect_notice_match = None, None
     sharp_bang_line = None
@@ -140,7 +139,7 @@ def check_and_modify(filepath: str, comment_style: CommentStyle,
         if i >= len(body_lines):
             continue
         line = body_lines[i]
-        if i == 0 and line.startswith('#!'):
+        if i == 0 and line.startswith("#!"):
             sharp_bang_line = line
         line_lower = line.lower()
         existent_notice_match = COPYRIGHT_NOTICE_REGEX.search(line_lower)
@@ -153,7 +152,7 @@ def check_and_modify(filepath: str, comment_style: CommentStyle,
                 to_replace_line_index = i
                 break
     if not existent_notice_match:
-        assert (not incorrect_notice_match)
+        assert not incorrect_notice_match
         # Notice missing; now we need to insert a notice.
         if not check_only:
             new_header_lines = make_notice(comment_style,
@@ -163,20 +162,22 @@ def check_and_modify(filepath: str, comment_style: CommentStyle,
                 body_lines = body_lines[1:]  # Remove the original #! line
         return_state = FileActionResult.INSERTED_NOTICE
     else:
-        assert (incorrect_notice_match)
+        assert incorrect_notice_match
         # Notice exists but format is wrong; now we need to modify that notice.
         if not check_only:
             notice_match_start = existent_notice_match.start()
             year_1st = incorrect_notice_match.group(1)
-            assert (year_1st)
+            assert year_1st
             # This is how cs.chromium.org writes the notice, and I think the lawyers
             # should be confident :)
-            correct_line = (" " * notice_match_start) \
-                + "Copyright (c) %s The Taichi Authors. All rights reserved.\n" % year_1st
+            correct_line = (
+                (" " * notice_match_start) +
+                "Copyright (c) %s The Taichi Authors. All rights reserved.\n" %
+                year_1st)
             body_lines[to_replace_line_index] = correct_line
         return_state = FileActionResult.MODIFIED_NOTICE
     if not check_only:
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             if new_header_lines:
                 f.writelines(new_header_lines)
             f.writelines(body_lines)
@@ -184,6 +185,7 @@ def check_and_modify(filepath: str, comment_style: CommentStyle,
 
 
 class WorkStats:
+
     def __init__(self):
         self.opened_file_num = 0
         self.inserted_notice_file_num = 0
@@ -207,7 +209,8 @@ def print_progress(stats: WorkStats, check_only: bool):
         tense="will" if check_only else "did",
         insert=stats.inserted_notice_file_num,
         modify=stats.modified_notice_file_num,
-        dots=PLAYFUL_BRAILLE[stats.opened_file_num % len(PLAYFUL_BRAILLE)])
+        dots=PLAYFUL_BRAILLE[stats.opened_file_num % len(PLAYFUL_BRAILLE)],
+    )
     # 1A, 2K: move cursor one line up and clear the entire line.
     sys.stdout.write(("\x1b[1A\x1b[2K" if LINE_ELIDING else "") + content +
                      "\n")
@@ -232,8 +235,9 @@ def is_interested_ext(ext: str, selected_stripped_exts: List[str]) -> bool:
     NOTE ext contains a dot, e.g. ".cpp", ".sh", while selected_stripped_exts elements
          do not, e.g. [ "cpp", "sh" ]
     """
-    return (ext in FILE_EXT_TO_COMMENT_STYLES) \
-        and ((not selected_stripped_exts) or (ext.lstrip(".") in selected_stripped_exts))
+    return (ext in FILE_EXT_TO_COMMENT_STYLES) and (
+        (not selected_stripped_exts) or
+        (ext.lstrip(".") in selected_stripped_exts))
 
 
 def work(args) -> bool:
@@ -281,7 +285,7 @@ def main():
         description="Copyright notice checker and rewriter.")
     argparser.add_argument("paths",
                            type=str,
-                           nargs='*',
+                           nargs="*",
                            help="non-overlapping directories or files")
     argparser.add_argument(
         "-e",
@@ -289,12 +293,14 @@ def main():
         metavar="E,..",
         type=str,
         default="",
-        help="comma-separated file extensions; all if absent")
+        help="comma-separated file extensions; all if absent",
+    )
     argparser.add_argument(
         "-c",
         "--check",
         action="store_true",
-        help="check only; returns 1 if some files will be rewritten")
+        help="check only; returns 1 if some files will be rewritten",
+    )
     argparser.add_argument("--docs",
                            action="store_true",
                            help="print long documentation")
@@ -310,10 +316,10 @@ def main():
     if missing_dirs:
         sys.exit("[Error] path not found: %s" % " ".join(missing_dirs))
 
-    unhandled_exts = None if not args.exts else [
+    unhandled_exts = (None if not args.exts else [
         e for e in args.exts.split(",")
         if ("." + e) not in FILE_EXT_TO_COMMENT_STYLES
-    ]
+    ])
     if unhandled_exts:
         sys.exit("[Error] unhandled extension names: %s" %
                  " ".join(unhandled_exts))

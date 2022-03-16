@@ -7,12 +7,14 @@ sidebar_position: 3
 ## Intermediate representation (IR)
 
 Taichi's computation IR is designed to be
+
 - Static-single assignment;
 - Hierarchical, instead of LLVM-style control-flow graph + basic blocks;
 - Differentiable;
 - Statically and strongly typed.
 
 For example, a simple Taichi kernel
+
 ```python {4-8} title=show_ir.py
 import taichi as ti
 ti.init(print_ir=True)
@@ -65,9 +67,11 @@ SNode **cells**, and SNode **components**.
   **cells** are recommended to be powers of two.
 
   - For example, `S = ti.root.dense(ti.i, 128)` creates an SNode `S`, and each `S` container has `128` `S` cells.
+
 - A SNode **cell** can have multiple SNode **components**.
 
   - For example, `P = S.dense(ti.i, 4); Q = S.dense(ti.i, 4)` inserts two components (one `P` container and one `Q` container) into each `S` cell.
+
 - Note that each SNode **component** is a SNode **container** of a lower-level SNode.
 
 A hierarchical data structure in Taichi, dense or sparse, is essentially a tree with interleaved container and cell levels.
@@ -277,8 +281,8 @@ Embedding Taichi in `python` has the following advantages:
   - Existing packages. Interacting with other python components
     (e.g. `matplotlib` and `numpy`) is just trivial.
 - The built-in AST manipulation tools in `python` allow us to flexibly
-manipulate and analyze Python ASTs,
-as long as the kernel body function is parse-able by the Python parser.
+  manipulate and analyze Python ASTs,
+  as long as the kernel body function is parse-able by the Python parser.
 
 However, this design has drawbacks too:
 

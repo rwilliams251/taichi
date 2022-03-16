@@ -111,7 +111,7 @@ def polar_decompose2d(A, dt):
         Decomposed 2x2 matrices `U` and `P`.
     """
     x, y = A(0, 0) + A(1, 1), A(1, 0) - A(0, 1)
-    scale = (1.0 / ops.sqrt(x * x + y * y))
+    scale = 1.0 / ops.sqrt(x * x + y * y)
     c = x * scale
     s = y * scale
     r = Matrix([[c, -s], [s, c]], dt=dt)
@@ -434,4 +434,4 @@ def sym_eig(A, dt=None):
     raise Exception("Symmetric eigen solver only supports 2D matrices.")
 
 
-__all__ = ['randn', 'polar_decompose', 'eig', 'sym_eig', 'svd']
+__all__ = ["randn", "polar_decompose", "eig", "sym_eig", "svd"]

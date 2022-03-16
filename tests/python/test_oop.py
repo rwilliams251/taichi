@@ -7,8 +7,10 @@ from tests import test_utils
 
 @test_utils.test(arch=get_host_arch_list())
 def test_classfunc():
+
     @ti.data_oriented
     class Array2D:
+
         def __init__(self, n, m):
             self.n = n
             self.m = m
@@ -39,8 +41,10 @@ def test_classfunc():
 
 @test_utils.test(arch=get_host_arch_list())
 def test_oop():
+
     @ti.data_oriented
     class Array2D:
+
         def __init__(self, n, m, increment):
             self.n = n
             self.m = m
@@ -101,8 +105,10 @@ def test_oop():
 
 @test_utils.test(arch=get_host_arch_list())
 def test_oop_two_items():
+
     @ti.data_oriented
     class Array2D:
+
         def __init__(self, n, m, increment, multiplier):
             self.n = n
             self.m = m
@@ -155,6 +161,7 @@ def test_oop_inherit_ok():
     # instead of '@ti.data_oriented'. Make sure this also works.
     @ti.data_oriented
     class Array1D(object):
+
         def __init__(self, n, mul):
             self.n = n
             self.val = ti.field(ti.f32)
@@ -181,7 +188,9 @@ def test_oop_inherit_ok():
 
 @test_utils.test(arch=get_host_arch_list())
 def test_oop_class_must_be_data_oriented():
+
     class Array1D(object):
+
         def __init__(self, n, mul):
             self.n = n
             self.val = ti.field(ti.f32)
@@ -206,8 +215,10 @@ def test_oop_class_must_be_data_oriented():
 
 @test_utils.test(arch=get_host_arch_list())
 def test_hook():
+
     @ti.data_oriented
     class Solver:
+
         def __init__(self, n, m, hook):
             self.val = ti.field(ti.f32, shape=(n, m))
             self.hook = hook
@@ -225,13 +236,15 @@ def test_hook():
 
     for i in range(32):
         for j in range(32):
-            assert (solver.val[i, j] == 1.0)
+            assert solver.val[i, j] == 1.0
 
 
 @test_utils.test()
 def test_oop_with_portery_decorator():
+
     @ti.data_oriented
     class TestPortery:
+
         @property
         @ti.kernel
         def kernel_property(self) -> ti.i32:
@@ -249,8 +262,10 @@ def test_oop_with_portery_decorator():
 
 @test_utils.test()
 def test_oop_with_static_decorator():
+
     @ti.data_oriented
     class TestStatic:
+
         @staticmethod
         @ti.kernel
         def kernel_static() -> ti.i32:

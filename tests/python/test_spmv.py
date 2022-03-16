@@ -42,6 +42,7 @@ def test_sparse_matrix_vector_multiplication2():
 
     x = A @ b
     import numpy as np
+
     res = np.array([-28, -20, -12, -4, 4, 12, 20, 28])
     for i in range(n):
         assert x[i] == res[i]
@@ -66,6 +67,7 @@ def test_sparse_matrix_vector_multiplication3():
 
     x = A @ b
     import numpy as np
+
     res = np.array([28, 36, 44, 52, 60, 68, 76, 84])
     for i in range(n):
         assert x[i] == res[i]

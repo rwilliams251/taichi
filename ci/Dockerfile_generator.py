@@ -12,7 +12,7 @@ OS = {
     "ubuntu": (
         "18.04",
         "20.04",
-    )
+    ),
 }
 HARDWARE = ("cpu", "gpu")
 
@@ -200,6 +200,7 @@ ENV LANG="C.UTF-8"
 
 
 class Parser(argparse.ArgumentParser):
+
     def error(self, message):
         """Make it print help message by default."""
         sys.stderr.write(f"error: {message}\n")
@@ -291,9 +292,18 @@ def main(arguments=None):
 
                 dockerfile = reduce(
                     lambda x, y: x + y,
-                    (head_block, base_block, MAINTAINER_BLOCK, install_block,
-                     LLVM_CLANG_FROM_SOURCE_BLOCK, GCC_LINK_BLOCK, USER_BLOCK,
-                     CONDA_BLOCK, scripts_block))
+                    (
+                        head_block,
+                        base_block,
+                        MAINTAINER_BLOCK,
+                        install_block,
+                        LLVM_CLANG_FROM_SOURCE_BLOCK,
+                        GCC_LINK_BLOCK,
+                        USER_BLOCK,
+                        CONDA_BLOCK,
+                        scripts_block,
+                    ),
+                )
 
                 filename = pwd / f"Dockerfile.{os}.cpu"
             else:
@@ -303,20 +313,31 @@ def main(arguments=None):
                     script=f"{os}_build_test_cpu.sh")
                 # ubuntu 18.04 needs special treatments
                 if os == "ubuntu" and version == "18.04":
-                    install_block = install_block.rstrip() + """ \\
-                       zlib1g-dev"""
+                    install_block = (install_block.rstrip() + """ \\
+                       zlib1g-dev""")
 
                 dockerfile = reduce(
                     lambda x, y: x + y,
-                    (head_block, base_block, DEBIAN_NONINTERACTIVE_BLOCK,
-                     MAINTAINER_BLOCK, install_block, CMAKE_BLOCK, LLVM_BLOCK,
-                     USER_BLOCK, CONDA_BLOCK, scripts_block))
+                    (
+                        head_block,
+                        base_block,
+                        DEBIAN_NONINTERACTIVE_BLOCK,
+                        MAINTAINER_BLOCK,
+                        install_block,
+                        CMAKE_BLOCK,
+                        LLVM_BLOCK,
+                        USER_BLOCK,
+                        CONDA_BLOCK,
+                        scripts_block,
+                    ),
+                )
 
                 filename = pwd / f"Dockerfile.{os}.{version}.cpu"
 
             info(f"Storing at: {filename}")
             with filename.open("w") as fp:
                 fp.write(dockerfile)
+
     else:
         info("Generating Dockerfile(s) for GPU.")
 
@@ -328,16 +349,27 @@ def main(arguments=None):
 
             # ubuntu 20.04 needs special treatments
             if os == "ubuntu" and version == "20.04":
-                install_block = install_block.rstrip() + """ \\
+                install_block = (install_block.rstrip() + """ \\
                        vulkan-tools \\
-                       vulkan-validationlayers-dev"""
+                       vulkan-validationlayers-dev""")
 
             dockerfile = reduce(
                 lambda x, y: x + y,
-                (head_block, base_block, NVIDIA_DRIVER_CAPABILITIES_BLOCK,
-                 DEBIAN_NONINTERACTIVE_BLOCK, MAINTAINER_BLOCK, install_block,
-                 CMAKE_BLOCK, LLVM_BLOCK, VULKAN_BLOCK, USER_BLOCK,
-                 CONDA_BLOCK, scripts_block))
+                (
+                    head_block,
+                    base_block,
+                    NVIDIA_DRIVER_CAPABILITIES_BLOCK,
+                    DEBIAN_NONINTERACTIVE_BLOCK,
+                    MAINTAINER_BLOCK,
+                    install_block,
+                    CMAKE_BLOCK,
+                    LLVM_BLOCK,
+                    VULKAN_BLOCK,
+                    USER_BLOCK,
+                    CONDA_BLOCK,
+                    scripts_block,
+                ),
+            )
             filename = pwd / f"Dockerfile.{os}.{version}"
             info(f"Storing at: {filename}")
             with (filename).open("w") as fp:

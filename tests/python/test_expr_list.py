@@ -4,6 +4,7 @@ from tests import test_utils
 
 @test_utils.test(ti.cpu)
 def test_expr_list_basic():
+
     @ti.kernel
     def func(u: int, v: float) -> float:
         x = [2 + u, 3 + v]

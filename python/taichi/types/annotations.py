@@ -10,6 +10,7 @@ class ArgAnyArray:
         field_dim (Union[Int, NoneType]): None if not specified, number of field dimensions. This argument is ignored for external arrays for now.
         layout (Union[Layout, NoneType], optional): None if not specified (will be treated as Layout.AOS for external arrays), Layout.AOS or Layout.SOA.
     """
+
     def __init__(self,
                  element_dim=None,
                  element_shape=None,
@@ -19,14 +20,14 @@ class ArgAnyArray:
             raise ValueError(
                 "Only scalars, vectors, and matrices are allowed as elements of ti.any_arr()"
             )
-        if element_dim is not None and element_shape is not None and len(
-                element_shape) != element_dim:
+        if (element_dim is not None and element_shape is not None
+                and len(element_shape) != element_dim):
             raise ValueError(
                 f"Both element_shape and element_dim are specified, but shape doesn't match specified dim: {len(element_shape)}!={element_dim}"
             )
         self.element_shape = element_shape
-        self.element_dim = len(
-            element_shape) if element_shape is not None else element_dim
+        self.element_dim = (len(element_shape)
+                            if element_shape is not None else element_dim)
         self.field_dim = field_dim
         self.layout = layout
 
@@ -100,6 +101,7 @@ class Template:
         tensor (Any): unused
         dim (Any): unused
     """
+
     def __init__(self, tensor=None, dim=None):
         self.tensor = tensor
         self.dim = dim
@@ -114,4 +116,4 @@ class sparse_matrix_builder:
     pass
 
 
-__all__ = ['ext_arr', 'any_arr', 'template', 'sparse_matrix_builder']
+__all__ = ["ext_arr", "any_arr", "template", "sparse_matrix_builder"]

@@ -34,9 +34,9 @@ On Windows, `taichi_cpp_tests.exe` will be placed inside the `%TAICHI_REPO_DIR%\
 :::note
 Consider polishing the C++ test infrastructure:
 
-* Separate each translation unit into its own test executable
-* Have a unified script to control the execution of which set of tests
-:::
+- Separate each translation unit into its own test executable
+- Have a unified script to control the execution of which set of tests
+  :::
 
 ## Adding a new test case
 

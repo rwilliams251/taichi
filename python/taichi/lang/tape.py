@@ -1,4 +1,5 @@
 class TapeImpl:
+
     def __init__(self, runtime, loss=None):
         self.calls = []
         self.entered = False
@@ -22,7 +23,8 @@ class TapeImpl:
 
     def grad(self):
         assert self.entered, "Before evaluating gradients tape must be entered."
-        assert not self.gradient_evaluated, "Gradients of grad can be evaluated only once."
+        assert (not self.gradient_evaluated
+                ), "Gradients of grad can be evaluated only once."
         for func, args in reversed(self.calls):
             func.grad(*args)
         self.gradient_evaluated = True

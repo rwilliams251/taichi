@@ -6,6 +6,7 @@ from tests import test_utils
 
 @ti.data_oriented
 class MPMSolver:
+
     def __init__(self, res):
         dim = len(res)
         self.dx = 1 / res[0]
@@ -53,10 +54,12 @@ def test_mpm_particle_list_no_leakage():
     mpm.step()
 
 
-@test_utils.test(require=[ti.extension.sparse, ti.extension.packed],
-                 exclude=[ti.metal],
-                 device_memory_GB=1.0,
-                 packed=True)
+@test_utils.test(
+    require=[ti.extension.sparse, ti.extension.packed],
+    exclude=[ti.metal],
+    device_memory_GB=1.0,
+    packed=True,
+)
 def test_mpm_particle_list_no_leakage_packed():
     # By default Taichi will allocate 0.5 GB for testing.
     mpm = MPMSolver(res=(128, 128))

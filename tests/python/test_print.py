@@ -8,9 +8,10 @@ from tests import test_utils
 # Just making sure it does not crash
 # Metal doesn't support print() or 64-bit data
 # While OpenGL does support print, but not 64-bit data
-@pytest.mark.parametrize('dt', [ti.i32, ti.f32, ti.i64, ti.f64])
+@pytest.mark.parametrize("dt", [ti.i32, ti.f32, ti.i64, ti.f64])
 @test_utils.test(exclude=[ti.metal, ti.opengl, ti.vulkan])
 def test_print(dt):
+
     @ti.kernel
     def func():
         print(ti.cast(1234.5, dt))
@@ -25,6 +26,7 @@ def test_print(dt):
 #       is that, the content shows on console is *correct*.
 @test_utils.test(exclude=[ti.vulkan])  # TODO(changyu): enable ti.vulkan
 def test_multi_print():
+
     @ti.kernel
     def func(x: ti.i32, y: ti.f32):
         print(x, 1234.5, y)
@@ -35,11 +37,12 @@ def test_multi_print():
 
 @test_utils.test(exclude=[ti.vulkan])  # TODO(changyu): enable ti.vulkan
 def test_print_string():
+
     @ti.kernel
     def func(x: ti.i32, y: ti.f32):
         # make sure `%` doesn't break vprintf:
-        print('hello, world! %s %d %f', 233, y)
-        print('cool', x, 'well', y)
+        print("hello, world! %s %d %f", 233, y)
+        print("cool", x, "well", y)
 
     func(666, 233.3)
     ti.sync()
@@ -54,7 +57,7 @@ def test_print_matrix():
     def func(k: ti.f32):
         x[None][0, 0] = -1.0
         y[2] += 1.0
-        print('hello', x[None], 'world!')
+        print("hello", x[None], "world!")
         print(y[2] * k, x[None] / k, y[2])
 
     func(233.3)
@@ -63,19 +66,20 @@ def test_print_matrix():
 
 @test_utils.test(exclude=[ti.vulkan])  # TODO(changyu): enable ti.vulkan
 def test_print_sep_end():
+
     @ti.kernel
     def func():
         # hello 42 world!
-        print('hello', 42, 'world!')
+        print("hello", 42, "world!")
         # hello 42 Taichi 233 world!
-        print('hello', 42, 'Tai', end='')
-        print('chi', 233, 'world!')
+        print("hello", 42, "Tai", end="")
+        print("chi", 233, "world!")
         # hello42world!
-        print('hello', 42, 'world!', sep='')
+        print("hello", 42, "world!", sep="")
         # '  ' (with no newline)
-        print('  ', end='')
+        print("  ", end="")
         # 'helloaswd42qwer'
-        print('  ', 42, sep='aswd', end='qwer')
+        print("  ", 42, sep="aswd", end="qwer")
 
     func()
     ti.sync()
@@ -89,7 +93,7 @@ def test_print_multiple_threads():
     def func(k: ti.f32):
         for i in x:
             x[i] = i * k
-            print('x[', i, ']=', x[i])
+            print("x[", i, "]=", x[i])
 
     func(0.1)
     ti.sync()
@@ -131,6 +135,7 @@ def test_python_scope_print_field():
 
 @test_utils.test(arch=ti.cpu)
 def test_print_string_format():
+
     @ti.kernel
     def func(k: ti.f32):
         print(123)
@@ -147,12 +152,13 @@ def test_print_string_format():
 
 @test_utils.test(arch=ti.cpu)
 def test_print_fstring():
+
     def foo1(x):
         return x + 1
 
     @ti.kernel
     def func(i: ti.i32, f: ti.f32):
-        print(f'qwe {foo1(1)} {foo1(2) * 2 - 1} {i} {f} {4} {True} {1.23}')
+        print(f"qwe {foo1(1)} {foo1(2) * 2 - 1} {i} {f} {4} {True} {1.23}")
 
     func(123, 4.56)
     ti.sync()

@@ -65,6 +65,7 @@ def test_ext_arr():
             x[i] = v[i] + i
 
     import numpy as np
+
     v = np.ones((N, ), dtype=np.float32) * 10
     set_f32(v)
     for i in range(N):

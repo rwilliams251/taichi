@@ -395,8 +395,8 @@ def test_triple_for_loops_bls():
     triple_for.grad()
 
     for i in range(N):
-        assert a.grad[i] == 2 * M * min(min(N - i - 1, i + 1), M) * \
-               2**(M - 1) * N
+        assert a.grad[i] == 2 * M * min(min(N - i - 1, i + 1),
+                                        M) * 2**(M - 1) * N
     for i in range(N):
         assert b.grad[i * 2] == min(min(N - i - 1, i + 1), M) * N
         assert b.grad[i * 2 + 1] == min(min(N - i - 1, i + 1), M) * N

@@ -124,7 +124,8 @@ def render():
         pos = camera_pos
         d = ti.Vector([
             (2 * fov * (u + ti.random()) / res[1] - fov * aspect_ratio - 1e-5),
-            2 * fov * (v + ti.random()) / res[1] - fov - 1e-5, -1.0
+            2 * fov * (v + ti.random()) / res[1] - fov - 1e-5,
+            -1.0,
         ])
         d = d.normalized()
 
@@ -151,7 +152,7 @@ def render():
         color_buffer[u, v] += throughput * hit_light
 
 
-gui = ti.GUI('SDF Path Tracer', res)
+gui = ti.GUI("SDF Path Tracer", res)
 last_t = 0
 for i in range(50000):
     render()

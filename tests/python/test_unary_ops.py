@@ -6,7 +6,7 @@ from tests import test_utils
 
 
 def _test_op(dt, taichi_op, np_op):
-    print('arch={} default_fp={}'.format(
+    print("arch={} default_fp={}".format(
         ti.lang.impl.current_cfg().arch,
         ti.lang.impl.current_cfg().default_fp))
     n = 4
@@ -27,10 +27,9 @@ def _test_op(dt, taichi_op, np_op):
         if dt == ti.f64:
             assert abs(np_op(float(f(i))) - val[i]) < 1e-15
         else:
-            assert abs(np_op(float(f(i))) -
-                       val[i]) < 1e-6 if ti.lang.impl.current_cfg(
-                       ).arch != ti.opengl and ti.lang.impl.current_cfg(
-                       ).arch != ti.vulkan else 1e-5
+            assert (abs(np_op(float(f(i))) - val[i]) < 1e-6
+                    if ti.lang.impl.current_cfg().arch != ti.opengl
+                    and ti.lang.impl.current_cfg().arch != ti.vulkan else 1e-5)
 
 
 op_pairs = [

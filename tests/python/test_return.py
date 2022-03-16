@@ -6,6 +6,7 @@ from tests import test_utils
 
 @test_utils.test()
 def test_return_without_type_hint():
+
     @ti.kernel
     def kernel():
         return 1
@@ -31,6 +32,7 @@ def test_const_func_ret():
 
 @test_utils.test()
 def _test_binary_func_ret(dt1, dt2, dt3, castor):
+
     @ti.kernel
     def func(a: dt1, b: dt2) -> dt3:
         return a * b
@@ -58,6 +60,7 @@ def test_binary_func_ret():
 
 @test_utils.test()
 def test_return_in_static_if():
+
     @ti.kernel
     def foo(a: ti.template()) -> ti.i32:
         if ti.static(a == 1):
@@ -73,6 +76,7 @@ def test_return_in_static_if():
 
 @test_utils.test()
 def test_func_multiple_return():
+
     @ti.func
     def safe_sqrt(a):
         if a > 0:
@@ -86,12 +90,14 @@ def test_func_multiple_return():
 
     with pytest.raises(
             ti.TaichiCompilationError,
-            match='Return inside non-static if/for is not supported'):
+            match="Return inside non-static if/for is not supported",
+    ):
         kern(-233)
 
 
 @test_utils.test()
 def test_return_inside_static_for():
+
     @ti.kernel
     def foo() -> ti.i32:
         a = 0
@@ -107,7 +113,8 @@ def test_return_inside_static_for():
 def test_return_inside_non_static_for():
     with pytest.raises(
             ti.TaichiCompilationError,
-            match='Return inside non-static if/for is not supported'):
+            match="Return inside non-static if/for is not supported",
+    ):
 
         @ti.kernel
         def foo() -> ti.i32:
@@ -121,8 +128,8 @@ def test_return_inside_non_static_for():
 def test_kernel_no_return():
     with pytest.raises(
             ti.TaichiSyntaxError,
-            match=
-            "Kernel has a return type but does not have a return statement"):
+            match="Kernel has a return type but does not have a return statement",
+    ):
 
         @ti.kernel
         def foo() -> ti.i32:
@@ -135,8 +142,8 @@ def test_kernel_no_return():
 def test_func_no_return():
     with pytest.raises(
             ti.TaichiCompilationError,
-            match=
-            "Function has a return type but does not have a return statement"):
+            match="Function has a return type but does not have a return statement",
+    ):
 
         @ti.func
         def bar() -> ti.i32:

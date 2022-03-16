@@ -13,6 +13,7 @@ class Ndarray:
         dtype (DataType): Data type of each value.
         shape (Tuple[int]): Shape of the Ndarray.
     """
+
     def __init__(self, dtype, arr_shape):
         self.host_accessor = None
         self.dtype = cook_dtype(dtype)
@@ -66,8 +67,8 @@ class Ndarray:
         Args:
             val (Union[int, float]): Value to fill.
         """
-        if impl.current_cfg().arch != _ti_core.Arch.cuda and impl.current_cfg(
-        ).arch != _ti_core.Arch.x64:
+        if (impl.current_cfg().arch != _ti_core.Arch.cuda
+                and impl.current_cfg().arch != _ti_core.Arch.x64):
             self._fill_by_kernel(val)
         elif self.dtype == primitive_types.f32:
             self.arr.fill_float(val)
@@ -86,6 +87,7 @@ class Ndarray:
         """
         arr = np.zeros(shape=self.arr.shape, dtype=to_numpy_type(self.dtype))
         from taichi._kernels import ndarray_to_ext_arr  # pylint: disable=C0415
+
         ndarray_to_ext_arr(self, arr)
         impl.get_runtime().sync()
         return arr
@@ -97,8 +99,8 @@ class Ndarray:
             numpy.ndarray: The result numpy array.
         """
         arr = np.zeros(shape=self.arr.shape, dtype=to_numpy_type(self.dtype))
-        from taichi._kernels import \
-            ndarray_matrix_to_ext_arr  # pylint: disable=C0415
+        from taichi._kernels import ndarray_matrix_to_ext_arr  # pylint: disable=C0415
+
         ndarray_matrix_to_ext_arr(self, arr, as_vector)
         impl.get_runtime().sync()
         return arr
@@ -115,10 +117,11 @@ class Ndarray:
             raise ValueError(
                 f"Mismatch shape: {tuple(self.arr.shape)} expected, but {tuple(arr.shape)} provided"
             )
-        if hasattr(arr, 'contiguous'):
+        if hasattr(arr, "contiguous"):
             arr = arr.contiguous()
 
         from taichi._kernels import ext_arr_to_ndarray  # pylint: disable=C0415
+
         ext_arr_to_ndarray(arr, self)
         impl.get_runtime().sync()
 
@@ -134,11 +137,11 @@ class Ndarray:
             raise ValueError(
                 f"Mismatch shape: {tuple(self.arr.shape)} expected, but {tuple(arr.shape)} provided"
             )
-        if hasattr(arr, 'contiguous'):
+        if hasattr(arr, "contiguous"):
             arr = arr.contiguous()
 
-        from taichi._kernels import \
-            ext_arr_to_ndarray_matrix  # pylint: disable=C0415
+        from taichi._kernels import ext_arr_to_ndarray_matrix  # pylint: disable=C0415
+
         ext_arr_to_ndarray_matrix(arr, self, as_vector)
         impl.get_runtime().sync()
 
@@ -172,6 +175,7 @@ class Ndarray:
         assert isinstance(other, Ndarray)
         assert tuple(self.arr.shape) == tuple(other.arr.shape)
         from taichi._kernels import ndarray_to_ndarray  # pylint: disable=C0415
+
         ndarray_to_ndarray(self, other)
         impl.get_runtime().sync()
 
@@ -213,6 +217,7 @@ class ScalarNdarray(Ndarray):
         dtype (DataType): Data type of each value.
         shape (Tuple[int]): Shape of the ndarray.
     """
+
     def __init__(self, dtype, arr_shape):
         super().__init__(dtype, arr_shape)
         self.shape = tuple(self.arr.shape)
@@ -246,13 +251,15 @@ class ScalarNdarray(Ndarray):
 
     def _fill_by_kernel(self, val):
         from taichi._kernels import fill_ndarray  # pylint: disable=C0415
+
         fill_ndarray(self, val)
 
     def __repr__(self):
-        return '<ti.ndarray>'
+        return "<ti.ndarray>"
 
 
 class NdarrayHostAccessor:
+
     def __init__(self, ndarray):
         if _ti_core.is_real(ndarray.dtype):
 
@@ -261,11 +268,13 @@ class NdarrayHostAccessor:
 
             def setter(value, *key):
                 ndarray.write_float(key, value)
+
         else:
             if _ti_core.is_signed(ndarray.dtype):
 
                 def getter(*key):
                     return ndarray.read_int(key)
+
             else:
 
                 def getter(*key):
@@ -285,6 +294,7 @@ class NdarrayHostAccess:
         indices_first (Tuple[Int]): Indices of first-level access (coordinates in the field).
         indices_second (Tuple[Int]): Indices of second-level access (indices in the vector/matrix).
     """
+
     def __init__(self, arr, indices_first, indices_second):
         self.ndarr = arr
         self.arr = arr.arr

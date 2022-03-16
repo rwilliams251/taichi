@@ -9,15 +9,17 @@ benchmark_suites = [MicroBenchmark]
 
 
 class BenchmarkInfo:
+
     def __init__(self):
         """init with commit info"""
         self.commit_hash = ti_core.get_commit_hash()
         self.datetime = datatime_with_format()
         self.suites = {}
-        print(f'commit_hash = {self.commit_hash}')
+        print(f"commit_hash = {self.commit_hash}")
 
 
 class BenchmarkSuites:
+
     def __init__(self):
         self._suites = []
         for suite in benchmark_suites:
@@ -27,7 +29,7 @@ class BenchmarkSuites:
         for suite in self._suites:
             suite.run()
 
-    def save(self, benchmark_dir='./'):
+    def save(self, benchmark_dir="./"):
         for suite in self._suites:
             suite_dir = os.path.join(benchmark_dir, suite.suite_name)
             os.makedirs(suite_dir, exist_ok=True)
@@ -42,21 +44,21 @@ class BenchmarkSuites:
 
 def main():
 
-    benchmark_dir = os.path.join(os.getcwd(), 'results')
+    benchmark_dir = os.path.join(os.getcwd(), "results")
     os.makedirs(benchmark_dir, exist_ok=True)
 
-    #init & run
+    # init & run
     info = BenchmarkInfo()
     suites = BenchmarkSuites()
     suites.run()
-    #save benchmark results & info
+    # save benchmark results & info
     suites.save(benchmark_dir)
     info.suites = suites.get_suites_info()
-    info_path = os.path.join(benchmark_dir, '_info.json')
+    info_path = os.path.join(benchmark_dir, "_info.json")
     info_str = dump2json(info)
-    with open(info_path, 'w') as f:
+    with open(info_path, "w") as f:
         print(info_str, file=f)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

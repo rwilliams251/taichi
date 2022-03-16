@@ -15,10 +15,9 @@ object-oriented programming (OOP).
 For convenience, let's call the hybrid scheme **objective data-oriented
 programming** (ODOP).
 
-
 ## Data-oriented classes
 
-If you need to define a **Taichi kernel** as a Python class member function, please decorate the class with a `@ti.data_oriented` decorator. You can then define `ti.kernel`s and `ti.func`s in your *data-oriented* Python class.
+If you need to define a **Taichi kernel** as a Python class member function, please decorate the class with a `@ti.data_oriented` decorator. You can then define `ti.kernel`s and `ti.func`s in your _data-oriented_ Python class.
 
 :::note
 The first argument of the function should be the class instance ("`self`"), unless you are defining a `@staticmethod`.
@@ -74,6 +73,7 @@ print(a.temp)  # [1 1 1 1 1 1 1 1]
 ```
 
 Another memory recycling example:
+
 ```python
 import taichi as ti
 
@@ -109,14 +109,14 @@ a.call_func()
 print(a.y)  # [ 5. 13. 21. 29.]
 ```
 
-
 ## Integrating features from the Python classes
 
 ### Inheritance of data-oriented classes
 
-The *data-oriented* property will be automatically carried beyond the Python class inheriting. This means the **Taichi Kernel** could be called while any of the ancestor classes are decorated by the `@ti.data_oriented` decorator.
+The _data-oriented_ property will be automatically carried beyond the Python class inheriting. This means the **Taichi Kernel** could be called while any of the ancestor classes are decorated by the `@ti.data_oriented` decorator.
 
 An example:
+
 ```python
 import taichi as ti
 
@@ -169,7 +169,7 @@ c = BaseClass()
 
 ### Python-built-in-decorators
 
-Common decorators that are pre-built in Python, `@staticmethod`[^1] and `@classmethod`[^2], could decorate to a **Taichi kernel** in *data-oriented* classes.
+Common decorators that are pre-built in Python, `@staticmethod`[^1] and `@classmethod`[^2], could decorate to a **Taichi kernel** in _data-oriented_ classes.
 
 [^1]: [Python built-in functions - staticmethod](https://docs.python.org/3/library/functions.html#staticmethod)
 [^2]: [Python built-in functions - classmethod](https://docs.python.org/3/library/functions.html#classmethod)
@@ -249,6 +249,7 @@ for i in range(arr.n):
 ```
 
 `classmethod` example:
+
 ```python {12}
 import taichi as ti
 

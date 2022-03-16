@@ -6,8 +6,7 @@ from taichi.lang import impl
 from taichi.lang.enums import Layout
 from taichi.lang.exception import TaichiSyntaxError
 from taichi.lang.field import Field, ScalarField
-from taichi.lang.matrix import (MatrixField, _IntermediateMatrix,
-                                _MatrixFieldElement)
+from taichi.lang.matrix import MatrixField, _IntermediateMatrix, _MatrixFieldElement
 from taichi.lang.struct import StructField
 from taichi.lang.util import python_scope
 from taichi.types import i32
@@ -28,6 +27,7 @@ element_type_name = _ti_core.element_type_name
 
 
 class MeshAttrType:
+
     def __init__(self, name, dtype, reorder, needs_grad):
         self.name = name
         self.dtype = dtype
@@ -36,8 +36,14 @@ class MeshAttrType:
 
 
 class MeshReorderedScalarFieldProxy(ScalarField):
-    def __init__(self, field: ScalarField, mesh_ptr: _ti_core.MeshPtr,
-                 element_type: MeshElementType, g2r_field: ScalarField):
+
+    def __init__(
+        self,
+        field: ScalarField,
+        mesh_ptr: _ti_core.MeshPtr,
+        element_type: MeshElementType,
+        g2r_field: ScalarField,
+    ):
         self.vars = field.vars
         self.host_accessors = field.host_accessors
         self.grad = field.grad
@@ -60,8 +66,14 @@ class MeshReorderedScalarFieldProxy(ScalarField):
 
 
 class MeshReorderedMatrixFieldProxy(MatrixField):
-    def __init__(self, field: MatrixField, mesh_ptr: _ti_core.MeshPtr,
-                 element_type: MeshElementType, g2r_field: ScalarField):
+
+    def __init__(
+        self,
+        field: MatrixField,
+        mesh_ptr: _ti_core.MeshPtr,
+        element_type: MeshElementType,
+        g2r_field: ScalarField,
+    ):
         self.vars = field.vars
         self.host_accessors = field.host_accessors
         self.grad = field.grad
@@ -87,6 +99,7 @@ class MeshReorderedMatrixFieldProxy(MatrixField):
 
 
 class MeshElementField:
+
     def __init__(self, mesh_instance, _type, attr_dict, field_dict, g2r_field):
         self.mesh = mesh_instance
         self._type = _type
@@ -110,17 +123,24 @@ class MeshElementField:
 
     @staticmethod
     def _make_getter(key):
+
         def getter(self):
             if key not in self.getter_dict:
                 if self.attr_dict[key].reorder:
                     if isinstance(self.field_dict[key], ScalarField):
                         self.getter_dict[key] = MeshReorderedScalarFieldProxy(
-                            self.field_dict[key], self.mesh.mesh_ptr,
-                            self._type, self.g2r_field)
+                            self.field_dict[key],
+                            self.mesh.mesh_ptr,
+                            self._type,
+                            self.g2r_field,
+                        )
                     elif isinstance(self.field_dict[key], MatrixField):
                         self.getter_dict[key] = MeshReorderedMatrixFieldProxy(
-                            self.field_dict[key], self.mesh.mesh_ptr,
-                            self._type, self.g2r_field)
+                            self.field_dict[key],
+                            self.mesh.mesh_ptr,
+                            self._type,
+                            self.g2r_field,
+                        )
                 else:
                     self.getter_dict[key] = self.field_dict[key]
             """Get an entry from custom struct by name."""
@@ -184,6 +204,7 @@ class MeshElementField:
 
 
 class MeshElement:
+
     def __init__(self, _type, builder):
         self.builder = builder
         self._type = _type
@@ -207,7 +228,7 @@ class MeshElement:
     ):
         self.builder.elements.add(self._type)
         for key, dtype in members.items():
-            if key in {'verts', 'edges', 'faces', 'cells'}:
+            if key in {"verts", "edges", "faces", "cells"}:
                 raise TaichiSyntaxError(
                     f"'{key}' cannot use as attribute name. It has been reserved as ti.Mesh's keyword."
                 )
@@ -253,6 +274,7 @@ class MeshElement:
 
 # Define the instance of the Mesh Type, stores the field (type and data) info
 class MeshInstance:
+
     def __init__(self, _type):
         self._type = _type
         self.mesh_ptr = _ti_core.create_mesh()
@@ -287,9 +309,12 @@ class MeshInstance:
 
     def set_relation_dynamic(self, rel_type: MeshRelationType,
                              value: ScalarField, offset: ScalarField):
-        _ti_core.set_relation_dynamic(self.mesh_ptr, rel_type,
-                                      value.vars[0].ptr.snode(),
-                                      offset.vars[0].ptr.snode())
+        _ti_core.set_relation_dynamic(
+            self.mesh_ptr,
+            rel_type,
+            value.vars[0].ptr.snode(),
+            offset.vars[0].ptr.snode(),
+        )
 
     def add_mesh_attribute(self, element_type, snode, reorder_type):
         _ti_core.add_mesh_attribute(self.mesh_ptr, element_type, snode,
@@ -297,6 +322,7 @@ class MeshInstance:
 
 
 class MeshMetadata:
+
     def __init__(self, data):
         self.num_patches = data["num_patches"]
 
@@ -367,11 +393,12 @@ class MeshMetadata:
 
 # Define the Mesh Type, stores the field type info
 class MeshBuilder:
+
     def __init__(self, topology):
         if not lang.misc.is_extension_supported(impl.current_cfg().arch,
                                                 lang.extension.mesh):
-            raise Exception('Backend ' + str(impl.current_cfg().arch) +
-                            ' doesn\'t support MeshTaichi extension')
+            raise Exception("Backend " + str(impl.current_cfg().arch) +
+                            " doesn't support MeshTaichi extension")
 
         self.topology = topology
         self.verts = MeshElement(MeshElementType.Vertex, self)
@@ -397,10 +424,14 @@ class MeshBuilder:
 
             element_name = element_type_name(element)
             setattr(
-                instance, element_name,
+                instance,
+                element_name,
                 getattr(self, element_name).build(
-                    instance, metadata.num_elements[element],
-                    metadata.element_fields[element]["g2r"]))
+                    instance,
+                    metadata.num_elements[element],
+                    metadata.element_fields[element]["g2r"],
+                ),
+            )
             instance.fields[element] = getattr(instance, element_name)
 
             instance.set_owned_offset(
@@ -421,20 +452,24 @@ class MeshBuilder:
                 relation_by_orders(from_order, to_order))
             if from_order <= to_order:
                 instance.set_relation_dynamic(
-                    rel_type, metadata.relation_fields[rel_type]["value"],
-                    metadata.relation_fields[rel_type]["offset"])
+                    rel_type,
+                    metadata.relation_fields[rel_type]["value"],
+                    metadata.relation_fields[rel_type]["offset"],
+                )
             else:
                 instance.set_relation_fixed(
                     rel_type, metadata.relation_fields[rel_type]["value"])
 
         if "x" in instance.verts.attr_dict:  # pylint: disable=E1101
-            instance.verts.x.from_numpy(metadata.attrs["x"])  # pylint: disable=E1101
+            instance.verts.x.from_numpy(
+                metadata.attrs["x"])  # pylint: disable=E1101
 
         return instance
 
 
 # Mesh First Class
 class Mesh:
+
     def __init__(self):
         pass
 
@@ -466,6 +501,7 @@ def TetMesh():
 
 
 class MeshElementFieldProxy:
+
     def __init__(self, mesh: MeshInstance, element_type: MeshElementType,
                  entry_expr: impl.Expr):
         self.mesh = mesh
@@ -476,26 +512,34 @@ class MeshElementFieldProxy:
         for key, attr in element_field.field_dict.items():
             global_entry_expr = impl.Expr(
                 _ti_core.get_index_conversion(
-                    self.mesh.mesh_ptr, element_type, entry_expr,
-                    ConvType.l2r if element_field.attr_dict[key].reorder else
-                    ConvType.l2g))  # transform index space
+                    self.mesh.mesh_ptr,
+                    element_type,
+                    entry_expr,
+                    ConvType.l2r
+                    if element_field.attr_dict[key].reorder else ConvType.l2g,
+                ))  # transform index space
             global_entry_expr_group = impl.make_expr_group(
                 *tuple([global_entry_expr]))
             if isinstance(attr, MatrixField):
                 setattr(self, key,
                         _MatrixFieldElement(attr, global_entry_expr_group))
             elif isinstance(attr, StructField):
-                raise RuntimeError('ti.Mesh has not support StructField yet')
+                raise RuntimeError("ti.Mesh has not support StructField yet")
             else:  # isinstance(attr, Field)
                 var = attr._get_field_members()[0].ptr
                 setattr(
-                    self, key,
+                    self,
+                    key,
                     impl.Expr(_ti_core.subscript(var,
-                                                 global_entry_expr_group)))
+                                                 global_entry_expr_group)),
+                )
 
         for element_type in self.mesh._type.elements:
-            setattr(self, element_type_name(element_type),
-                    impl.mesh_relation_access(self.mesh, self, element_type))
+            setattr(
+                self,
+                element_type_name(element_type),
+                impl.mesh_relation_access(self.mesh, self, element_type),
+            )
 
     @property
     def ptr(self):
@@ -511,8 +555,13 @@ class MeshElementFieldProxy:
 
 
 class MeshRelationAccessProxy:
-    def __init__(self, mesh: MeshInstance, from_index: impl.Expr,
-                 to_element_type: MeshElementType):
+
+    def __init__(
+        self,
+        mesh: MeshInstance,
+        from_index: impl.Expr,
+        to_element_type: MeshElementType,
+    ):
         self.mesh = mesh
         self.from_index = from_index
         self.to_element_type = to_element_type
@@ -525,10 +574,12 @@ class MeshRelationAccessProxy:
 
     def subscript(self, *indices):
         assert len(indices) == 1
-        entry_expr = _ti_core.get_relation_access(self.mesh.mesh_ptr,
-                                                  self.from_index.ptr,
-                                                  self.to_element_type,
-                                                  impl.Expr(indices[0]).ptr)
+        entry_expr = _ti_core.get_relation_access(
+            self.mesh.mesh_ptr,
+            self.from_index.ptr,
+            self.to_element_type,
+            impl.Expr(indices[0]).ptr,
+        )
         entry_expr.type_check(impl.get_runtime().prog.config)
         return MeshElementFieldProxy(self.mesh, self.to_element_type,
                                      entry_expr)

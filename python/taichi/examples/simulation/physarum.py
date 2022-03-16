@@ -1,6 +1,6 @@
-'''Physarum simulation example.
+"""Physarum simulation example.
 
-See https://sagejenson.com/physarum for the details.'''
+See https://sagejenson.com/physarum for the details."""
 
 import numpy as np
 
@@ -69,10 +69,10 @@ def step(phase: ti.i32):
 
 
 print("[Hint] Press A/Z to change the simulation speed.")
-gui = ti.GUI('Physarum')
+gui = ti.GUI("Physarum")
 init()
 i = 0
-step_per_frame = gui.slider('step_per_frame', 1, 100, 1)
+step_per_frame = gui.slider("step_per_frame", 1, 100, 1)
 while gui.running and not gui.get_event(gui.ESCAPE):
     for _ in range(int(step_per_frame.value)):
         step(i % 2)

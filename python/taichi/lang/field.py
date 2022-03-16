@@ -14,6 +14,7 @@ class Field:
     Args:
         vars (List[Expr]): Field members.
     """
+
     def __init__(self, _vars):
         self.vars = _vars
         self.host_accessors = None
@@ -164,11 +165,12 @@ class Field:
             other (Field): The source field.
         """
         if not isinstance(other, Field):
-            raise TypeError('Cannot copy from a non-field object')
+            raise TypeError("Cannot copy from a non-field object")
         if self.shape != other.shape:
             raise ValueError(f"ti.field shape {self.shape} does not match"
                              f" the source field shape {other.shape}")
         from taichi._kernels import tensor_to_tensor  # pylint: disable=C0415
+
         tensor_to_tensor(self, other)
 
     @python_scope
@@ -197,7 +199,7 @@ class Field:
         if taichi.lang.impl.inside_kernel():
             return self.__repr__()  # make pybind11 happy, see Matrix.__str__
         if self._snode.ptr is None:
-            return '<Field: Definition of this field is incomplete>'
+            return "<Field: Definition of this field is incomplete>"
         return str(self.to_numpy())
 
     def _pad_key(self, key):
@@ -226,12 +228,14 @@ class ScalarField(Field):
     Args:
         var (Expr): Field member.
     """
+
     def __init__(self, var):
         super().__init__([var])
 
     @python_scope
     def fill(self, val):
         from taichi._kernels import fill_tensor  # pylint: disable=C0415
+
         fill_tensor(self, val)
 
     @python_scope
@@ -239,8 +243,10 @@ class ScalarField(Field):
         if dtype is None:
             dtype = to_numpy_type(self.dtype)
         import numpy as np  # pylint: disable=C0415
+
         arr = np.zeros(shape=self.shape, dtype=dtype)
         from taichi._kernels import tensor_to_ext_arr  # pylint: disable=C0415
+
         tensor_to_ext_arr(self, arr)
         taichi.lang.runtime_ops.sync()
         return arr
@@ -254,6 +260,7 @@ class ScalarField(Field):
                           dtype=to_pytorch_type(self.dtype),
                           device=device)
         from taichi._kernels import tensor_to_ext_arr  # pylint: disable=C0415
+
         tensor_to_ext_arr(self, arr)
         taichi.lang.runtime_ops.sync()
         return arr
@@ -267,9 +274,10 @@ class ScalarField(Field):
             if self.shape[i] != arr.shape[i]:
                 raise ValueError(f"ti.field shape {self.shape} does not match"
                                  f" the numpy array shape {arr.shape}")
-        if hasattr(arr, 'contiguous'):
+        if hasattr(arr, "contiguous"):
             arr = arr.contiguous()
         from taichi._kernels import ext_arr_to_tensor  # pylint: disable=C0415
+
         ext_arr_to_tensor(arr, self)
         taichi.lang.runtime_ops.sync()
 
@@ -285,10 +293,11 @@ class ScalarField(Field):
 
     def __repr__(self):
         # make interactive shell happy, prevent materialization
-        return '<ti.field>'
+        return "<ti.field>"
 
 
 class SNodeHostAccessor:
+
     def __init__(self, snode):
         if _ti_core.is_real(snode.data_type()):
 
@@ -299,12 +308,14 @@ class SNodeHostAccessor:
             def setter(value, *key):
                 assert len(key) == _ti_core.get_max_num_indices()
                 snode.write_float(key, value)
+
         else:
             if _ti_core.is_signed(snode.data_type()):
 
                 def getter(*key):
                     assert len(key) == _ti_core.get_max_num_indices()
                     return snode.read_int(key)
+
             else:
 
                 def getter(*key):
@@ -320,6 +331,7 @@ class SNodeHostAccessor:
 
 
 class SNodeHostAccess:
+
     def __init__(self, accessor, key):
         self.accessor = accessor
         self.key = key

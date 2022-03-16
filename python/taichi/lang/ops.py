@@ -15,12 +15,12 @@ unary_ops = []
 def stack_info():
     s = traceback.extract_stack()[3:-1]
     for i, l in enumerate(s):
-        if 'taichi_ast_generator' in l:
+        if "taichi_ast_generator" in l:
             s = s[i + 1:]
             break
-    raw = ''.join(traceback.format_list(s))
+    raw = "".join(traceback.format_list(s))
     # remove the confusing last line
-    return '\n'.join(raw.split('\n')[:-5]) + '\n'
+    return "\n".join(raw.split("\n")[:-5]) + "\n"
 
 
 def is_taichi_expr(a):
@@ -32,6 +32,7 @@ def wrap_if_not_expr(a):
 
 
 def unary(foo):
+
     @functools.wraps(foo)
     def imp_foo(x):
         return foo(x)
@@ -49,6 +50,7 @@ binary_ops = []
 
 
 def binary(foo):
+
     @functools.wraps(foo)
     def imp_foo(x, y):
         return foo(x, y)
@@ -73,6 +75,7 @@ ternary_ops = []
 
 
 def ternary(foo):
+
     @functools.wraps(foo)
     def abc_foo(a, b, c):
         return foo(a, b, c)
@@ -103,6 +106,7 @@ writeback_binary_ops = []
 
 
 def writeback_binary(foo):
+
     @functools.wraps(foo)
     def imp_foo(x, y):
         return foo(x, wrap_if_not_expr(y))
@@ -113,7 +117,7 @@ def writeback_binary(foo):
             return a._element_wise_writeback_binary(imp_foo, b)
         if is_taichi_class(b):
             raise TaichiSyntaxError(
-                f'cannot augassign taichi class {type(b)} to scalar expr')
+                f"cannot augassign taichi class {type(b)} to scalar expr")
         else:
             return imp_foo(a, b)
 
@@ -180,7 +184,7 @@ def bit_cast(obj, dtype):
     """
     dtype = cook_dtype(dtype)
     if is_taichi_class(obj):
-        raise ValueError('Cannot apply bit_cast on Taichi classes')
+        raise ValueError("Cannot apply bit_cast on Taichi classes")
     else:
         return expr.Expr(_ti_core.bits_cast(expr.Expr(obj).ptr, dtype))
 
@@ -352,6 +356,7 @@ def rsqrt(x):
     Returns:
         The reciprocal of `sqrt(x)`.
     """
+
     def _rsqrt(x):
         return 1 / math.sqrt(x)
 
@@ -699,6 +704,7 @@ def mod(x1, x2):
         >>> test()
         [1.0, 0.0, 4.0]
     """
+
     def expr_python_mod(a, b):
         # a % b = a - (a // b) * b
         quotient = expr.Expr(_ti_core.expr_floordiv(a, b))
@@ -848,6 +854,7 @@ def raw_div(x1, x2):
         >>>     z = 4.0
         >>>     print(raw_div(x, z))  # 1.25
     """
+
     def c_div(a, b):
         if isinstance(a, int) and isinstance(b, int):
             return a // b
@@ -877,6 +884,7 @@ def raw_mod(x1, x2):
         >>>     print(ti.mod(-4, 3))  # 2
         >>>     print(ti.raw_mod(-4, 3))  # -1
     """
+
     def c_mod(x, y):
         return x - y * int(float(x) / y)
 
@@ -1421,9 +1429,36 @@ def ti_all(a):
 
 
 __all__ = [
-    "acos", "asin", "atan2", "atomic_and", "atomic_or", "atomic_xor",
-    "atomic_max", "atomic_sub", "atomic_min", "atomic_add", "bit_cast",
-    "bit_shr", "cast", "ceil", "cos", "exp", "floor", "log", "random",
-    "raw_mod", "raw_div", "round", "rsqrt", "sin", "sqrt", "tan", "tanh",
-    "max", "min", "select", "abs", "pow"
+    "acos",
+    "asin",
+    "atan2",
+    "atomic_and",
+    "atomic_or",
+    "atomic_xor",
+    "atomic_max",
+    "atomic_sub",
+    "atomic_min",
+    "atomic_add",
+    "bit_cast",
+    "bit_shr",
+    "cast",
+    "ceil",
+    "cos",
+    "exp",
+    "floor",
+    "log",
+    "random",
+    "raw_mod",
+    "raw_div",
+    "round",
+    "rsqrt",
+    "sin",
+    "sqrt",
+    "tan",
+    "tanh",
+    "max",
+    "min",
+    "select",
+    "abs",
+    "pow",
 ]

@@ -47,7 +47,7 @@ unary_func_table = [
 ]
 
 
-@pytest.mark.parametrize('ti_func,np_func', binary_func_table)
+@pytest.mark.parametrize("ti_func,np_func", binary_func_table)
 def test_python_scope_vector_binary(ti_func, np_func):
     ti.init()
     x = ti.Vector([2, 3])
@@ -60,7 +60,7 @@ def test_python_scope_vector_binary(ti_func, np_func):
     assert test_utils.allclose(result, expected)
 
 
-@pytest.mark.parametrize('ti_func,np_func', unary_func_table)
+@pytest.mark.parametrize("ti_func,np_func", unary_func_table)
 def test_python_scope_vector_unary(ti_func, np_func):
     ti.init()
     x = ti.Vector([2, 3] if ti_func in
@@ -101,6 +101,7 @@ def test_python_scope_linalg():
 
 @test_utils.test(arch=[ti.x64, ti.cuda, ti.metal])
 def test_16_min_max():
+
     @ti.kernel
     def min_u16(a: ti.u16, b: ti.u16) -> ti.u16:
         return ti.min(a, b)
@@ -126,6 +127,7 @@ def test_16_min_max():
 
 @test_utils.test(exclude=[ti.opengl, ti.cc])
 def test_32_min_max():
+
     @ti.kernel
     def min_u32(a: ti.u32, b: ti.u32) -> ti.u32:
         return ti.min(a, b)
@@ -151,6 +153,7 @@ def test_32_min_max():
 
 @test_utils.test(arch=[ti.cpu, ti.cuda])
 def test_64_min_max():
+
     @ti.kernel
     def min_u64(a: ti.u64, b: ti.u64) -> ti.u64:
         return ti.min(a, b)
@@ -176,6 +179,7 @@ def test_64_min_max():
 
 @test_utils.test()
 def test_min_max_vector_starred():
+
     @ti.kernel
     def min_starred() -> ti.i32:
         a = ti.Vector([1, 2, 3])

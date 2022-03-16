@@ -189,6 +189,7 @@ def test_index_mismatch():
 
 @test_utils.test()
 def test_numpy_zero():
+
     @ti.kernel
     def test_numpy(arr: ti.ext_arr()):
         pass
@@ -200,6 +201,7 @@ def test_numpy_zero():
 
 @test_utils.test()
 def test_numpy_struct_for():
+
     @ti.kernel
     def func1(a: ti.any_arr()):
         for i, j in a:

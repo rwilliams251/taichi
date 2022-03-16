@@ -20,13 +20,13 @@ def test_simple_array():
     @ti.kernel
     def set_val():
         for i in range(N):
-            x[i] = -2**i
+            x[i] = -(2**i)
             y[i] = 2**i - 1
 
     @ti.kernel
     def verify_val():
         for i in range(N):
-            assert x[i] == -2**i
+            assert x[i] == -(2**i)
             assert y[i] == 2**i - 1
 
     set_val()
@@ -51,9 +51,15 @@ def test_custom_int_load_and_store():
     z = ti.field(dtype=ci5)
 
     test_case_np = np.array(
-        [[2**12 - 1, 2**14 - 1, -(2**3)], [2**11 - 1, 2**13 - 1, -(2**2)],
-         [0, 0, 0], [123, 4567, 8], [10, 31, 11]],
-        dtype=np.int32)
+        [
+            [2**12 - 1, 2**14 - 1, -(2**3)],
+            [2**11 - 1, 2**13 - 1, -(2**2)],
+            [0, 0, 0],
+            [123, 4567, 8],
+            [10, 31, 11],
+        ],
+        dtype=np.int32,
+    )
 
     ti.root.bit_struct(num_bits=32).place(x, y, z)
     test_case = ti.Vector.field(3, dtype=ti.i32, shape=len(test_case_np))
@@ -95,6 +101,7 @@ def test_custom_int_full_struct():
 
 
 def test_bit_struct():
+
     def test_single_bit_struct(physical_type, compute_type, custom_bits,
                                test_case):
         ti.init(arch=ti.cpu, debug=True)
@@ -129,17 +136,17 @@ def test_bit_struct():
         ti.reset()
 
     test_single_bit_struct(8, ti.i8, [3, 3, 2],
-                           np.array([2**2 - 1, 2**3 - 1, -2**1]))
+                           np.array([2**2 - 1, 2**3 - 1, -(2**1)]))
     test_single_bit_struct(16, ti.i16, [4, 7, 5],
-                           np.array([2**3 - 1, 2**7 - 1, -2**4]))
+                           np.array([2**3 - 1, 2**7 - 1, -(2**4)]))
     test_single_bit_struct(32, ti.i32, [17, 11, 4],
-                           np.array([2**16 - 1, 2**10 - 1, -2**3]))
+                           np.array([2**16 - 1, 2**10 - 1, -(2**3)]))
     test_single_bit_struct(64, ti.i64, [32, 23, 9],
-                           np.array([2**31 - 1, 2**23 - 1, -2**8]))
+                           np.array([2**31 - 1, 2**23 - 1, -(2**8)]))
     test_single_bit_struct(32, ti.i16, [7, 12, 13],
-                           np.array([2**6 - 1, 2**12 - 1, -2**12]))
+                           np.array([2**6 - 1, 2**12 - 1, -(2**12)]))
     test_single_bit_struct(64, ti.i32, [18, 22, 24],
-                           np.array([2**17 - 1, 2**22 - 1, -2**23]))
+                           np.array([2**17 - 1, 2**22 - 1, -(2**23)]))
 
     test_single_bit_struct(16, ti.i16, [5, 5, 6], np.array([15, 5, 20]))
     test_single_bit_struct(32, ti.i32, [10, 10, 12], np.array([11, 19, 2020]))

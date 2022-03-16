@@ -15,6 +15,7 @@ if sys.version_info >= (3, 8):
 
 @test_utils.test()
 def test_binop():
+
     @ti.kernel
     def foo(x: ti.i32, y: ti.i32, a: ti.template()):
         a[0] = x + y
@@ -56,6 +57,7 @@ def test_binop():
 
 @test_utils.test()
 def test_augassign():
+
     @ti.kernel
     def foo(x: ti.i32, y: ti.i32, a: ti.template(), b: ti.template()):
         for i in a:
@@ -103,6 +105,7 @@ def test_augassign():
 
 @test_utils.test()
 def test_unaryop():
+
     @ti.kernel
     def foo(x: ti.i32, a: ti.template()):
         a[0] = +x
@@ -127,6 +130,7 @@ def test_unaryop():
 
 @test_utils.test()
 def test_boolop():
+
     @ti.kernel
     def foo(a: ti.template()):
         a[0] = 0 and 0
@@ -178,6 +182,7 @@ def test_compare_fail():
 
 @test_utils.test()
 def test_single_compare():
+
     @ti.kernel
     def foo(a: ti.template(), b: ti.template(), c: ti.template()):
         for i in ti.static(range(3)):
@@ -208,6 +213,7 @@ def test_single_compare():
 
 @test_utils.test()
 def test_chain_compare():
+
     @ti.kernel
     def foo(a: ti.i32, b: ti.i32, c: ti.template()):
         c[0] = a == b == a
@@ -246,6 +252,7 @@ def test_chain_compare():
 
 @test_utils.test()
 def test_return():
+
     @ti.kernel
     def foo(x: ti.i32) -> ti.i32:
         return x + 1
@@ -261,13 +268,14 @@ def test_format_print():
     def foo():
         a[0] = 1.0
         a[5] = 2.0
-        print('Test if the string.format and fstring print works')
-        print('string.format: a[0]={}, a[5]={}'.format(a[0], a[5]))
-        print(f'fstring: a[0]={a[0]}, a[5]={a[5]}')
+        print("Test if the string.format and fstring print works")
+        print("string.format: a[0]={}, a[5]={}".format(a[0], a[5]))
+        print(f"fstring: a[0]={a[0]}, a[5]={a[5]}")
 
 
 @test_utils.test(print_preprocessed_ir=True)
 def test_if():
+
     @ti.kernel
     def foo(x: ti.i32) -> ti.i32:
         ret = 0
@@ -283,6 +291,7 @@ def test_if():
 
 @test_utils.test(print_preprocessed_ir=True)
 def test_static_if():
+
     @ti.kernel
     def foo(x: ti.template()) -> ti.i32:
         ret = 0
@@ -402,7 +411,7 @@ def test_range_for_three_arguments():
     a = ti.field(ti.i32, shape=(10, ))
 
     with pytest.raises(ti.TaichiCompilationError,
-                       match='Range should have 1 or 2 arguments, found 3'):
+                       match="Range should have 1 or 2 arguments, found 3"):
 
         @ti.kernel
         def foo(x: ti.i32):
@@ -663,6 +672,7 @@ def test_while_continue():
 
 @test_utils.test(print_preprocessed_ir=True)
 def test_func():
+
     @ti.func
     def bar(x):
         return x * x, -x
@@ -683,6 +693,7 @@ def test_func():
 
 @test_utils.test(print_preprocessed_ir=True)
 def test_func_in_python_func():
+
     @ti.func
     def bar(x: ti.template()):
         if ti.static(x):
@@ -709,6 +720,7 @@ def test_func_in_python_func():
 
 @test_utils.test(print_preprocessed_ir=True)
 def test_ifexp():
+
     @ti.kernel
     def foo(x: ti.i32) -> ti.i32:
         return 1 if x else 0
@@ -719,6 +731,7 @@ def test_ifexp():
 
 @test_utils.test(print_preprocessed_ir=True)
 def test_static_ifexp():
+
     @ti.kernel
     def foo(x: ti.template()) -> ti.i32:
         return 1 if ti.static(x) else 0
@@ -748,7 +761,8 @@ def test_static_assign():
 def test_static_assign_element():
     with pytest.raises(
             ti.TaichiCompilationError,
-            match='Static assign cannot be used on elements in arrays'):
+            match="Static assign cannot be used on elements in arrays",
+    ):
 
         @ti.kernel
         def foo():
@@ -761,7 +775,7 @@ def test_static_assign_element():
 @test_utils.test()
 def test_recreate_variable():
     with pytest.raises(ti.TaichiCompilationError,
-                       match='Recreating variables is not allowed'):
+                       match="Recreating variables is not allowed"):
 
         @ti.kernel
         def foo():
@@ -801,12 +815,13 @@ def test_taichi_other_than_ti():
 
 @test_utils.test(require=ti.extension.assertion, debug=True, gdb_trigger=False)
 def test_assert_message():
+
     @ti.kernel
     def func():
         x = 20
-        assert 10 <= x < 20, 'Foo bar'
+        assert 10 <= x < 20, "Foo bar"
 
-    with pytest.raises(RuntimeError, match='Foo bar'):
+    with pytest.raises(RuntimeError, match="Foo bar"):
         func()
 
 
@@ -818,18 +833,18 @@ def test_assert_message_formatted():
     @ti.kernel
     def assert_formatted():
         for i in x:
-            assert x[i] == 0, 'x[%d] expect=%d got=%d' % (i, 0, x[i])
+            assert x[i] == 0, "x[%d] expect=%d got=%d" % (i, 0, x[i])
 
     @ti.kernel
     def assert_float():
         y = 0.5
-        assert y < 0, 'y = %f' % y
+        assert y < 0, "y = %f" % y
 
-    with pytest.raises(RuntimeError, match=r'x\[10\] expect=0 got=42'):
+    with pytest.raises(RuntimeError, match=r"x\[10\] expect=0 got=42"):
         assert_formatted()
     # TODO: note that we are not fully polished to be able to recover from
     # assertion failures...
-    with pytest.raises(RuntimeError, match=r'y = 0.5'):
+    with pytest.raises(RuntimeError, match=r"y = 0.5"):
         assert_float()
 
     # success case
@@ -839,6 +854,7 @@ def test_assert_message_formatted():
 
 @test_utils.test()
 def test_dict():
+
     @ti.kernel
     def foo(x: ti.template()) -> ti.i32:
         a = {1: 2, 3: 4}
@@ -852,6 +868,7 @@ def test_dict():
 
 @test_utils.test()
 def test_listcomp():
+
     @ti.func
     def identity(dt, n: ti.template()):
         return ti.Matrix([[ti.cast(int(i == j), dt) for j in range(n)]
@@ -872,6 +889,7 @@ def test_listcomp():
 
 @test_utils.test()
 def test_dictcomp():
+
     @ti.kernel
     def foo(n: ti.template()) -> ti.i32:
         a = {i: i * i for i in range(n) if i % 3 if i % 2}
@@ -887,6 +905,7 @@ def test_dictcomp():
 
 @test_utils.test()
 def test_dictcomp_fail():
+
     @ti.kernel
     def foo(n: ti.template(), m: ti.template()) -> ti.i32:
         a = {i: i * i for i in range(n) if i % 3 if i % 2}
@@ -899,7 +918,7 @@ def test_dictcomp_fail():
         foo(5, 3)
 
 
-@pytest.mark.skipif(not has_pytorch(), reason='Pytorch not installed.')
+@pytest.mark.skipif(not has_pytorch(), reason="Pytorch not installed.")
 @test_utils.test(arch=[ti.cpu, ti.cuda, ti.opengl])
 def test_ndarray():
     n = 4
@@ -942,6 +961,7 @@ def test_sparse_matrix_builder():
 
 @test_utils.test()
 def test_func_default_value():
+
     @ti.func
     def bar(s, t=1):
         return s + t
@@ -976,7 +996,8 @@ def test_raise():
 
     with pytest.raises(
             ti.TaichiCompilationError,
-            match="Polar decomposition only supports 2D and 3D matrices."):
+            match="Polar decomposition only supports 2D and 3D matrices.",
+    ):
 
         @ti.kernel
         def foo():
@@ -987,6 +1008,7 @@ def test_raise():
 
 @test_utils.test()
 def test_scalar_argument():
+
     @ti.kernel
     def add(a: ti.f32, b: ti.f32) -> ti.f32:
         a = a + b
@@ -997,6 +1019,7 @@ def test_scalar_argument():
 
 @test_utils.test()
 def test_default_template_args_on_func():
+
     @ti.func
     def bar(a: ti.template() = 123):
         return a
@@ -1010,9 +1033,10 @@ def test_default_template_args_on_func():
 
 @test_utils.test()
 def test_grouped_static_for_cast():
+
     @ti.kernel
     def foo() -> ti.f32:
-        ret = 0.
+        ret = 0.0
         for I in ti.static(ti.grouped(ti.ndrange((4, 5), (3, 5), 5))):
             tmp = I.cast(float)
             ret += tmp[2] / 2

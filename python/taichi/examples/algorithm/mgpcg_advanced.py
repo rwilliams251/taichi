@@ -6,20 +6,21 @@ import taichi as ti
 
 @ti.data_oriented
 class MGPCG:
-    '''
-Grid-based MGPCG solver for the possion equation.
+    """
+    Grid-based MGPCG solver for the possion equation.
 
-.. note::
+    .. note::
 
-    This solver only runs on CPU and CUDA backends since it requires the
-    ``pointer`` SNode.
-    '''
+        This solver only runs on CPU and CUDA backends since it requires the
+        ``pointer`` SNode.
+    """
+
     def __init__(self, dim=2, N=512, n_mg_levels=6, real=float):
-        '''
+        """
         :parameter dim: Dimensionality of the fields.
         :parameter N: Grid resolution.
         :parameter n_mg_levels: Number of multigrid levels.
-        '''
+        """
 
         # grid parameters
         self.use_multigrid = True
@@ -31,7 +32,9 @@ Grid-based MGPCG solver for the possion equation.
         self.dim = dim
         self.real = real
 
-        self.N_ext = self.N // 2  # number of ext cells set so that that total grid size is still power of 2
+        self.N_ext = (
+            self.N // 2
+        )  # number of ext cells set so that that total grid size is still power of 2
         self.N_tot = 2 * self.N
 
         # setup sparse simulation data arrays
@@ -47,14 +50,14 @@ Grid-based MGPCG solver for the possion equation.
         self.sum = ti.field(dtype=self.real)  # storage for reductions
 
         indices = ti.ijk if self.dim == 3 else ti.ij
-        self.grid = ti.root.pointer(indices, [self.N_tot // 4]).dense(
-            indices, 4).place(self.x, self.p, self.Ap)
+        self.grid = (ti.root.pointer(indices, [self.N_tot // 4]).dense(
+            indices, 4).place(self.x, self.p, self.Ap))
 
         for l in range(self.n_mg_levels):
-            self.grid = ti.root.pointer(indices,
-                                        [self.N_tot // (4 * 2**l)]).dense(
-                                            indices,
-                                            4).place(self.r[l], self.z[l])
+            self.grid = (ti.root.pointer(indices,
+                                         [self.N_tot // (4 * 2**l)]).dense(
+                                             indices,
+                                             4).place(self.r[l], self.z[l]))
 
         ti.root.place(self.alpha, self.beta, self.sum)
 
@@ -69,11 +72,11 @@ Grid-based MGPCG solver for the possion equation.
 
     @ti.kernel
     def init(self, r: ti.template(), k: ti.template()):
-        '''
+        """
         Set up the solver for $\nabla^2 x = k r$, a scaled Poisson problem.
         :parameter k: (scalar) A scaling factor of the right-hand side.
         :parameter r: (ti.field) Unscaled right-hand side.
-        '''
+        """
         for I in ti.grouped(ti.ndrange(*[self.N] * self.dim)):
             self.init_r(I, r[I] * k)
 
@@ -84,11 +87,11 @@ Grid-based MGPCG solver for the possion equation.
 
     @ti.kernel
     def get_result(self, x: ti.template()):
-        '''
+        """
         Get the solution field.
 
         :parameter x: (ti.field) The field to store the solution
-        '''
+        """
         for I in ti.grouped(ti.ndrange(*[self.N] * self.dim)):
             x[I] = self.get_x(I)
 
@@ -173,14 +176,14 @@ Grid-based MGPCG solver for the possion equation.
               abs_tol=1e-12,
               rel_tol=1e-12,
               verbose=False):
-        '''
+        """
         Solve a Poisson problem.
 
         :parameter max_iters: Specify the maximal iterations. -1 for no limit.
         :parameter eps: Specify a non-zero value to prevent ZeroDivisionError.
         :parameter abs_tol: Specify the absolute tolerance of loss.
         :parameter rel_tol: Specify the tolerance of loss relative to initial loss.
-        '''
+        """
 
         self.reduce(self.r[0], self.r[0])
         initial_rTr = self.sum[None]
@@ -219,7 +222,7 @@ Grid-based MGPCG solver for the possion equation.
             rTr = self.sum[None]
 
             if verbose:
-                print(f'iter {iter}, |residual|_2={math.sqrt(rTr)}')
+                print(f"iter {iter}, |residual|_2={math.sqrt(rTr)}")
 
             if rTr < tol:
                 break
@@ -243,6 +246,7 @@ Grid-based MGPCG solver for the possion equation.
 
 
 class MGPCG_Example(MGPCG):
+
     def __init__(self):
         super().__init__(dim=3, N=128, n_mg_levels=4)
 
@@ -276,9 +280,9 @@ class MGPCG_Example(MGPCG):
         ti.print_kernel_profile_info()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ti.init(kernel_profiler=True)
     solver = MGPCG_Example()
     t = time.time()
     solver.run(verbose=True)
-    print(f'Solver time: {time.time() - t:.3f} s')
+    print(f"Solver time: {time.time() - t:.3f} s")

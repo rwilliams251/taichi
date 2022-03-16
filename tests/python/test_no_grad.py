@@ -27,8 +27,8 @@ def test_no_grad():
 
 @test_utils.test()
 def test_raise_no_gradient():
-    y = ti.field(shape=(), name='y', dtype=ti.f32, needs_grad=True)
-    x = ti.field(shape=(), name='x', dtype=ti.f32)
+    y = ti.field(shape=(), name="y", dtype=ti.f32, needs_grad=True)
+    x = ti.field(shape=(), name="x", dtype=ti.f32)
     z = np.array([1.0])
 
     @ti.kernel
@@ -36,10 +36,9 @@ def test_raise_no_gradient():
         y[None] = x.grad[None] * x.grad[None]
         z[0] = x.grad[None]
 
-    x[None] = 5.
+    x[None] = 5.0
     with pytest.raises(
             ti.TaichiCompilationError,
-            match=
-            'Gradient x.grad has not been placed, check whether `needs_grad=True`'
+            match="Gradient x.grad has not been placed, check whether `needs_grad=True`",
     ):
         func(x)

@@ -28,7 +28,8 @@ edge_table_np = np.array(
         [[3, 0], [-1, -1]],  # Case 14
         [[-1, -1], [-1, -1]],  # Case 15
     ],
-    dtype=np.int32)
+    dtype=np.int32,
+)
 
 pixels = ti.field(float, (N, N))
 
@@ -40,7 +41,7 @@ edge_table.from_numpy(edge_table_np)
 @ti.func
 def gauss(x, sigma):
     # Un-normalized Gaussian distribution
-    return ti.exp(-x**2 / (2 * sigma**2))
+    return ti.exp(-(x**2) / (2 * sigma**2))
 
 
 @ti.kernel
@@ -74,10 +75,14 @@ def march(level: float) -> int:
 
     for i, j in ti.ndrange(N - 1, N - 1):
         case_id = 0
-        if pixels[i, j] > level: case_id |= 1
-        if pixels[i + 1, j] > level: case_id |= 2
-        if pixels[i + 1, j + 1] > level: case_id |= 4
-        if pixels[i, j + 1] > level: case_id |= 8
+        if pixels[i, j] > level:
+            case_id |= 1
+        if pixels[i + 1, j] > level:
+            case_id |= 2
+        if pixels[i + 1, j + 1] > level:
+            case_id |= 4
+        if pixels[i, j + 1] > level:
+            case_id |= 8
 
         for k in range(2):
             if edge_table[case_id, k][0] == -1:
@@ -94,7 +99,7 @@ def march(level: float) -> int:
 
 level = 0.2
 
-gui = ti.GUI('Marching squares')
+gui = ti.GUI("Marching squares")
 while gui.running and not gui.get_event(gui.ESCAPE):
     touch(*gui.get_cursor_pos(), 0.05)
     n_edges = march(level)
@@ -102,6 +107,6 @@ while gui.running and not gui.get_event(gui.ESCAPE):
     gui.set_image(ti.imresize(pixels, *gui.res) / level)
     gui.lines(edge_coords_np[:, 0],
               edge_coords_np[:, 1],
-              color=0xff66cc,
+              color=0xFF66CC,
               radius=1.5)
     gui.show()

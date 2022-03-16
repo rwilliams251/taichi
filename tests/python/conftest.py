@@ -15,8 +15,8 @@ def wanted_arch(req_arch, req_options):
 
 
 def pytest_generate_tests(metafunc):
-    if not getattr(metafunc.function, '__ti_test__', False):
+    if not getattr(metafunc.function, "__ti_test__", False):
         # For test functions not wrapped with @test_utils.test(),
         # fill with empty values to avoid undefined fixtures
-        metafunc.parametrize('req_arch,req_options', [(None, None)],
-                             ids=['none'])
+        metafunc.parametrize("req_arch,req_options", [(None, None)],
+                             ids=["none"])

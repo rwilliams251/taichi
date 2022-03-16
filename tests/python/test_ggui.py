@@ -16,7 +16,7 @@ supported_archs = [ti.vulkan, ti.cuda]
 
 
 def get_temp_png():
-    f, name = tempfile.mkstemp(suffix='.png')
+    f, name = tempfile.mkstemp(suffix=".png")
     os.close(f)
     return name
 
@@ -35,8 +35,8 @@ def verify_image(window, image_name, tolerence=0.1):
         ground_truth_name = f"tests/python/expected/{image_name}.png"
         window.write_image(ground_truth_name)
     else:
-        ground_truth_name = str(
-            pathlib.Path(__file__).parent) + f"/expected/{image_name}.png"
+        ground_truth_name = (str(pathlib.Path(__file__).parent) +
+                             f"/expected/{image_name}.png")
         actual_name = get_temp_png()
         window.write_image(actual_name)
         ground_truth_np = ti.imread(ground_truth_name)
@@ -53,7 +53,7 @@ def verify_image(window, image_name, tolerence=0.1):
 @pytest.mark.skipif(not _ti_core.GGUI_AVAILABLE, reason="GGUI Not Available")
 @test_utils.test(arch=supported_archs)
 def test_geometry_2d():
-    window = ti.ui.Window('test', (640, 480), show_window=False)
+    window = ti.ui.Window("test", (640, 480), show_window=False)
     canvas = window.get_canvas()
 
     # simple circles
@@ -128,33 +128,37 @@ def test_geometry_2d():
 
         canvas.triangles(triangles_positions_0, color=(0, 0, 1))
 
-        canvas.triangles(triangles_positions_1,
-                         per_vertex_color=triangles_colors_1,
-                         indices=triangle_indices_1)
+        canvas.triangles(
+            triangles_positions_1,
+            per_vertex_color=triangles_colors_1,
+            indices=triangle_indices_1,
+        )
 
         canvas.lines(lines_positions_0, width=0.01, color=(0, 1, 0))
 
-        canvas.lines(lines_positions_1,
-                     width=0.01,
-                     per_vertex_color=lines_colors_1,
-                     indices=lines_indices_1)
+        canvas.lines(
+            lines_positions_1,
+            width=0.01,
+            per_vertex_color=lines_colors_1,
+            indices=lines_indices_1,
+        )
 
     for _ in range(RENDER_REPEAT):
         render()
         write_temp_image(window)
     render()
-    if (platform.system() == 'Darwin'):
+    if platform.system() == "Darwin":
         # FIXME: Use lower tolerence when macOS ggui supports wide lines
-        verify_image(window, 'test_geometry_2d', 1.0)
+        verify_image(window, "test_geometry_2d", 1.0)
     else:
-        verify_image(window, 'test_geometry_2d')
+        verify_image(window, "test_geometry_2d")
     window.destroy()
 
 
 @pytest.mark.skipif(not _ti_core.GGUI_AVAILABLE, reason="GGUI Not Available")
 @test_utils.test(arch=supported_archs)
 def test_geometry_3d():
-    window = ti.ui.Window('test', (640, 480), show_window=False)
+    window = ti.ui.Window("test", (640, 480), show_window=False)
     canvas = window.get_canvas()
     scene = ti.ui.Scene()
     camera = ti.ui.make_camera()
@@ -172,9 +176,8 @@ def test_geometry_3d():
         for x, y, z in ti.ndrange(num_per_dim, num_per_dim, num_per_dim):
             i = x * (num_per_dim**2) + y * num_per_dim + z
             gap = 0.01
-            particles_positions_0[i] = ti.Vector(
-                [-0.4, 0, 0.0],
-                dt=ti.f32) + ti.Vector([x, y, z], dt=ti.f32) * gap
+            particles_positions_0[i] = (ti.Vector([-0.4, 0, 0.0], dt=ti.f32) +
+                                        ti.Vector([x, y, z], dt=ti.f32) * gap)
 
     init_particles_0()
 
@@ -189,9 +192,8 @@ def test_geometry_3d():
         for x, y, z in ti.ndrange(num_per_dim, num_per_dim, num_per_dim):
             i = x * (num_per_dim**2) + y * num_per_dim + z
             gap = 0.01
-            particles_positions_1[i] = ti.Vector(
-                [0.2, 0, 0.0],
-                dt=ti.f32) + ti.Vector([x, y, z], dt=ti.f32) * gap
+            particles_positions_1[i] = (ti.Vector([0.2, 0, 0.0], dt=ti.f32) +
+                                        ti.Vector([x, y, z], dt=ti.f32) * gap)
             particles_colors_1[i] = ti.Vector([x, y, z],
                                               dt=ti.f32) / num_per_dim
 
@@ -205,18 +207,53 @@ def test_geometry_3d():
     def init_mesh():
         for i, j, k in ti.ndrange(2, 2, 2):
             index = i * 4 + j * 2 + k
-            vertices[index] = ti.Vector(
-                [-0.1, -0.3, 0.0],
-                dt=ti.f32) + ti.Vector([i, j, k], dt=ti.f32) * 0.25
+            vertices[index] = (ti.Vector([-0.1, -0.3, 0.0], dt=ti.f32) +
+                               ti.Vector([i, j, k], dt=ti.f32) * 0.25)
             colors[index] = ti.Vector([i, j, k], dt=ti.f32)
 
     init_mesh()
     indices = ti.field(ti.i32, shape=36)
-    indices_np = np.array([
-        0, 1, 2, 3, 1, 2, 4, 5, 6, 7, 5, 6, 0, 1, 4, 5, 1, 4, 2, 3, 6, 7, 3, 6,
-        0, 2, 4, 6, 2, 4, 1, 3, 5, 7, 3, 5
-    ],
-                          dtype=np.int32)
+    indices_np = np.array(
+        [
+            0,
+            1,
+            2,
+            3,
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            5,
+            6,
+            0,
+            1,
+            4,
+            5,
+            1,
+            4,
+            2,
+            3,
+            6,
+            7,
+            3,
+            6,
+            0,
+            2,
+            4,
+            6,
+            2,
+            4,
+            1,
+            3,
+            5,
+            7,
+            3,
+            5,
+        ],
+        dtype=np.int32,
+    )
     indices.from_numpy(indices_np)
 
     def render():
@@ -239,14 +276,14 @@ def test_geometry_3d():
         render()
         write_temp_image(window)
     render()
-    verify_image(window, 'test_geometry_3d')
+    verify_image(window, "test_geometry_3d")
     window.destroy()
 
 
 @pytest.mark.skipif(not _ti_core.GGUI_AVAILABLE, reason="GGUI Not Available")
 @test_utils.test(arch=supported_archs)
 def test_set_image():
-    window = ti.ui.Window('test', (640, 480), show_window=False)
+    window = ti.ui.Window("test", (640, 480), show_window=False)
     canvas = window.get_canvas()
 
     img = ti.Vector.field(4, ti.f32, (512, 512))
@@ -265,14 +302,14 @@ def test_set_image():
         render()
         write_temp_image(window)
     render()
-    verify_image(window, 'test_set_image')
+    verify_image(window, "test_set_image")
     window.destroy()
 
 
 @pytest.mark.skipif(not _ti_core.GGUI_AVAILABLE, reason="GGUI Not Available")
 @test_utils.test(arch=supported_archs)
 def test_imgui():
-    window = ti.ui.Window('test', (640, 480), show_window=False)
+    window = ti.ui.Window("test", (640, 480), show_window=False)
 
     def render():
         with window.GUI.sub_window("window 0", 0.1, 0.1, 0.8, 0.2) as w:
@@ -280,13 +317,13 @@ def test_imgui():
             w.text("Hello Again!")
         with window.GUI.sub_window("window 1", 0.1, 0.4, 0.8, 0.2) as w:
             w.button("Press to unlease creativity")
-            w.slider_float('creativity level', 100.0, 0.0, 100.0)
+            w.slider_float("creativity level", 100.0, 0.0, 100.0)
         with window.GUI.sub_window("window 2", 0.1, 0.7, 0.8, 0.2) as w:
-            w.color_edit_3('Heyy', (0, 0, 1))
+            w.color_edit_3("Heyy", (0, 0, 1))
 
     for _ in range(RENDER_REPEAT):
         render()
         write_temp_image(window)
     render()
-    verify_image(window, 'test_imgui')
+    verify_image(window, "test_imgui")
     window.destroy()

@@ -43,8 +43,8 @@ Current FPS will show besides the title of the window. By default, FPS is limite
 We can change this number by setting `gui.fps_limit = the_number_we_want`.
 :::
 
-
 ## Paint on a window
+
 Taichi's GUI supports painting simple geometric objects, such as lines, triangles, rectangles, circles, and text.
 
 :::note
@@ -69,6 +69,7 @@ see the [API docs](https://api-docs.taichi.graphics/autoapi/taichi/ui/gui/index.
 ```python
 gui.circles(pos, radius=3, palette=[0x068587, 0xED553B, 0xEEEEF0], palette_indices=material)
 ```
+
 draws circles with radius of 1.5 and three different colors differed by `material`, an integer array with the same size as
 `pos`. Each integer in `material` indicates which color the associated circle use (i.e. array [0, 1, 2] indicates these three
 circles are colored separately by the first, second, and third color in `palette`.
@@ -78,6 +79,7 @@ circles are colored separately by the first, second, and third color in `palette
 ```python
 gui.lines(begin=X, end=Y, radius=2, color=0x068587)
 ```
+
 draws line segments from X positions to Y positions with width of 2 and color in light blue.
 
 ![lines](../static/assets/lines.png)
@@ -85,6 +87,7 @@ draws line segments from X positions to Y positions with width of 2 and color in
 ```python
 gui.triangles(a=X, b=Y, c=Z, color=0xED553B)
 ```
+
 draws triangles with color in red and three points positioned at X, Y, and Z.
 
 ![triangles](../static/assets/triangles.png)
@@ -104,7 +107,6 @@ hex = ti.rgb_to_hex(rgb)  # np.array([0x66ccff, 0x007fff])
 ```
 
 The return values can be used in GUI drawing APIs.
-
 
 ## Event processing
 
@@ -211,7 +213,6 @@ while True:
 
     mouse_x, mouse_y = gui.get_cursor_pos()
 
-
 ## GUI Widgets
 
 Sometimes it's more intuitive to use widgets like slider or button to control the program variables instead of using chaotic keyboard bindings. Taichi GUI provides a set of widgets for that reason:
@@ -247,12 +248,10 @@ while gui.running:
     gui.show()
 ```
 
-
-
 ## Image I/O
 
 `ti.imwrite(img, filename)` exports an `np.ndarray` or a Taichi field
-(`ti.Matrix.field`,  `ti.Vector.field`, or `ti.field`) to a file with a specified `filename`.
+(`ti.Matrix.field`, `ti.Vector.field`, or `ti.field`) to a file with a specified `filename`.
 
 Same as `ti.GUI.show(filename)`, the format of the exported image is determined by **the suffix of** `filename` as well. Now `ti.imwrite` supports exporting images to `png`, `img` and `jpg` and we recommend using `png`.
 
@@ -308,6 +307,7 @@ ti.imwrite(pixels, f"export_f32.png")
 ```
 
 ## Zero-copying frame buffer
+
 When the GUI resolution (window size) is large, it sometimes becomes difficult to achieve 60 FPS even without any kernel
 invocations between two frames.
 

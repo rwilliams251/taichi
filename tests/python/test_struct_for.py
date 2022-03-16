@@ -298,7 +298,8 @@ def test_struct_for_continue():
     def struct_for_continue() -> ti.i32:
         cnt = 0
         for i in x:
-            if x[i]: continue
+            if x[i]:
+                continue
             cnt += 1
         return cnt
 
@@ -306,7 +307,8 @@ def test_struct_for_continue():
     def range_for_continue() -> ti.i32:
         cnt = 0
         for i in range(n * n):
-            if x[i]: continue
+            if x[i]:
+                continue
             cnt += 1
         return cnt
 

@@ -21,10 +21,10 @@ for i in range(50):
 
     pixels_img = pixels.to_numpy()
     video_manager.write_frame(pixels_img)
-    print(f'\rFrame {i+1}/50 is recorded', end='')
+    print(f"\rFrame {i+1}/50 is recorded", end="")
 
 print()
-print('Exporting .mp4 and .gif videos...')
+print("Exporting .mp4 and .gif videos...")
 video_manager.make_video(gif=True, mp4=True)
 print(f'MP4 video is saved to {video_manager.get_output_filename(".mp4")}')
 print(f'GIF video is saved to {video_manager.get_output_filename(".gif")}')

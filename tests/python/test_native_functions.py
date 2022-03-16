@@ -75,7 +75,9 @@ def test_minmax():
 
     assert np.allclose(
         minimum.to_numpy(),
-        np.minimum(np.minimum(x.to_numpy(), y.to_numpy()), z.to_numpy()))
+        np.minimum(np.minimum(x.to_numpy(), y.to_numpy()), z.to_numpy()),
+    )
     assert np.allclose(
         maximum.to_numpy(),
-        np.maximum(np.maximum(x.to_numpy(), y.to_numpy()), z.to_numpy()))
+        np.maximum(np.maximum(x.to_numpy(), y.to_numpy()), z.to_numpy()),
+    )

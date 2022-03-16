@@ -29,23 +29,21 @@ If we can leverage such "spatial sparsity" and focus computation on the regions 
 we will significantly save storage and computing power.
 
 :::note
-The key to leverage spatial sparsity is to replace *dense* grids with *sparse* grids.
+The key to leverage spatial sparsity is to replace _dense_ grids with _sparse_ grids.
 :::
 
 The traditional sparse spatial data stuctures are [Quadtrees](https://en.wikipedia.org/wiki/Quadtree) (2D) and
 [Octrees](https://en.wikipedia.org/wiki/Octree) (3D). Since dereferencing pointers is relatively costly on modern computer architectures, compared to quadtrees and octrees, it is more performance-friendly to use shallower trees with larger branching factors.
 [VDB](https://www.openvdb.org/) and [SPGrid](http://pages.cs.wisc.edu/~sifakis/papers/SPGrid.pdf) are such examples.
 In Taichi, programmers can compose data structures similar to VDB and SPGrid with SNodes. The advantages of Taichi sparse spatial data structures include
+
 1. Access with indices, which just like accessing a dense data structure.
 2. Automatic parallelization when iterating.
 3. Automatic memory access optimization.
 
-
-
 :::note
 **Backend compatibility**: The LLVM backends (CPU/CUDA) and the Metal backend offer the full functionality of computation on sparse spatial data structures.
 :::
-
 
 :::note
 Sparse matrices are usually **not** implemented in Taichi via sparse spatial data structures. See [sparse matrix](lang/articles/advanced/sparse_matrix.md) instead.
@@ -55,10 +53,10 @@ Sparse matrices are usually **not** implemented in Taichi via sparse spatial dat
 
 Sparse spatial data structures in Taichi are usually composed of `pointer`, `bitmasked`, `dynamic`, and `dense` SNodes. A SNode tree merely composed of `dense` SNodes is not a sparse spatial data structure.
 
-On a sparse spatial data structure, we consider a pixel, voxel, or a grid node to be *active*,
+On a sparse spatial data structure, we consider a pixel, voxel, or a grid node to be _active_,
 if it is allocated and involved in the computation.
-The rest of the grid is simply *inactive*.
-In SNode terms, the *activity* of a leaf or intermediate cell is a boolean value. The activity value of a cell is `True` if and only if the cell is *active*. When writing to an inactive cell, Taichi automatically activates it. Taichi also provides manual manipulation of the activity of a cell, see [Explicitly manipulating and querying sparsity](#explicitly-manipulating-and-querying-sparsity).
+The rest of the grid is simply _inactive_.
+In SNode terms, the _activity_ of a leaf or intermediate cell is a boolean value. The activity value of a cell is `True` if and only if the cell is _active_. When writing to an inactive cell, Taichi automatically activates it. Taichi also provides manual manipulation of the activity of a cell, see [Explicitly manipulating and querying sparsity](#explicitly-manipulating-and-querying-sparsity).
 
 :::note
 Reading an inactive pixel returns zero.
@@ -94,6 +92,7 @@ def print_active():
     #         field x[3, 4] = 0.000000
     #         field x[3, 5] = 0.000000
 ```
+
 The code snippet above creates an 8x8 sparse grid, with the top-level being a 4x4 pointer array (line 2 of `pointer.py`),
 and each pointer pointing to a 2x2 dense block.
 You can write and read the sparse field like a dense field using indices. The below figure shows the active blocks and pixels in green.
@@ -114,8 +113,6 @@ In fact, the sparse field is a SNode tree shown in the following figure. You cou
 
 </center>
 
-
-
 ### Bitmasked SNode
 
 While a null pointer can effectively represent an empty sub-tree, at the leaf level using 64 bits to represent the activity
@@ -125,7 +122,7 @@ the 64-bit pointer pointing to the value would take 8 bytes.
 The fact that storage costs of pointers are higher than the space to store the value themselves
 goes against our goal to use sparse spatial data structures to save space.
 
-To amortize the storage cost of pointers, you could organize pixels in a *blocked* manner
+To amortize the storage cost of pointers, you could organize pixels in a _blocked_ manner
 and let the pointers directly point to the blocks like the data structure defined in `pointer.py`.
 
 One caveat of this design is that pixels in the same `dense` block can no longer change their activity flexibly.
@@ -159,8 +156,8 @@ The code snippet above also creates an 8x8 sparse grid. The only difference betw
 
 </center>
 
-
 The bitmasked SNodes are like dense SNodes with auxiliary activity values.
+
 <center>
 
 ![Bitmasked SNode Tree](https://raw.githubusercontent.com/taichi-dev/public_files/master/taichi/doc/bitmasked_tree.png)
@@ -186,7 +183,6 @@ def make_lists():
             ti.append(x.parent(), i, j * j)  # ti.append(pixel, i, j * j)
         l[i] = ti.length(x.parent(), i)  # [0, 1, 2, 3, 4]
 ```
-
 
 <center>
 
@@ -214,6 +210,7 @@ pixel.place(x)
 ```
 
 #### 1. Activity checking
+
 You can use `ti.is_active(snode, [i, j, ...])` to explicitly query if `snode[i, j, ...]` is active or not.
 
 ```python
@@ -231,8 +228,11 @@ for i in range(12):
     for j in range(12):
         activity_checking(pixel, i, j)
 ```
+
 #### 2. Activation
+
 You can use `ti.activate(snode, [i, j, ...])` to explicitly activate a cell of `snode[i, j, ...]`.
+
 ```python
 @ti.kernel
 def activate_snodes()
@@ -252,6 +252,7 @@ activity_checking(pixel, [7, 3])  # output: 1
 </center>
 
 #### 3. Deactivation
+
 - Use `ti.deactivate(snode, [i, j, ...])` to explicitly deactivate a cell of `snode[i, j, ...]`.
 - Use `snode.deactivate_all()` to deactivate all cells of SNode `snode`. This operation also recursively deactivates all its children.
 - Use `ti.deactivate_all_snodes()` to deactivate all cells of all SNodes with sparsity.
@@ -264,11 +265,13 @@ The programmer must ensure all ancestor containers of `snode[index]` is already 
 Otherwise, this operation results in undefined behavior.
 
 Similarly, `ti.deactivate` ...
+
 - does **not** recursively deactivate all the descendants of a cell.
 - does **not** trigger deactivation of its parent container, even if all the children of the parent container are deactivated.
-:::
+  :::
 
 #### 4. Ancestor index query
+
 You can use `ti.rescale_index(descendant_snode/field, ancestor_snode, index)` to compute the ancestor index given a descendant index.
 
 ```python

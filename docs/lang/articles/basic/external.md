@@ -42,6 +42,7 @@ print(x[3])  # 5
 ```
 
 Likewise, Taichi fields can be **imported from and exported to PyTorch tensors**:
+
 ```python
 @ti.kernel
 def my_kernel():
@@ -59,7 +60,9 @@ print(x[1])  # 7
 print(x[2])  # 3
 print(x[3])  # 5
 ```
+
 When calling `to_torch()`, specify the PyTorch device where the Taichi field is exported using the `device` argument:
+
 ```python
 x = ti.field(ti.f32, 4)
 x.fill(3.0)
@@ -100,7 +103,7 @@ field.from_numpy(array)  # the input array must be of shape (256, 512, 3)
 ```
 
 - For matrix fields, if the matrix is `n`-by-`m` (`n x m`), then **the shape of NumPy
-array or Pytorch Tensor should be** `(*field_shape, matrix_n, matrix_m)`:
+  array or Pytorch Tensor should be** `(*field_shape, matrix_n, matrix_m)`:
 
 ```python
 field = ti.Matrix.field(3, 4, ti.i32, shape=(256, 512))
@@ -115,7 +118,7 @@ field.from_numpy(array)  # the input array must be of shape (256, 512, 3, 4)
 ```
 
 - For struct fields, the external array will be exported as **a dictionary of NumPy arrays or PyTorch tensors** with keys
-being struct member names and values being struct member arrays. Nested structs will be exported as nested dictionaries:
+  being struct member names and values being struct member arrays. Nested structs will be exported as nested dictionaries:
 
 ```python
 field = ti.Struct.field({'a': ti.i32, 'b': ti.types.vector(float, 3)} shape=(256, 512))
@@ -165,6 +168,7 @@ for i in range(n):
 
 Note that the elements in an external array must be indexed using a single square bracket.
 This contrasts with a Taichi vector or matrix field where field and matrix indices are indexed separately:
+
 ```python
 @ti.kernel
 def copy_vector(x: ti.template(), y: ti.ext_arr()):
@@ -174,9 +178,11 @@ def copy_vector(x: ti.template(), y: ti.ext_arr()):
             # y[i][j][k] = x[i, j][k] incorrect
             # y[i, j][k] = x[i, j][k] incorrect
 ```
+
 Also, external arrays in a Taichi kernel are indexed using its **physical memory layout**. For PyTorch users,
 this implies that the PyTorch tensor [needs to be made contiguous](https://pytorch.org/docs/stable/generated/torch.Tensor.contiguous.html)
 before being passed into a Taichi kernel:
+
 ```python
 @ti.kernel
 def copy_scalar(x: ti.template(), y: ti.ext_arr()):

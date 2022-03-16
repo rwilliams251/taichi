@@ -6,6 +6,7 @@ from tests import test_utils
 
 @test_utils.test()
 def test_literal_u32():
+
     @ti.kernel
     def pcg_hash(inp: ti.u32) -> ti.u32:
         state: ti.u32 = inp * ti.u32(747796405) + ti.u32(2891336453)
@@ -19,30 +20,35 @@ def test_literal_u32():
 
 @test_utils.test()
 def test_literal_multi_args_error():
+
     @ti.kernel
     def multi_args_error():
         a = ti.i64(1, 2)
 
     with pytest.raises(
             ti.TaichiSyntaxError,
-            match="Type annotation can only be given to a single literal."):
+            match="Type annotation can only be given to a single literal.",
+    ):
         multi_args_error()
 
 
 @test_utils.test()
 def test_literal_keywords_error():
+
     @ti.kernel
     def keywords_error():
         a = ti.f64(1, x=2)
 
     with pytest.raises(
             ti.TaichiSyntaxError,
-            match="Type annotation can only be given to a single literal."):
+            match="Type annotation can only be given to a single literal.",
+    ):
         keywords_error()
 
 
 @test_utils.test()
 def test_literal_expr_error():
+
     @ti.kernel
     def expr_error():
         a = 1
@@ -50,33 +56,34 @@ def test_literal_expr_error():
 
     with pytest.raises(
             ti.TaichiSyntaxError,
-            match="Type annotation can only be given to a single literal."):
+            match="Type annotation can only be given to a single literal.",
+    ):
         expr_error()
 
 
 @test_utils.test()
 def test_literal_int_annotation_error():
+
     @ti.kernel
     def int_annotation_error():
         a = ti.f32(0)
 
     with pytest.raises(
             ti.TaichiTypeError,
-            match=
-            "Integer literals must be annotated with a integer type. For type casting, use `ti.cast`."
+            match="Integer literals must be annotated with a integer type. For type casting, use `ti.cast`.",
     ):
         int_annotation_error()
 
 
 @test_utils.test()
 def test_literal_float_annotation_error():
+
     @ti.kernel
     def float_annotation_error():
         a = ti.i32(0.0)
 
     with pytest.raises(
             ti.TaichiTypeError,
-            match=
-            "Floating-point literals must be annotated with a floating-point type. For type casting, use `ti.cast`."
+            match="Floating-point literals must be annotated with a floating-point type. For type casting, use `ti.cast`.",
     ):
         float_annotation_error()

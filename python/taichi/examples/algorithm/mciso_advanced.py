@@ -8,23 +8,24 @@ class MCISO:
     et2 = np.array(
         [
             [[-1, -1], [-1, -1]],  #
-            [[0, 1], [-1, -1]],  #a
-            [[0, 2], [-1, -1]],  #b
-            [[1, 2], [-1, -1]],  #ab
-            [[1, 3], [-1, -1]],  #c
-            [[0, 3], [-1, -1]],  #ca
-            [[2, 3], [0, 1]],  #cb
-            [[2, 3], [-1, -1]],  #cab
-            [[2, 3], [-1, -1]],  #d
-            [[2, 3], [0, 1]],  #da
-            [[0, 3], [-1, -1]],  #db
-            [[1, 3], [-1, -1]],  #dab
-            [[1, 2], [-1, -1]],  #dc
-            [[0, 2], [-1, -1]],  #dca
-            [[0, 1], [-1, -1]],  #dcb
-            [[-1, -1], [-1, -1]],  #dcab
+            [[0, 1], [-1, -1]],  # a
+            [[0, 2], [-1, -1]],  # b
+            [[1, 2], [-1, -1]],  # ab
+            [[1, 3], [-1, -1]],  # c
+            [[0, 3], [-1, -1]],  # ca
+            [[2, 3], [0, 1]],  # cb
+            [[2, 3], [-1, -1]],  # cab
+            [[2, 3], [-1, -1]],  # d
+            [[2, 3], [0, 1]],  # da
+            [[0, 3], [-1, -1]],  # db
+            [[1, 3], [-1, -1]],  # dab
+            [[1, 2], [-1, -1]],  # dc
+            [[0, 2], [-1, -1]],  # dca
+            [[0, 1], [-1, -1]],  # dcb
+            [[-1, -1], [-1, -1]],  # dcab
         ],
-        np.int32)
+        np.int32,
+    )
     et3 = np.array(
         [  # {{{
             # https://www.cnblogs.com/shushen/p/5542131.html
@@ -285,7 +286,8 @@ class MCISO:
             [0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
             [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
         ],
-        np.int32)[:, :15].reshape(256, 5, 3)  # }}}
+        np.int32,
+    )[:, :15].reshape(256, 5, 3)  # }}}
 
     def __init__(self, N=64, dim=3, blk_size=None):
 
@@ -330,20 +332,32 @@ class MCISO:
             id = 0
             if ti.static(self.dim == 2):
                 i, j = I
-                if self.m[i, j] > 1: id |= 1
-                if self.m[i + 1, j] > 1: id |= 2
-                if self.m[i, j + 1] > 1: id |= 4
-                if self.m[i + 1, j + 1] > 1: id |= 8
+                if self.m[i, j] > 1:
+                    id |= 1
+                if self.m[i + 1, j] > 1:
+                    id |= 2
+                if self.m[i, j + 1] > 1:
+                    id |= 4
+                if self.m[i + 1, j + 1] > 1:
+                    id |= 8
             else:
                 i, j, k = I
-                if self.m[i, j, k] > 1: id |= 1
-                if self.m[i + 1, j, k] > 1: id |= 2
-                if self.m[i + 1, j + 1, k] > 1: id |= 4
-                if self.m[i, j + 1, k] > 1: id |= 8
-                if self.m[i, j, k + 1] > 1: id |= 16
-                if self.m[i + 1, j, k + 1] > 1: id |= 32
-                if self.m[i + 1, j + 1, k + 1] > 1: id |= 64
-                if self.m[i, j + 1, k + 1] > 1: id |= 128
+                if self.m[i, j, k] > 1:
+                    id |= 1
+                if self.m[i + 1, j, k] > 1:
+                    id |= 2
+                if self.m[i + 1, j + 1, k] > 1:
+                    id |= 4
+                if self.m[i, j + 1, k] > 1:
+                    id |= 8
+                if self.m[i, j, k + 1] > 1:
+                    id |= 16
+                if self.m[i + 1, j, k + 1] > 1:
+                    id |= 32
+                if self.m[i + 1, j + 1, k + 1] > 1:
+                    id |= 64
+                if self.m[i, j + 1, k + 1] > 1:
+                    id |= 128
 
             for m in range(self.et.shape[1]):
                 if self.et[id, m][0] == -1:
@@ -435,6 +449,7 @@ class MCISO:
 
 
 class MCISO_Example(MCISO):
+
     @ti.func
     def gauss(self, x):
         return ti.exp(-6 * x**2)
@@ -455,7 +470,7 @@ class MCISO_Example(MCISO):
             self.m[o] = r * 3
 
     def main(self):
-        gui = ti.GUI('Marching cube')
+        gui = ti.GUI("Marching cube")
         while gui.running and not gui.get_event(gui.ESCAPE):
             if self.use_sparse:
                 ti.deactivate_all_snodes()
@@ -465,28 +480,28 @@ class MCISO_Example(MCISO):
             ret_len = self.march()
             ret = self.r.to_numpy()[:ret_len] / self.N
             if self.dim == 2:
-                #gui.set_image(ti.imresize(self.m, *gui.res))
+                # gui.set_image(ti.imresize(self.m, *gui.res))
                 self.compute_grad()
                 gui.set_image(ti.imresize(self.g, *gui.res) * 0.5 + 0.5)
-                gui.lines(ret[:, 0], ret[:, 1], color=0xff66cc, radius=1.5)
+                gui.lines(ret[:, 0], ret[:, 1], color=0xFF66CC, radius=1.5)
             else:
                 gui.triangles(ret[:, 0, 0:2],
                               ret[:, 1, 0:2],
                               ret[:, 2, 0:2],
-                              color=0xffcc66)
+                              color=0xFFCC66)
                 gui.lines(ret[:, 0, 0:2],
                           ret[:, 1, 0:2],
-                          color=0xff66cc,
+                          color=0xFF66CC,
                           radius=0.5)
                 gui.lines(ret[:, 1, 0:2],
                           ret[:, 2, 0:2],
-                          color=0xff66cc,
+                          color=0xFF66CC,
                           radius=0.5)
                 gui.lines(ret[:, 2, 0:2],
                           ret[:, 0, 0:2],
-                          color=0xff66cc,
+                          color=0xFF66CC,
                           radius=0.5)
-                gui.text(f'Press space to save mesh to PLY ({len(ret)} faces)',
+                gui.text(f"Press space to save mesh to PLY ({len(ret)} faces)",
                          (0, 1))
                 if gui.is_pressed(gui.SPACE):
                     num = ret.shape[0]
@@ -496,12 +511,12 @@ class MCISO_Example(MCISO):
                                           vertices[:, 2])
                     indices = np.arange(0, num * 3)
                     writer.add_faces(indices)
-                    writer.export('mciso_output.ply')
-                    print('Mesh saved to mciso_output.ply')
+                    writer.export("mciso_output.ply")
+                    print("Mesh saved to mciso_output.ply")
             gui.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ti.init(arch=ti.cuda)
     main = MCISO_Example(dim=3)
     main.main()

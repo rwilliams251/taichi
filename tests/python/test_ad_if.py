@@ -14,7 +14,7 @@ def test_ad_if_simple():
 
     @ti.kernel
     def func():
-        if x[None] > 0.:
+        if x[None] > 0.0:
             y[None] = x[None]
 
     x[None] = 1
@@ -237,6 +237,7 @@ def test_ad_if_parallel_complex_f64():
 
 @test_utils.test(arch=get_host_arch_list())
 def test_stack():
+
     @ti.kernel
     def func():
         impl.call_internal("test_stack")

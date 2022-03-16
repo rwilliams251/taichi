@@ -60,11 +60,13 @@ def advance():
         disp2 = disp.norm_sqr()
         if disp2 <= ball_radius**2:
             NoV = vel[i].dot(disp)
-            if NoV < 0: vel[i] -= NoV * disp / disp2
+            if NoV < 0:
+                vel[i] -= NoV * disp / disp2
         cond = pos[i] < 0 and vel[i] < 0 or pos[i] > 1 and vel[i] > 0
         # rect boundary condition:
         for j in ti.static(range(pos.n)):
-            if cond[j]: vel[i][j] = 0
+            if cond[j]:
+                vel[i][j] = 0
         pos[i] += dt * vel[i]
 
 
@@ -93,7 +95,7 @@ def init_mesh():
         f2v[k + 1] = [c, d, a]
 
 
-window = ti.ui.Window('FEM128', (512, 512))
+window = ti.ui.Window("FEM128", (512, 512))
 canvas = window.get_canvas()
 
 # rendering related fields
@@ -153,15 +155,15 @@ while window.running:
     for e in window.get_events(ti.ui.PRESS):
         if e.key == ti.ui.ESCAPE:
             window.running = False
-        elif e.key == 'r':
+        elif e.key == "r":
             init_pos()
-        elif e.key in ('a', ti.ui.LEFT):
+        elif e.key in ("a", ti.ui.LEFT):
             gravity[None] = [-1, 0]
-        elif e.key in ('d', ti.ui.RIGHT):
+        elif e.key in ("d", ti.ui.RIGHT):
             gravity[None] = [+1, 0]
-        elif e.key in ('s', ti.ui.DOWN):
+        elif e.key in ("s", ti.ui.DOWN):
             gravity[None] = [0, -1]
-        elif e.key in ('w', ti.ui.UP):
+        elif e.key in ("w", ti.ui.UP):
             gravity[None] = [0, +1]
 
     mouse_pos = window.get_cursor_pos()

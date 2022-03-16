@@ -8,6 +8,7 @@ from tests import test_utils
 
 @test_utils.test(arch=ti.cuda)
 def test_do_nothing():
+
     @ti.kernel
     def test():
         for i in range(10):
@@ -18,6 +19,7 @@ def test_do_nothing():
 
 @test_utils.test(arch=ti.cuda)
 def test_active_mask():
+
     @ti.kernel
     def test():
         for i in range(48):
@@ -29,6 +31,7 @@ def test_active_mask():
 
 @test_utils.test(arch=ti.cuda)
 def test_shfl_down():
+
     @ti.kernel
     def test():
         for i in range(32):

@@ -60,7 +60,9 @@ def compute_force():
     for i in range(N):
         p = pos[i]
         for j in range(N):
-            if i != j:  # double the computation for a better memory footprint and load balance
+            if (
+                    i != j
+            ):  # double the computation for a better memory footprint and load balance
                 diff = p - pos[j]
                 r = diff.norm(1e-5)
 
@@ -75,13 +77,13 @@ def compute_force():
 def update():
     dt = h / substepping
     for i in range(N):
-        #symplectic euler
+        # symplectic euler
         vel[i] += dt * force[i] / m
         pos[i] += dt * vel[i]
 
 
 def main():
-    gui = ti.GUI('N-body problem', (800, 800))
+    gui = ti.GUI("N-body problem", (800, 800))
 
     initialize()
     while gui.running:
@@ -89,7 +91,7 @@ def main():
         for e in gui.get_events(ti.GUI.PRESS):
             if e.key in [ti.GUI.ESCAPE, ti.GUI.EXIT]:
                 exit()
-            elif e.key == 'r':
+            elif e.key == "r":
                 initialize()
             elif e.key == ti.GUI.SPACE:
                 paused[None] = not paused[None]
@@ -99,9 +101,9 @@ def main():
                 compute_force()
                 update()
 
-        gui.circles(pos.to_numpy(), color=0xffffff, radius=planet_radius)
+        gui.circles(pos.to_numpy(), color=0xFFFFFF, radius=planet_radius)
         gui.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,10 +1,10 @@
 import sys
 
+from bls_test_template import bls_test_template
+
 import taichi as ti
 
-sys.path.append('../tests/python/')
-
-from bls_test_template import bls_test_template
+sys.path.append("../tests/python/")
 
 ti.init(arch=ti.gpu,
         print_ir=True,

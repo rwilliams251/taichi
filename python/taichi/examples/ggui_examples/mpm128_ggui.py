@@ -66,11 +66,12 @@ def substep():
             Jp[p] *= sig[d, d] / new_sig
             sig[d, d] = new_sig
             J *= new_sig
-        if material[
-                p] == 0:  # Reset deformation gradient to avoid numerical instability
+        if (material[p] == 0
+            ):  # Reset deformation gradient to avoid numerical instability
             F[p] = ti.Matrix.identity(float, 2) * ti.sqrt(J)
         elif material[p] == 2:
-            F[p] = U @ sig @ V.transpose(
+            F[p] = (
+                U @ sig @ V.transpose()
             )  # Reconstruct elastic deformation gradient after plasticity
         stress = 2 * mu * (F[p] - U @ V.transpose()) @ F[p].transpose(
         ) + ti.Matrix.identity(float, 2) * la * J * (J - 1)
@@ -90,13 +91,16 @@ def substep():
                                                     j]  # Momentum to velocity
             grid_v[i, j] += dt * gravity[None] * 30  # gravity
             dist = attractor_pos[None] - dx * ti.Vector([i, j])
-            grid_v[i, j] += dist / (
-                0.01 + dist.norm()) * attractor_strength[None] * dt * 100
+            grid_v[i, j] += (dist / (0.01 + dist.norm()) *
+                             attractor_strength[None] * dt * 100)
             if i < 3 and grid_v[i, j][0] < 0:
                 grid_v[i, j][0] = 0  # Boundary conditions
-            if i > n_grid - 3 and grid_v[i, j][0] > 0: grid_v[i, j][0] = 0
-            if j < 3 and grid_v[i, j][1] < 0: grid_v[i, j][1] = 0
-            if j > n_grid - 3 and grid_v[i, j][1] > 0: grid_v[i, j][1] = 0
+            if i > n_grid - 3 and grid_v[i, j][0] > 0:
+                grid_v[i, j][0] = 0
+            if j < 3 and grid_v[i, j][1] < 0:
+                grid_v[i, j][1] = 0
+            if j > n_grid - 3 and grid_v[i, j][1] > 0:
+                grid_v[i, j][1] = 0
     for p in x:  # grid to particle (G2P)
         base = (x[p] * inv_dx - 0.5).cast(int)
         fx = x[p] * inv_dx - base.cast(float)
@@ -119,7 +123,7 @@ def reset():
     for i in range(n_particles):
         x[i] = [
             ti.random() * 0.2 + 0.3 + 0.10 * (i // group_size),
-            ti.random() * 0.2 + 0.05 + 0.32 * (i // group_size)
+            ti.random() * 0.2 + 0.05 + 0.32 * (i // group_size),
         ]
         material[i] = i // group_size  # 0: fluid 1: jelly 2: snow
         v[i] = [0, 0]
@@ -150,13 +154,20 @@ gravity[None] = [0, -1]
 
 while window.running:
     if window.get_event(ti.ui.PRESS):
-        if window.event.key == 'r': reset()
-        elif window.event.key in [ti.ui.ESCAPE]: break
-    if window.event is not None: gravity[None] = [0, 0]  # if had any event
-    if window.is_pressed(ti.ui.LEFT, 'a'): gravity[None][0] = -1
-    if window.is_pressed(ti.ui.RIGHT, 'd'): gravity[None][0] = 1
-    if window.is_pressed(ti.ui.UP, 'w'): gravity[None][1] = 1
-    if window.is_pressed(ti.ui.DOWN, 's'): gravity[None][1] = -1
+        if window.event.key == "r":
+            reset()
+        elif window.event.key in [ti.ui.ESCAPE]:
+            break
+    if window.event is not None:
+        gravity[None] = [0, 0]  # if had any event
+    if window.is_pressed(ti.ui.LEFT, "a"):
+        gravity[None][0] = -1
+    if window.is_pressed(ti.ui.RIGHT, "d"):
+        gravity[None][0] = 1
+    if window.is_pressed(ti.ui.UP, "w"):
+        gravity[None][1] = 1
+    if window.is_pressed(ti.ui.DOWN, "s"):
+        gravity[None][1] = -1
     mouse = window.get_cursor_pos()
     mouse_circle[0] = ti.Vector([mouse[0], mouse[1]])
     canvas.circles(mouse_circle, color=(0.2, 0.4, 0.6), radius=0.05)

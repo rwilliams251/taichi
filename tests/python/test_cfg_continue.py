@@ -15,7 +15,7 @@ def test_cfg_continue():
                 continue
 
             if state[p] != 0:
-                print('test')
+                print("test")
 
     foo()
     assert x[0] == 1

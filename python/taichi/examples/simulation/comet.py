@@ -88,7 +88,7 @@ v[0].x = +0.6
 v[0].y = +0.4
 color[0] = 1
 
-gui = ti.GUI('Comet', res)
+gui = ti.GUI("Comet", res)
 while gui.running:
     gui.running = not gui.get_event(gui.ESCAPE)
     generate()

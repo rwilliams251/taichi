@@ -13,7 +13,7 @@ operation_types = [operator.add, operator.sub, operator.matmul]
 test_matrix_arrays = [
     np.array([[1, 2], [3, 4]]),
     np.array([[5, 6], [7, 8]]),
-    np.array([[2, 8], [-1, 3]])
+    np.array([[2, 8], [-1, 3]]),
 ]
 
 vector_operation_types = [operator.add, operator.sub]
@@ -47,7 +47,7 @@ def test_python_scope_matrix_operations():
 # or Python-scope field accesses.
 # ideally we should use pytest.fixture to parameterize the tests
 # over explicit loops
-@pytest.mark.parametrize('ops', vector_operation_types)
+@pytest.mark.parametrize("ops", vector_operation_types)
 @test_utils.test(arch=get_host_arch_list())
 def test_python_scope_vector_field(ops):
     t1 = ti.Vector.field(2, dtype=ti.i32, shape=())
@@ -59,7 +59,7 @@ def test_python_scope_vector_field(ops):
     assert np.allclose(c.to_numpy(), ops(a, b))
 
 
-@pytest.mark.parametrize('ops', vector_operation_types)
+@pytest.mark.parametrize("ops", vector_operation_types)
 @test_utils.test(arch=get_host_arch_list())
 def test_python_scope_matrix_field(ops):
     t1 = ti.Matrix.field(2, 2, dtype=ti.i32, shape=())
@@ -121,7 +121,7 @@ def test_constant_matrices():
     func(5)
 
 
-@pytest.mark.parametrize('ops', vector_operation_types)
+@pytest.mark.parametrize("ops", vector_operation_types)
 @test_utils.test(arch=get_host_arch_list())
 def test_taichi_scope_vector_operations_with_global_vectors(ops):
     a, b, c = test_vector_arrays[:3]
@@ -142,7 +142,7 @@ def test_taichi_scope_vector_operations_with_global_vectors(ops):
     assert np.allclose(r2[None].to_numpy(), ops(a, c))
 
 
-@pytest.mark.parametrize('ops', vector_operation_types)
+@pytest.mark.parametrize("ops", vector_operation_types)
 @test_utils.test(arch=get_host_arch_list())
 def test_taichi_scope_matrix_operations_with_global_matrices(ops):
     a, b, c = test_matrix_arrays[:3]
@@ -165,6 +165,7 @@ def test_taichi_scope_matrix_operations_with_global_matrices(ops):
 
 @test_utils.test()
 def test_matrix_non_constant_index_numpy():
+
     @ti.kernel
     def func1(a: ti.any_arr(element_dim=2)):
         for i in range(5):
@@ -348,6 +349,7 @@ def test_copy_matrix_field_element_to_taichi_scope():
 
 @test_utils.test(debug=True)
 def test_copy_matrix_in_taichi_scope():
+
     @ti.kernel
     def test():
         a = ti.Vector([1, 2, 3])
@@ -494,6 +496,7 @@ def test_matrix_field_dynamic_index_different_stride():
 
 @test_utils.test(arch=[ti.cpu, ti.cuda], dynamic_index=True)
 def test_matrix_field_dynamic_index_multiple_materialize():
+
     @ti.kernel
     def empty():
         pass
@@ -516,6 +519,7 @@ def test_matrix_field_dynamic_index_multiple_materialize():
 
 @test_utils.test(arch=[ti.cpu, ti.cuda], dynamic_index=True, debug=True)
 def test_local_vector_initialized_in_a_loop():
+
     @ti.kernel
     def foo():
         for c in range(10):

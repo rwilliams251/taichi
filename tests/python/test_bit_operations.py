@@ -9,6 +9,7 @@ from tests import test_utils
 
 @test_utils.test()
 def test_bit_shl():
+
     @ti.kernel
     def shl(a: ti.i32, b: ti.i32) -> ti.i32:
         return a << b
@@ -19,6 +20,7 @@ def test_bit_shl():
 
 @test_utils.test()
 def test_bit_sar():
+
     @ti.kernel
     def sar(a: ti.i32, b: ti.i32) -> ti.i32:
         return a >> b
@@ -30,11 +32,12 @@ def test_bit_sar():
         assert sar(test_num, i) == 2**(n - i)
     # for negative number
     for i in range(n):
-        assert sar(neg_test_num, i) == -2**(n - i)
+        assert sar(neg_test_num, i) == -(2**(n - i))
 
 
 @test_utils.test()
 def test_bit_shr():
+
     @ti.kernel
     def shr(a: ti.i32, b: ti.i32) -> ti.i32:
         return ti.bit_shr(a, b)

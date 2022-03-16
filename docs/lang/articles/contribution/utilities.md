@@ -145,7 +145,6 @@ However if your issue cannot be reproduced consistently this solution isn't a gr
 In that case it's recommended to follow the section below so that gdb is triggered automatically
 when the program crashes.
 
-
 ## (Linux only) Trigger `gdb` when programs crash
 
 ```python

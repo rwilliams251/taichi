@@ -79,8 +79,8 @@ def compute_total_energy():
         # NeoHookean
         I1 = (F @ F.transpose()).trace()
         J = F.determinant()
-        element_energy = 0.5 * mu * (
-            I1 - 2) - mu * ti.log(J) + 0.5 * la * ti.log(J)**2
+        element_energy = (0.5 * mu * (I1 - 2) - mu * ti.log(J) +
+                          0.5 * la * ti.log(J)**2)
         total_energy[None] += E * element_energy * dx * dx
 
 
@@ -186,5 +186,5 @@ def main():
         gui.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

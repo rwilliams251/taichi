@@ -110,11 +110,11 @@ def test_mpm88():
 def _is_appveyor():
     # AppVeyor adds `APPVEYOR=True` ('true' on Ubuntu)
     # https://www.appveyor.com/docs/environment-variables/
-    return os.getenv('APPVEYOR', '').lower() == 'true'
+    return os.getenv("APPVEYOR", "").lower() == "true"
 
 
-#TODO: Remove exclude of ti.metal
-@pytest.mark.skipif(_is_appveyor(), reason='Stuck on Appveyor.')
+# TODO: Remove exclude of ti.metal
+@pytest.mark.skipif(_is_appveyor(), reason="Stuck on Appveyor.")
 @test_utils.test(require=ti.extension.async_mode,
                  exclude=[ti.metal],
                  async_mode=True)
@@ -142,9 +142,14 @@ def test_mpm88_numpy_and_ndarray():
     E = 400
 
     @ti.kernel
-    def substep(x: ti.any_arr(element_dim=1), v: ti.any_arr(element_dim=1),
-                C: ti.any_arr(element_dim=2), J: ti.any_arr(),
-                grid_v: ti.any_arr(element_dim=1), grid_m: ti.any_arr()):
+    def substep(
+            x: ti.any_arr(element_dim=1),
+            v: ti.any_arr(element_dim=1),
+            C: ti.any_arr(element_dim=2),
+            J: ti.any_arr(),
+            grid_v: ti.any_arr(element_dim=1),
+            grid_m: ti.any_arr(),
+    ):
         for p in x:
             base = (x[p] * inv_dx - 0.5).cast(int)
             fx = x[p] * inv_dx - base.cast(float)

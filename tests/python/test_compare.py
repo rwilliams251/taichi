@@ -143,6 +143,7 @@ def test_chain_compare():
 
 @test_utils.test()
 def test_static_in():
+
     @ti.kernel
     def foo(a: ti.template()) -> ti.i32:
         b = 0
@@ -174,6 +175,7 @@ def test_non_static_in():
 
 @test_utils.test()
 def test_static_is():
+
     @ti.kernel
     def is_f32(tp: ti.template()) -> ti.i32:
         return ti.static(tp is ti.f32)

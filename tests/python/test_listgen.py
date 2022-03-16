@@ -20,7 +20,7 @@ def test_listgen():
             x[i, j] = i * 10 + j + c
 
     for c in range(2):
-        print('Testing c=%d' % c)
+        print("Testing c=%d" % c)
         fill(c)
         # read it out once to avoid launching too many operator[] kernels
         xnp = x.to_numpy()

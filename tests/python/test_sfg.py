@@ -48,9 +48,9 @@ def test_remove_clear_list_from_fused_serial():
 
     counters = stats.get_counters()
     # each of x and y has two listgens: root -> pointer -> dense
-    assert int(counters['launched_tasks_list_gen']) == 4
+    assert int(counters["launched_tasks_list_gen"]) == 4
     # clear list tasks have been fused into serial_z
-    assert int(counters['launched_tasks_serial']) == 1
+    assert int(counters["launched_tasks_serial"]) == 1
 
     xs = x.to_numpy()
     ys = y.to_numpy()
@@ -98,7 +98,7 @@ def test_sfg_dead_store_elimination():
     counters = stats.get_counters()
 
     # gather() should be DSE'ed
-    assert counters['sfg_dse_tasks'] > 0
+    assert counters["sfg_dse_tasks"] > 0
 
     x_grad = x.grad.to_numpy()
     for i in range(n):

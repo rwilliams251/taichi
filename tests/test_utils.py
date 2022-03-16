@@ -27,7 +27,7 @@ def get_rel_eps():
 
 
 def mkdir_p(dir_path):
-    '''Creates a directory. equivalent to using mkdir -p on the command line'''
+    """Creates a directory. equivalent to using mkdir -p on the command line"""
 
     try:
         os.makedirs(dir_path)
@@ -39,8 +39,10 @@ def mkdir_p(dir_path):
 
 
 def approx(expected, **kwargs):
-    '''Tweaked pytest.approx for OpenGL low precisions'''
+    """Tweaked pytest.approx for OpenGL low precisions"""
+
     class boolean_integer:
+
         def __init__(self, value):
             self.value = value
 
@@ -53,19 +55,20 @@ def approx(expected, **kwargs):
     if isinstance(expected, bool):
         return boolean_integer(expected)
 
-    kwargs['rel'] = max(kwargs.get('rel', 1e-6), get_rel_eps())
+    kwargs["rel"] = max(kwargs.get("rel", 1e-6), get_rel_eps())
 
     import pytest  # pylint: disable=C0415
+
     return pytest.approx(expected, **kwargs)
 
 
 def allclose(x, y, **kwargs):
-    '''Same as: x == approx(y, **kwargs)'''
+    """Same as: x == approx(y, **kwargs)"""
     return x == approx(y, **kwargs)
 
 
 def make_temp_file(*args, **kwargs):
-    '''Create a temporary file'''
+    """Create a temporary file"""
 
     fd, name = mkstemp(*args, **kwargs)
     os.close(fd)
@@ -73,6 +76,7 @@ def make_temp_file(*args, **kwargs):
 
 
 class TestParam:
+
     def __init__(self, value, required_extensions):
         self._value = value
         self._required_extensions = required_extensions
@@ -87,12 +91,13 @@ class TestParam:
 
 
 _test_features = {
-    #"packed":
+    # "packed":
     # [TestValue(True, []),
     #  TestValue(False, [])],
-    "dynamic_index":
-    [TestParam(True, [ti.extension.dynamic_index]),
-     TestParam(False, [])]
+    "dynamic_index": [
+        TestParam(True, [ti.extension.dynamic_index]),
+        TestParam(False, []),
+    ]
 }
 
 
@@ -112,19 +117,19 @@ def expected_archs():
     archs = set(
         filter(functools.partial(is_arch_supported, use_gles=False), archs))
 
-    wanted_archs = os.environ.get('TI_WANTED_ARCHS', '')
-    want_exclude = wanted_archs.startswith('^')
+    wanted_archs = os.environ.get("TI_WANTED_ARCHS", "")
+    want_exclude = wanted_archs.startswith("^")
     if want_exclude:
         wanted_archs = wanted_archs[1:]
-    wanted_archs = wanted_archs.split(',')
+    wanted_archs = wanted_archs.split(",")
     # Note, ''.split(',') gives you [''], which is not an empty array.
     expanded_wanted_archs = set([])
     for arch in wanted_archs:
-        if arch == '':
+        if arch == "":
             continue
-        if arch == 'cpu':
+        if arch == "cpu":
             expanded_wanted_archs.add(cpu)
-        elif arch == 'gpu':
+        elif arch == "gpu":
             expanded_wanted_archs.update(gpu)
         else:
             expanded_wanted_archs.add(_ti_core.arch_from_name(arch))
@@ -139,13 +144,13 @@ def expected_archs():
 
 def test(arch=None, exclude=None, require=None, **options):
     """
-    Performs tests on archs in `expected_archs()` which are in `arch` and not in `exclude` and satisfy `require`
-.. function:: ti.test(arch=[], exclude=[], require=[], **options)
+        Performs tests on archs in `expected_archs()` which are in `arch` and not in `exclude` and satisfy `require`
+    .. function:: ti.test(arch=[], exclude=[], require=[], **options)
 
-    :parameter arch: backends to include
-    :parameter exclude: backends to exclude
-    :parameter require: extensions required
-    :parameter options: other options to be passed into ``ti.init``
+        :parameter arch: backends to include
+        :parameter exclude: backends to exclude
+        :parameter require: extensions required
+        :parameter options: other options to be passed into ``ti.init``
 
     """
 
@@ -169,7 +174,7 @@ def test(arch=None, exclude=None, require=None, **options):
 
     marks = []  # A list of pytest.marks to apply on the test function
     if len(arch) == 0:
-        marks.append(pytest.mark.skip(reason='No supported archs'))
+        marks.append(pytest.mark.skip(reason="No supported archs"))
     else:
         arch_params_sets = [arch, *_test_features.values()]
         # List of (arch, options) to parametrize the test function
@@ -197,7 +202,7 @@ def test(arch=None, exclude=None, require=None, **options):
         if not parameters:
             marks.append(
                 pytest.mark.skip(
-                    reason='No all required extensions are supported'))
+                    reason="No all required extensions are supported"))
         else:
             marks.append(
                 pytest.mark.parametrize(
@@ -207,7 +212,8 @@ def test(arch=None, exclude=None, require=None, **options):
                         f"arch={arch.name}-{i}"
                         if len(parameters) > 1 else f"arch={arch.name}"
                         for i, (arch, _) in enumerate(parameters)
-                    ]))
+                    ],
+                ))
 
     def decorator(func):
         func.__ti_test__ = True  # Mark the function as a taichi test
@@ -219,5 +225,5 @@ def test(arch=None, exclude=None, require=None, **options):
 
 
 __all__ = [
-    'test',
+    "test",
 ]

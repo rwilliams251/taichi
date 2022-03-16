@@ -10,6 +10,7 @@ from taichi.types.primitive_types import u64
 
 
 class SparseMatrixEntry:
+
     def __init__(self, ptr, i, j, dtype):
         self.ptr = ptr
         self.i = i
@@ -18,17 +19,20 @@ class SparseMatrixEntry:
 
     def _augassign(self, value, op):
         call_func = f"insert_triplet_{self.dtype}"
-        if op == 'Add':
+        if op == "Add":
             taichi.lang.impl.call_internal(call_func, self.ptr, self.i, self.j,
                                            ops.cast(value, self.dtype))
-        elif op == 'Sub':
+        elif op == "Sub":
             taichi.lang.impl.call_internal(call_func, self.ptr, self.i, self.j,
                                            -ops.cast(value, self.dtype))
         else:
-            assert False, "Only operations '+=' and '-=' are supported on sparse matrices."
+            assert (
+                False
+            ), "Only operations '+=' and '-=' are supported on sparse matrices."
 
 
 class SparseMatrixProxy:
+
     def __init__(self, ptr, dtype):
         self.ptr = ptr
         self.dtype = dtype
@@ -66,8 +70,10 @@ def decl_any_arr_arg(dtype, dim, element_shape, layout):
         element_dim = -element_dim
     return AnyArray(
         _ti_core.make_external_tensor_expr(dtype, dim, arg_id, element_dim,
-                                           element_shape), element_shape,
-        layout)
+                                           element_shape),
+        element_shape,
+        layout,
+    )
 
 
 def decl_ret(dtype):

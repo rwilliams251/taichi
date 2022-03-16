@@ -1,20 +1,33 @@
 import functools
 import os
 import traceback
+from distutils.spawn import find_executable
 
 import numpy as np
 from colorama import Fore, Style
 from taichi._lib import core as _ti_core
 from taichi.lang import impl
-from taichi.types.primitive_types import (f16, f32, f64, i8, i16, i32, i64, u8,
-                                          u16, u32, u64)
+from taichi.types.primitive_types import (
+    f16,
+    f32,
+    f64,
+    i8,
+    i16,
+    i32,
+    i64,
+    u8,
+    u16,
+    u32,
+    u64,
+)
 
 _has_pytorch = False
 
-_env_torch = os.environ.get('TI_ENABLE_TORCH', '1')
+_env_torch = os.environ.get("TI_ENABLE_TORCH", "1")
 if not _env_torch or int(_env_torch):
     try:
         import torch
+
         _has_pytorch = True
     except:
         pass
@@ -30,11 +43,9 @@ def has_pytorch():
     return _has_pytorch
 
 
-from distutils.spawn import find_executable
-
 # Taichi itself uses llvm-10.0.0 to compile.
 # There will be some issues compiling CUDA with other clang++ version.
-_clangpp_candidates = ['clang++-10']
+_clangpp_candidates = ["clang++-10"]
 _clangpp_presence = None
 for c in _clangpp_candidates:
     if find_executable(c) is not None:
@@ -123,7 +134,7 @@ def to_pytorch_type(dt):
         return torch.float16
     if dt in (u16, u32, u64):
         raise RuntimeError(
-            f'PyTorch doesn\'t support {dt.to_string()} data type.')
+            f"PyTorch doesn't support {dt.to_string()} data type.")
     assert False
 
 
@@ -183,7 +194,7 @@ def to_taichi_type(dt):
             return f16
         if dt in (u16, u32, u64):
             raise RuntimeError(
-                f'PyTorch doesn\'t support {dt.to_string()} data type.')
+                f"PyTorch doesn't support {dt.to_string()} data type.")
 
     raise AssertionError(f"Unknown type {dt}")
 
@@ -197,7 +208,7 @@ def cook_dtype(dtype):
         return impl.get_runtime().default_fp
     if dtype is int:
         return impl.get_runtime().default_ip
-    raise ValueError(f'Invalid data type {dtype}')
+    raise ValueError(f"Invalid data type {dtype}")
 
 
 def in_taichi_scope():
@@ -209,20 +220,22 @@ def in_python_scope():
 
 
 def taichi_scope(func):
+
     @functools.wraps(func)
     def wrapped(*args, **kwargs):
-        assert in_taichi_scope(), \
-                f'{func.__name__} cannot be called in Python-scope'
+        assert in_taichi_scope(
+        ), f"{func.__name__} cannot be called in Python-scope"
         return func(*args, **kwargs)
 
     return wrapped
 
 
 def python_scope(func):
+
     @functools.wraps(func)
     def wrapped(*args, **kwargs):
-        assert in_python_scope(), \
-                f'{func.__name__} cannot be called in Taichi-scope'
+        assert in_python_scope(
+        ), f"{func.__name__} cannot be called in Taichi-scope"
         return func(*args, **kwargs)
 
     return wrapped
@@ -238,15 +251,15 @@ def warning(msg, warning_type=UserWarning, stacklevel=1, print_stack=True):
         stacklevel (int): warning stack level from the caller.
         print_stack (bool): whether to print the stack
     """
-    msg = f'{warning_type.__name__}: {msg}'
+    msg = f"{warning_type.__name__}: {msg}"
     if print_stack:
-        msg += f'\n{get_traceback(stacklevel)}'
+        msg += f"\n{get_traceback(stacklevel)}"
     print(Fore.YELLOW + Style.BRIGHT + msg + Style.RESET_ALL)
 
 
 def get_traceback(stacklevel=1):
     s = traceback.extract_stack()[:-1 - stacklevel]
-    return ''.join(traceback.format_list(s))
+    return "".join(traceback.format_list(s))
 
 
 __all__ = []

@@ -9,9 +9,10 @@ Although Taichi uses Python as the frontend, it follows a different set of rules
 1. [Taichi only supports return statement outside non-static `if`/`for`/`while` scope in the program](#return-statement)
 2. [Variables defined inside an `if`/`for`/`while` block cannot be accessed outside the block.](#variable-scoping)
 3. [Taichi does not fully support some language features of Python.](#unsupportedpartially-supported-python-language-features)
-  - [Set, list, dictionary and operator `in`](#set-list-dictionary-and-operator-in)
-  - [Comprehensions](#comprehensions)
-  - [Operator `is`](#operator-is)
+
+- [Set, list, dictionary and operator `in`](#set-list-dictionary-and-operator-in)
+- [Comprehensions](#comprehensions)
+- [Operator `is`](#operator-is)
 
 ## Return statement and return type annotation
 
@@ -53,8 +54,10 @@ def discarded_after_first_return(a: ti.i32) -> ti.i32:
 
 discarded_after_first_return(0)  # OK: returns 1
 ```
+
 - If there are [compile-time evaluations](/lang/articles/advanced/meta#compile-time-evaluations) in the code, make sure there is a return statement under all circumstances.
-Otherwise, error occurs when a branch is chosen which does not have return statement.
+  Otherwise, error occurs when a branch is chosen which does not have return statement.
+
 ```python {7-8,15-16,21,23-24}
 @ti.kernel
 def return_inside_static_if(a: ti.template()) -> ti.i32:
@@ -123,7 +126,7 @@ Currently, Taichi does not support `set`.
 List and dictionary before assigning to a variable works as the python list and dictionary.
 However, after assigning to a variable, the content of the list and the values (not keys) of the dictionary are converted to Taichi variables.
 
-Taichi does not have a runtime implementation of `in` currently. Therefore, operator `in` and `not in` only works in  [static scope](/lang/articles/advanced/meta#static-scope) (inside `ti.static()`).
+Taichi does not have a runtime implementation of `in` currently. Therefore, operator `in` and `not in` only works in [static scope](/lang/articles/advanced/meta#static-scope) (inside `ti.static()`).
 
 ```python {3,11-12,20}
 @ti.kernel

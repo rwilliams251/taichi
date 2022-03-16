@@ -14,10 +14,12 @@ import taichi as ti
 #   `python stable_fluid.py`: use the jacobi iteration to solve the linear system.
 #   `python stable_fluid.py -S`: use a sparse matrix to do so.
 parser = argparse.ArgumentParser()
-parser.add_argument('-S',
-                    '--use-sp-mat',
-                    action='store_true',
-                    help='Solve Poisson\'s equation by using a sparse matrix')
+parser.add_argument(
+    "-S",
+    "--use-sp-mat",
+    action="store_true",
+    help="Solve Poisson's equation by using a sparse matrix",
+)
 args, unknowns = parser.parse_known_args()
 
 res = 512
@@ -38,10 +40,10 @@ use_sparse_matrix = args.use_sp_mat
 
 if use_sparse_matrix:
     ti.init(arch=ti.x64)
-    print('Using sparse matrix')
+    print("Using sparse matrix")
 else:
     ti.init(arch=ti.gpu)
-    print('Using jacobi iteration')
+    print("Using jacobi iteration")
 
 _velocities = ti.Vector.field(2, float, shape=(res, res))
 _new_velocities = ti.Vector.field(2, float, shape=(res, res))
@@ -54,6 +56,7 @@ _new_dye_buffer = ti.Vector.field(3, float, shape=(res, res))
 
 
 class TexPair:
+
     def __init__(self, cur, nxt):
         self.cur = cur
         self.nxt = nxt
@@ -286,10 +289,11 @@ def step(mouse_data):
     if debug:
         divergence(velocities_pair.cur)
         div_s = np.sum(velocity_divs.to_numpy())
-        print(f'divergence={div_s}')
+        print(f"divergence={div_s}")
 
 
 class MouseDataGen(object):
+
     def __init__(self):
         self.prev_mouse = None
         self.prev_color = None
@@ -324,11 +328,11 @@ def reset():
     dyes_pair.cur.fill(0)
 
 
-visualize_d = True  #visualize dye (default)
-visualize_v = False  #visualize velocity
-visualize_c = False  #visualize curl
+visualize_d = True  # visualize dye (default)
+visualize_v = False  # visualize velocity
+visualize_c = False  # visualize curl
 
-gui = ti.GUI('Stable Fluid', (res, res))
+gui = ti.GUI("Stable Fluid", (res, res))
 md_gen = MouseDataGen()
 
 while gui.running:
@@ -336,31 +340,31 @@ while gui.running:
         e = gui.event
         if e.key == ti.GUI.ESCAPE:
             break
-        elif e.key == 'r':
+        elif e.key == "r":
             paused = False
             reset()
-        elif e.key == 's':
+        elif e.key == "s":
             if curl_strength:
                 curl_strength = 0
             else:
                 curl_strength = 7
-        elif e.key == 'g':
+        elif e.key == "g":
             gravity = not gravity
-        elif e.key == 'v':
+        elif e.key == "v":
             visualize_v = True
             visualize_c = False
             visualize_d = False
-        elif e.key == 'd':
+        elif e.key == "d":
             visualize_d = True
             visualize_v = False
             visualize_c = False
-        elif e.key == 'c':
+        elif e.key == "c":
             visualize_c = True
             visualize_d = False
             visualize_v = False
-        elif e.key == 'p':
+        elif e.key == "p":
             paused = not paused
-        elif e.key == 'd':
+        elif e.key == "d":
             debug = not debug
 
     # Debug divergence:

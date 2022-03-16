@@ -10,7 +10,7 @@ def quat_mul(v1, v2):
         v1.x * v2.x - v1.y * v2.y - v1.z * v2.z - v1.w * v2.w,
         v1.x * v2.y + v1.y * v2.x + v1.z * v2.w - v1.w * v2.z,
         v1.x * v2.z + v1.z * v2.x + v1.w * v2.y - v1.y * v2.w,
-        v1.x * v2.w + v1.w * v2.x + v1.y * v2.z - v1.z * v2.y
+        v1.x * v2.w + v1.w * v2.x + v1.y * v2.z - v1.z * v2.y,
     ])
 
 
@@ -74,7 +74,7 @@ def compute_sdf(z, c):
         z = quat_mul(z, z) + c
 
         mz2 = z.dot(z)
-        if (mz2 > max_norm):
+        if mz2 > max_norm:
             break
 
     return 0.25 * ti.sqrt(mz2 / md2) * ti.log(mz2)
@@ -96,19 +96,19 @@ def compute_normal(z, c):
             dot(J0, cz),
             dot(xy(J0), yx(z_curr)),
             dot(xz(J0), zx(z_curr)),
-            dot(xw(J0), wx(z_curr))
+            dot(xw(J0), wx(z_curr)),
         ])
         J1 = ti.Vector([
             dot(J1, cz),
             dot(xy(J1), yx(z_curr)),
             dot(xz(J1), zx(z_curr)),
-            dot(xw(J1), wx(z_curr))
+            dot(xw(J1), wx(z_curr)),
         ])
         J2 = ti.Vector([
             dot(J2, cz),
             dot(xy(J2), yx(z_curr)),
             dot(xz(J2), zx(z_curr)),
-            dot(xw(J2), wx(z_curr))
+            dot(xw(J2), wx(z_curr)),
         ])
 
         z_curr = quat_mul(z_curr, z_curr) + c
@@ -124,6 +124,7 @@ image_res = (1280, 720)
 
 @ti.data_oriented
 class Julia:
+
     def __init__(self):
         self.image = ti.Vector.field(3, float, image_res)
 
@@ -142,10 +143,11 @@ class Julia:
             ti.Vector([1.2, 1.7, 1.3, 2.5])) - ti.Vector([0.3, 0.0, 0.0, 0.0])
 
         r = 1.8
-        o3 = ti.Vector([
-            r * ti.cos(0.3 + 0.37 * time), 0.3 +
-            0.8 * r * ti.cos(1.0 + 0.33 * time), r * ti.cos(2.2 + 0.31 * time)
-        ]).normalized() * r
+        o3 = (ti.Vector([
+            r * ti.cos(0.3 + 0.37 * time),
+            0.3 + 0.8 * r * ti.cos(1.0 + 0.33 * time),
+            r * ti.cos(2.2 + 0.31 * time),
+        ]).normalized() * r)
         ta = ti.Vector([0.0, 0.0, 0.0])
         cr = 0.1 * ti.cos(0.1 * time)
 

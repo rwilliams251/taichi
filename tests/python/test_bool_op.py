@@ -19,6 +19,7 @@ def test_and_shorted():
 
 @test_utils.test(debug=True, short_circuit_operators=True)
 def test_and_not_shorted():
+
     @ti.kernel
     def func() -> ti.i32:
         return True and False
@@ -43,6 +44,7 @@ def test_or_shorted():
 
 @test_utils.test(debug=True, short_circuit_operators=True)
 def test_or_not_shorted():
+
     @ti.kernel
     def func() -> ti.i32:
         return False or True
@@ -52,6 +54,7 @@ def test_or_not_shorted():
 
 @test_utils.test(debug=True)
 def test_static_or():
+
     @ti.kernel
     def func() -> ti.i32:
         return ti.static(0 or 3 or 5)
@@ -61,6 +64,7 @@ def test_static_or():
 
 @test_utils.test(debug=True)
 def test_static_and():
+
     @ti.kernel
     def func() -> ti.i32:
         return ti.static(5 and 2 and 0)

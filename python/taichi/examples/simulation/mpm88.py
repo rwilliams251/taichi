@@ -83,7 +83,7 @@ def init():
 
 
 init()
-gui = ti.GUI('MPM88')
+gui = ti.GUI("MPM88")
 while gui.running and not gui.get_event(gui.ESCAPE):
     for s in range(50):
         substep()

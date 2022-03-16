@@ -1,10 +1,11 @@
 from contextlib import contextmanager
 
 
-#For declaring IMGUI components in a ti.Window created by the GGUI system.
+# For declaring IMGUI components in a ti.Window created by the GGUI system.
 class Gui:
+
     def __init__(self, gui) -> None:
-        self.gui = gui  #reference to a PyGui
+        self.gui = gui  # reference to a PyGui
 
     @contextmanager
     def sub_window(self, name, x, y, width, height):
@@ -44,13 +45,11 @@ class Gui:
         self.gui.begin(name, x, y, width, height)
 
     def end(self):
-        """End the description of the current subwindow.
-        """
+        """End the description of the current subwindow."""
         self.gui.end()
 
     def text(self, text):
-        """Declares a line of text.
-        """
+        """Declares a line of text."""
         self.gui.text(text)
 
     def checkbox(self, text, old_value):

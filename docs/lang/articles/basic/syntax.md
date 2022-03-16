@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Kernels and functions
 
-Taichi is a domain-specific language embedded in Python. The meaning of "embedded in Python" is twofold:  The code you've written in Taichi is valid Python code but is compiled and executed in Taichi's runtime; the rest of your code is treated as native Python code and executed in Python's virtual machine.
+Taichi is a domain-specific language embedded in Python. The meaning of "embedded in Python" is twofold: The code you've written in Taichi is valid Python code but is compiled and executed in Taichi's runtime; the rest of your code is treated as native Python code and executed in Python's virtual machine.
 
 To differentiate the code for Taichi from the code for Python, we use the two decorators `@ti.kernel` and `@ti.func`:
 
@@ -20,25 +20,25 @@ Taichi introduces the two terms "Taichi scope" and "Python scope" to make it eas
 The code inside a kernel or a Taichi function is in the Taichi scope. The code in the Taichi scope is compiled by Taichi's runtime and executed in parallel on CPU or GPU devices for high-performance computation.
 
 :::note
-Taichi scope corresponds to the *device side* in CUDA.
+Taichi scope corresponds to the _device side_ in CUDA.
 :::
 
 ### Python scope
 
-Code outside of the Taichi scope is in the Python scope. The code in the Python scope is native Python and executed by Python's virtual machine, *not* by Taichi's runtime.
+Code outside of the Taichi scope is in the Python scope. The code in the Python scope is native Python and executed by Python's virtual machine, _not_ by Taichi's runtime.
 
 :::note
-Python scope corresponds to the *host side* in CUDA.
+Python scope corresponds to the _host side_ in CUDA.
 :::
 
 ## Kernel
 
-A kernel is the entry point from which Taichi's runtime takes control and the smallest unit for runtime execution. You can define multiple kernels in your program, and kernels are *independent* from each other. You call a kernel the same way you call a Python function, and you are allowed to switch back and forth between Taichi's runtime and Python's virtual machine.
+A kernel is the entry point from which Taichi's runtime takes control and the smallest unit for runtime execution. You can define multiple kernels in your program, and kernels are _independent_ from each other. You call a kernel the same way you call a Python function, and you are allowed to switch back and forth between Taichi's runtime and Python's virtual machine.
 
 Taichi's runtime compiles and executes kernels in the order you call them. It stores compiled kernels in the cache so that the next call to the same kernel does not need to be compiled again.
 
 :::caution WARNING
-You must *not* call a kernel from inside another kernel or from inside a Taichi function. You can only call a kernel directly or from inside a native Python function. To put it differently, you can only call a kernel from the *Python scope*.
+You must _not_ call a kernel from inside another kernel or from inside a Taichi function. You can only call a kernel directly or from inside a native Python function. To put it differently, you can only call a kernel from the _Python scope_.
 :::
 
 :::note
@@ -76,9 +76,10 @@ The upper limit for element numbers is backend-specific:
 - 64 on CPU, Vulkan, CUDA, or Metal
 
 :::note
+
 - The number of elements in a scalar argument is always 1.
 - The number of the elements in a `ti.Matrix` or in a `ti.Vector` is the actual number of scalars inside of them.
-:::
+  :::
 
 ```python
 @ti.kernel
@@ -99,7 +100,7 @@ def error_too_many_arguments(u: ti.i32, v: ti.i64, w: ti.types.matrix(7, 9, ti.i
 
 <summary><font color="#006284">Advanced arguments</font></summary>
 
-*You can skip this part if you are just beginning.*
+_You can skip this part if you are just beginning._
 
 A kernel can also take the following two types of advanced arguments:
 
@@ -110,11 +111,11 @@ A kernel can also take the following two types of advanced arguments:
 
 ### Return value
 
-A kernel can have *at most* one return value, which can be a scalar, `ti.Matrix`, or `ti.Vector`. Follow these rules when defining the return value of a kernel:
+A kernel can have _at most_ one return value, which can be a scalar, `ti.Matrix`, or `ti.Vector`. Follow these rules when defining the return value of a kernel:
 
 - Type hint the return value of a kernel.
-- Ensure that you have *at most* one return value in a kernel.
-- Ensure that you have *at most* one return statement in a kernel.
+- Ensure that you have _at most_ one return value in a kernel.
+- Ensure that you have _at most_ one return statement in a kernel.
 - Ensure that the number of elements in the return value does not exceed 30.
 
 #### Type hint the return value of a kernel
@@ -215,11 +216,11 @@ kernel_2()  # 2
 
 ## Taichi function
 
-Taichi functions are the building blocks of a kernel.  All Taichi functions are force-inlined. Therefore, no runtime recursion is allowed.
+Taichi functions are the building blocks of a kernel. All Taichi functions are force-inlined. Therefore, no runtime recursion is allowed.
 
 :::caution WARNING
 
-You must call a Taichi function from inside a kernel or from inside another Taichi function. In other words, you must call a Taichi function from within the Taichi scope, *not* from within the Python scope.
+You must call a Taichi function from inside a kernel or from inside another Taichi function. In other words, you must call a Taichi function from within the Taichi scope, _not_ from within the Python scope.
 :::
 
 :::note
@@ -260,8 +261,8 @@ foo_kernel()
 
 A Taichi function can have multiple arguments, supporting scalar, `ti.Matrix`, and `ti.Vector` as argument types. Note that the restrictions applied to a kernel's arguments do not apply here:
 
-- You are *not* required (but it is still recommended) to type hint arguments.
-- You can have *an unlimited* number of elements in the arguments.
+- You are _not_ required (but it is still recommended) to type hint arguments.
+- You can have _an unlimited_ number of elements in the arguments.
 
 :::caution WARNING
 
@@ -286,7 +287,7 @@ def my_kernel():
 
 <summary><font color="#006284">Advanced arguments</font></summary>
 
-*You can skip this part if you are just beginning.*
+_You can skip this part if you are just beginning._
 
 A Taichi function can also take template arguments. Use `ti.template()` as their type hints. By using `ti.template()` as type hint, you force arguments to pass by reference. Here's an example:
 
@@ -301,6 +302,7 @@ def my_kernel():
     my_func(x)
     print(x)  #  will print 25
 ```
+
 </details>
 
 ### Return values
@@ -311,7 +313,7 @@ The return values of a Taichi function can be scalar, `ti.Matrix`, `ti.Vector`, 
 - You do not need (but it is still recommended) to type hint the return values of a Taichi function.
 - There is no limit on the number of elements in the return values.
 
-However, you *cannot* have more than one `return` statement in a Taichi function.
+However, you _cannot_ have more than one `return` statement in a Taichi function.
 
 #### At most one return statement
 
@@ -343,21 +345,21 @@ def test_sign(x):
 
 ## A recap: Taichi kernel vs. Taichi function
 
-|                                                       | **Kernel**                          | **Taichi Function**                            |
-| ----------------------------------------------------- | ----------------------------------- | ---------------------------------------------- |
-| Call scope                                            | Python scope                        | Taichi scope                                   |
-| Type hint arguments                                   | Required                            | Optional but recommended                       |
-| Type hint return values                               | Required                            | Optional but recommended                       |
-| Return type                                           | Scalar/`ti.Vector`/`ti.Matrix`      | Scalar/`ti.Vector`/`ti.Matrix`/`ti.Struct`/... |
+|                                                       | **Kernel**                                               | **Taichi Function**                            |
+| ----------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------- |
+| Call scope                                            | Python scope                                             | Taichi scope                                   |
+| Type hint arguments                                   | Required                                                 | Optional but recommended                       |
+| Type hint return values                               | Required                                                 | Optional but recommended                       |
+| Return type                                           | Scalar/`ti.Vector`/`ti.Matrix`                           | Scalar/`ti.Vector`/`ti.Matrix`/`ti.Struct`/... |
 | Maximum number of elements in arguments               | <ul><li>8 (for OpenGL)</li><li>64 (for others)</li></ul> | Unlimited                                      |
-| Maximum number of return values in a return statement | 1                                   | Unlimited                                      |
-| Maximum number of elements in return values           | 30                                  | Unlimited                                      |
+| Maximum number of return values in a return statement | 1                                                        | Unlimited                                      |
+| Maximum number of elements in return values           | 30                                                       | Unlimited                                      |
 
 ## Key terms
 
 #### Backend
 
-In the computer world, the term *backend* may have different meanings based on the context, and generally refers to any part of a software program that users do not directly engage with. In the context of Taichi, backend is the place where your code is being executed, for example `cpu`, `opengl`, `cuda`, and `vulkan`.
+In the computer world, the term _backend_ may have different meanings based on the context, and generally refers to any part of a software program that users do not directly engage with. In the context of Taichi, backend is the place where your code is being executed, for example `cpu`, `opengl`, `cuda`, and `vulkan`.
 
 #### Compile-time recursion
 

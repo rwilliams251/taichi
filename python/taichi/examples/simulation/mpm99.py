@@ -56,11 +56,12 @@ def substep():
             Jp[p] *= sig[d, d] / new_sig
             sig[d, d] = new_sig
             J *= new_sig
-        if material[
-                p] == 0:  # Reset deformation gradient to avoid numerical instability
+        if (material[p] == 0
+            ):  # Reset deformation gradient to avoid numerical instability
             F[p] = ti.Matrix.identity(float, 2) * ti.sqrt(J)
         elif material[p] == 2:
-            F[p] = U @ sig @ V.transpose(
+            F[p] = (
+                U @ sig @ V.transpose()
             )  # Reconstruct elastic deformation gradient after plasticity
         stress = 2 * mu * (F[p] - U @ V.transpose()) @ F[p].transpose(
         ) + ti.Matrix.identity(float, 2) * la * J * (J - 1)
@@ -81,9 +82,12 @@ def substep():
             grid_v[i, j][1] -= dt * 50  # gravity
             if i < 3 and grid_v[i, j][0] < 0:
                 grid_v[i, j][0] = 0  # Boundary conditions
-            if i > n_grid - 3 and grid_v[i, j][0] > 0: grid_v[i, j][0] = 0
-            if j < 3 and grid_v[i, j][1] < 0: grid_v[i, j][1] = 0
-            if j > n_grid - 3 and grid_v[i, j][1] > 0: grid_v[i, j][1] = 0
+            if i > n_grid - 3 and grid_v[i, j][0] > 0:
+                grid_v[i, j][0] = 0
+            if j < 3 and grid_v[i, j][1] < 0:
+                grid_v[i, j][1] = 0
+            if j > n_grid - 3 and grid_v[i, j][1] > 0:
+                grid_v[i, j][1] = 0
     for p in x:  # grid to particle (G2P)
         base = (x[p] * inv_dx - 0.5).cast(int)
         fx = x[p] * inv_dx - base.cast(float)
@@ -109,7 +113,7 @@ def initialize():
     for i in range(n_particles):
         x[i] = [
             ti.random() * 0.2 + 0.3 + 0.10 * (i // group_size),
-            ti.random() * 0.2 + 0.05 + 0.32 * (i // group_size)
+            ti.random() * 0.2 + 0.05 + 0.32 * (i // group_size),
         ]
         material[i] = i // group_size  # 0: fluid 1: jelly 2: snow
         v[i] = ti.Matrix([0, 0])
@@ -123,13 +127,15 @@ def main():
     while not gui.get_event(ti.GUI.ESCAPE, ti.GUI.EXIT):
         for s in range(int(2e-3 // dt)):
             substep()
-        gui.circles(x.to_numpy(),
-                    radius=1.5,
-                    palette=[0x068587, 0xED553B, 0xEEEEF0],
-                    palette_indices=material)
+        gui.circles(
+            x.to_numpy(),
+            radius=1.5,
+            palette=[0x068587, 0xED553B, 0xEEEEF0],
+            palette_indices=material,
+        )
         gui.show(
         )  # Change to gui.show(f'{frame:06d}.png') to write images to disk
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

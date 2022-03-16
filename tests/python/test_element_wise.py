@@ -9,7 +9,7 @@ def _c_mod(a, b):
     return a - b * int(float(a) / b)
 
 
-@pytest.mark.parametrize('lhs_is_mat,rhs_is_mat', [(True, True), (True, False),
+@pytest.mark.parametrize("lhs_is_mat,rhs_is_mat", [(True, True), (True, False),
                                                    (False, True)])
 @test_utils.test(fast_math=False, exclude=[ti.vulkan])
 def test_binary_f(lhs_is_mat, rhs_is_mat):
@@ -73,7 +73,7 @@ def test_binary_f(lhs_is_mat, rhs_is_mat):
     assert test_utils.allclose(x[15], np.maximum(y, z))
 
 
-@pytest.mark.parametrize('is_mat', [(True, True), (True, False),
+@pytest.mark.parametrize("is_mat", [(True, True), (True, False),
                                     (False, True)])
 @test_utils.test()
 def test_binary_i(is_mat):
@@ -147,7 +147,7 @@ def test_binary_i(is_mat):
     assert test_utils.allclose(x[19], y << z)
 
 
-@pytest.mark.parametrize('rhs_is_mat', [True, False])
+@pytest.mark.parametrize("rhs_is_mat", [True, False])
 @test_utils.test(fast_math=False)
 def test_writeback_binary_f(rhs_is_mat):
     x = ti.Matrix.field(3, 2, ti.f32, 9)
@@ -194,7 +194,7 @@ def test_writeback_binary_f(rhs_is_mat):
     assert test_utils.allclose(x[8], np.maximum(y, z))
 
 
-@pytest.mark.parametrize('rhs_is_mat', [(True, True), (True, False)])
+@pytest.mark.parametrize("rhs_is_mat", [(True, True), (True, False)])
 @test_utils.test()
 def test_writeback_binary_i(rhs_is_mat):
     x = ti.Matrix.field(3, 2, ti.i32, 12)
@@ -300,9 +300,16 @@ def test_unary():
     assert test_utils.allclose(xf[14], np.round(yf), rel=1e-5)
 
 
-@pytest.mark.parametrize('is_mat', [(True, True, True), (True, False, False),
-                                    (False, True, False), (False, False, True),
-                                    (False, True, True)])
+@pytest.mark.parametrize(
+    "is_mat",
+    [
+        (True, True, True),
+        (True, False, False),
+        (False, True, False),
+        (False, False, True),
+        (False, True, True),
+    ],
+)
 @test_utils.test()
 def test_ternary_i(is_mat):
     cond_is_mat, lhs_is_mat, rhs_is_mat = is_mat

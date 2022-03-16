@@ -6,8 +6,12 @@ from taichi.lang.ops import atomic_add
 from taichi.types.annotations import template
 from taichi.types.primitive_types import f32
 
-from .staging_buffer import (copy_colors_to_vbo, copy_normals_to_vbo,
-                             copy_vertices_to_vbo, get_vbo_field)
+from .staging_buffer import (
+    copy_colors_to_vbo,
+    copy_normals_to_vbo,
+    copy_vertices_to_vbo,
+    get_vbo_field,
+)
 from .utils import check_ggui_availability, get_field_info
 
 normals_field_cache = {}
@@ -73,8 +77,8 @@ def gen_normals(vertices, indices):
 
 
 class Scene:
-    """A 3D scene, which can contain meshes and particles, and can be rendered on a canvas
-    """
+    """A 3D scene, which can contain meshes and particles, and can be rendered on a canvas"""
+
     def __init__(self):
         check_ggui_availability()
         self.scene = _ti_core.PyScene()
@@ -82,13 +86,15 @@ class Scene:
     def set_camera(self, camera):
         self.scene.set_camera(camera.ptr)
 
-    def mesh(self,
-             vertices,
-             indices=None,
-             normals=None,
-             color=(0.5, 0.5, 0.5),
-             per_vertex_color=None,
-             two_sided=False):
+    def mesh(
+            self,
+            vertices,
+            indices=None,
+            normals=None,
+            color=(0.5, 0.5, 0.5),
+            per_vertex_color=None,
+            two_sided=False,
+    ):
         """Declare a mesh inside the scene.
 
         Args:

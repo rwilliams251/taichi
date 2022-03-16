@@ -74,12 +74,12 @@ def visualize_wave():
 print("[Hint] click on the window to create waves")
 
 reset()
-gui = ti.GUI('Water Wave', shape)
+gui = ti.GUI("Water Wave", shape)
 while gui.running:
     for e in gui.get_events(ti.GUI.PRESS):
         if e.key in [ti.GUI.ESCAPE, ti.GUI.EXIT]:
             gui.running = False
-        elif e.key == 'r':
+        elif e.key == "r":
             reset()
         elif e.key == ti.GUI.LMB:
             x, y = e.pos

@@ -90,7 +90,7 @@ def test_pointer2_packed():
     _test_pointer2()
 
 
-@pytest.mark.skip(reason='https://github.com/taichi-dev/taichi/issues/2520')
+@pytest.mark.skip(reason="https://github.com/taichi-dev/taichi/issues/2520")
 @test_utils.test(require=ti.extension.sparse)
 def test_pointer_direct_place():
     x, y = ti.field(ti.i32), ti.field(ti.i32)
